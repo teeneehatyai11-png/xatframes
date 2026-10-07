@@ -20,12 +20,12 @@
         
         /* ด้านซ้าย: เครื่องเล่นเพลง / แผ่นเสียง */
         .player-card {
-            width: 230px; background: rgba(10, 16, 26, 0.88); backdrop-filter: blur(10px);
+            width: 230px; background: rgba(10, 16, 26, 0.90); backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; padding: 15px;
             display: flex; flex-direction: column; align-items: center; z-index: 10;
             box-shadow: 0 8px 32px rgba(0,0,0,0.5);
         }
-        .turntable { position: relative; width: 110px; height: 110px; margin-bottom: 10px; }
+        .turntable { position: relative; width: 100px; height: 100px; margin-bottom: 10px; }
         .vinyl {
             width: 100%; height: 100%; border-radius: 50%;
             background: radial-gradient(circle, #333 15%, #111 18%, #111 38%, #222 40%, #111 42%, #111 68%, #000 70%);
@@ -33,8 +33,13 @@
             animation: spin 4s linear infinite; animation-play-state: paused;
         }
         .vinyl.playing { animation-play-state: running; }
-        .vinyl-center { width: 30px; height: 30px; background: #00f0ff; border-radius: 50%; border: 2px solid #fff; }
+        .vinyl-center { width: 28px; height: 28px; background: #00f0ff; border-radius: 50%; border: 2px solid #fff; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* แถบเล่นเพลง HTML5 */
+        audio {
+            width: 100%; height: 32px; margin-top: 8px; outline: none;
+        }
 
         /* ตรงกลาง: เว้นว่างไว้ให้กรอบแชต xat วางซ้อน */
         .chat-space {
@@ -45,7 +50,7 @@
 
         /* ด้านขวา: Playlist */
         .playlist-card {
-            width: 230px; background: rgba(10, 16, 26, 0.88); backdrop-filter: blur(10px);
+            width: 230px; background: rgba(10, 16, 26, 0.90); backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; padding: 15px; z-index: 10;
             box-shadow: 0 8px 32px rgba(0,0,0,0.5);
         }
@@ -65,9 +70,12 @@
             <div class="turntable">
                 <div class="vinyl" id="vinylRecord"><div class="vinyl-center"></div></div>
             </div>
-            <div style="font-size:12px; font-weight:bold; margin-bottom:8px; text-align:center;" id="songTitle">สตริงใหม่ล่าสุด</div>
-            <button onclick="togglePlay()" id="playBtn" style="padding:6px 16px; border-radius:20px; background:#00f0ff; border:none; cursor:pointer; font-weight:bold; color:#000;">▶ Play</button>
-            <audio id="radioPlayer"><source id="audioSource" src="https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3" type="audio/mpeg"></audio>
+            <div style="font-size:12px; font-weight:bold; margin-bottom:4px; text-align:center;" id="songTitle">สตริงใหม่ล่าสุด</div>
+            
+            <audio id="radioPlayer" controls preload="none">
+                <source id="audioSource" src="https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3" type="audio/mpeg">
+                เบราว์เซอร์ของคุณไม่รองรับเครื่องเล่นนี้
+            </audio>
         </div>
 
         <!-- ตรงกลาง: เว้นว่างไว้สำหรับแชต xat -->
@@ -85,24 +93,20 @@
 
     <script>
         const player = document.getElementById('radioPlayer');
-        const playBtn = document.getElementById('playBtn');
         const vinyl = document.getElementById('vinylRecord');
         const songTitle = document.getElementById('songTitle');
         const audioSource = document.getElementById('audioSource');
 
-        function togglePlay() {
-            if (player.paused) {
-                player.play(); playBtn.innerText = '❚❚ Pause'; vinyl.classList.add('playing');
-            } else {
-                player.pause(); playBtn.innerText = '▶ Play'; vinyl.classList.remove('playing');
-            }
-        }
+        player.onplay = function() { vinyl.classList.add('playing'); };
+        player.onpause = function() { vinyl.classList.remove('playing'); };
 
         function playTrack(url, title, element) {
             document.querySelectorAll('.track-item').forEach(item => item.classList.remove('active'));
             element.classList.add('active');
-            audioSource.src = url; songTitle.innerText = title;
-            player.load(); player.play(); playBtn.innerText = '❚❚ Pause'; vinyl.classList.add('playing');
+            audioSource.src = url; 
+            songTitle.innerText = title;
+            player.load(); 
+            player.play().catch(e => console.log('Autoplay blocked:', e));
         }
     </script>
 
