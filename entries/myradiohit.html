@@ -18,127 +18,62 @@
             padding: 20px 30px;
         }
         
-        /* ด้านซ้าย: เครื่องเล่นเพลง / แผ่นเสียง */
+        /* ด้านซ้าย: กล่องเปิดเครื่องเล่น */
         .player-card {
-            width: 230px; background: rgba(10, 16, 26, 0.90); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; padding: 15px;
+            width: 230px; background: rgba(10, 16, 26, 0.92); backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 240, 255, 0.3); border-radius: 12px; padding: 20px 15px;
             display: flex; flex-direction: column; align-items: center; z-index: 999;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5); pointer-events: auto;
-        }
-        .turntable { position: relative; width: 100px; height: 100px; margin-bottom: 10px; }
-        .vinyl {
-            width: 100%; height: 100%; border-radius: 50%;
-            background: radial-gradient(circle, #333 15%, #111 18%, #111 38%, #222 40%, #111 42%, #111 68%, #000 70%);
-            border: 3px solid #222; display: flex; align-items: center; justify-content: center;
-            animation: spin 4s linear infinite; animation-play-state: paused;
-        }
-        .vinyl.playing { animation-play-state: running; }
-        .vinyl-center { width: 28px; height: 28px; background: #00f0ff; border-radius: 50%; border: 2px solid #fff; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        .play-btn-custom {
-            padding: 8px 20px; border-radius: 20px; background: #00f0ff; color: #000;
-            border: none; cursor: pointer; font-weight: bold; margin-top: 5px; width: 100%;
-            box-shadow: 0 0 10px rgba(0,240,255,0.4);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6); text-align: center;
         }
 
-        /* ตรงกลาง: เว้นว่างไว้ให้กรอบแชต xat วางซ้อน */
-        .chat-space {
-            width: 650px;
-            height: 486px;
-            pointer-events: none;
+        .radio-btn {
+            display: block; width: 100%; padding: 12px 10px; margin-top: 10px;
+            background: #00f0ff; color: #000; font-weight: bold; border-radius: 25px;
+            text-decoration: none; box-shadow: 0 0 15px rgba(0,240,255,0.5);
+            transition: all 0.2s; cursor: pointer; border: none; font-size: 13px;
         }
+        .radio-btn:hover { background: #fff; transform: scale(1.03); }
 
-        /* ด้านขวา: Playlist */
+        /* ตรงกลาง: เว้นว่างให้กรอบแชต xat */
+        .chat-space { width: 650px; height: 486px; pointer-events: none; }
+
+        /* ด้านขวา: ข้อมูลสถานี */
         .playlist-card {
-            width: 230px; background: rgba(10, 16, 26, 0.90); backdrop-filter: blur(10px);
+            width: 230px; background: rgba(10, 16, 26, 0.92); backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; padding: 15px; z-index: 999;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5); pointer-events: auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
         }
-        .track-item {
+        .info-item {
             padding: 8px; margin-top: 6px; background: rgba(255,255,255,0.05);
-            border-radius: 6px; cursor: pointer; font-size: 12px; transition: all 0.2s;
+            border-radius: 6px; font-size: 12px; color: #ccc;
         }
-        .track-item:hover, .track-item.active { background: rgba(0, 240, 255, 0.2); border: 1px solid #00f0ff; }
     </style>
 </head>
 <body>
 
     <div class="xatframe-wrapper">
-        <!-- ด้านซ้าย: เครื่องเล่นเพลง -->
+        <!-- ด้านซ้าย: ปุ่มกดเปิดวิทยุ -->
         <div class="player-card">
-            <div style="font-size:11px; color:#00f0ff; margin-bottom:8px; font-weight:bold;">MYRADIOHIT PLAYER</div>
-            <div class="turntable">
-                <div class="vinyl" id="vinylRecord"><div class="vinyl-center"></div></div>
-            </div>
-            <div style="font-size:12px; font-weight:bold; margin-bottom:6px; text-align:center;" id="songTitle">สตริงใหม่ล่าสุด</div>
+            <div style="font-size:12px; color:#00f0ff; font-weight:bold; margin-bottom:5px;">📻 MYRADIOHIT</div>
+            <div style="font-size:11px; color:#aaa; margin-bottom:12px;">กดปุ่มด้านล่างเพื่อเริ่มฟังวิทยุออนไลน์</div>
             
-            <button class="play-btn-custom" onclick="forcePlay()" id="mainPlayBtn">▶ CLICK TO PLAY</button>
-            <audio id="radioPlayer" preload="auto">
-                <source id="audioSource" src="https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3" type="audio/mpeg">
-            </audio>
+            <a href="https://cerulean-meringue-3b052c.netlify.app" target="_blank" class="radio-btn">
+                ▶ CLICK TO LISTEN (เปิดเครื่องเล่น)
+            </a>
         </div>
 
-        <!-- ตรงกลาง: เว้นว่างไว้สำหรับแชต xat -->
+        <!-- ตรงกลาง: เว้นว่างสำหรับแชต xat -->
         <div class="chat-space"></div>
 
-        <!-- ด้านขวา: เพลย์ลิสต์เพลง -->
+        <!-- ด้านขวา: รายชื่อสถานี -->
         <div class="playlist-card">
-            <div style="font-size:13px; font-weight:bold; color:#00f0ff; margin-bottom:8px;">📋 Playlist</div>
-            <div class="track-item active" onclick="playTrack('https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3', 'สตริงใหม่ล่าสุด', this)">#1 สตริงใหม่ล่าสุด</div>
-            <div class="track-item" onclick="playTrack('https://ia902905.us.archive.org/5/items/thaistation/thaistation.mp3', 'เพลตริง (Thaistation)', this)">#2 เพลตริง (Thaistation)</div>
-            <div class="track-item" onclick="playTrack('https://ia601906.us.archive.org/3/items/radio_202607/1.radio.mp3', 'สตริง 1 Selection', this)">#3 สตริง 1 Selection</div>
-            <div class="track-item" onclick="playTrack('https://ia601501.us.archive.org/2/items/thaistation-v.-1/thaistation%20v.1.mp3', 'สตริง 2 ชม (Nonstop)', this)">#4 สตริง 2 ชม (Nonstop)</div>
+            <div style="font-size:13px; font-weight:bold; color:#00f0ff; margin-bottom:8px;">📋 Available Channels</div>
+            <div class="info-item">#1 สตริงใหม่ล่าสุด</div>
+            <div class="info-item">#2 เพลตริง (Thaistation)</div>
+            <div class="info-item">#3 สตริง 1 Selection</div>
+            <div class="info-item">#4 สตริง 2 ชม (Nonstop)</div>
         </div>
     </div>
-
-    <script>
-        const player = document.getElementById('radioPlayer');
-        const vinyl = document.getElementById('vinylRecord');
-        const songTitle = document.getElementById('songTitle');
-        const audioSource = document.getElementById('audioSource');
-        const mainPlayBtn = document.getElementById('mainPlayBtn');
-
-        function forcePlay() {
-            if (player.paused) {
-                player.play().then(() => {
-                    vinyl.classList.add('playing');
-                    mainPlayBtn.innerText = '❚❚ PAUSE';
-                    mainPlayBtn.style.background = '#ff0055';
-                    mainPlayBtn.style.color = '#fff';
-                }).catch(err => {
-                    alert('โปรดคลิกที่หน้าจอ xatframe 1 ครั้งแล้วกดปุ่มเล่นอีกครั้งครับ');
-                });
-            } else {
-                player.pause();
-                vinyl.classList.remove('playing');
-                mainPlayBtn.innerText = '▶ PLAY';
-                mainPlayBtn.style.background = '#00f0ff';
-                mainPlayBtn.style.color = '#000';
-            }
-        }
-
-        function playTrack(url, title, element) {
-            document.querySelectorAll('.track-item').forEach(item => item.classList.remove('active'));
-            element.classList.add('active');
-            audioSource.src = url; 
-            songTitle.innerText = title;
-            player.load(); 
-            player.play().then(() => {
-                vinyl.classList.add('playing');
-                mainPlayBtn.innerText = '❚❚ PAUSE';
-                mainPlayBtn.style.background = '#ff0055';
-                mainPlayBtn.style.color = '#fff';
-            });
-        }
-
-        // ปลดล็อกการเล่นเมื่อมีการแตะหรือคลิกใน xatframe
-        document.body.addEventListener('click', function() {
-            if (player.paused) {
-                player.play().catch(()=>{});
-            }
-        }, { once: true });
-    </script>
 
 </body>
 </html>
