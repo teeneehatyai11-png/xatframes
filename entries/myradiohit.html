@@ -1,143 +1,211 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <title>MYRADIOhit Player</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-        body {
-            background: transparent;
-            color: #fff;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding: 70px 10px 10px 10px;
-            height: 100vh;
-            overflow: hidden;
-        }
-        /* เครื่องเล่นวิทยุด้านซ้าย */
-        .player-container {
-            width: 280px;
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-        .player-header {
-            font-size: 12px;
-            color: #94a3b8;
-            margin-bottom: 10px;
-        }
-        .vinyl-box {
-            width: 120px;
-            height: 120px;
-            background: #000;
-            border-radius: 50%;
-            margin: 15px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 4px solid #1e293b;
-            box-shadow: 0 0 10px rgba(0,0,0,0.8);
-        }
-        .vinyl-center {
-            width: 40px;
-            height: 40px;
-            background: #0ea5e9;
-            border-radius: 50%;
-        }
-        .now-playing {
-            font-size: 11px;
-            color: #38bdf8;
-            margin-bottom: 5px;
-        }
-        .track-title {
-            font-size: 13px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        audio {
-            width: 100%;
-            height: 35px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MYRADIOhit Player</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-        /* Playlist ด้านขวา */
-        .playlist-container {
-            width: 280px;
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .playlist-title {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 5px;
-        }
-        .playlist-item {
-            padding: 8px;
-            margin-bottom: 6px;
-            background: rgba(30, 41, 59, 0.6);
-            border-radius: 4px;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 12px;
-        }
-        .playlist-item:hover {
-            background: rgba(56, 189, 248, 0.3);
-        }
-        .playlist-item .cat {
-            font-size: 10px;
-            color: #94a3b8;
-        }
-    </style>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Kanit', Arial, sans-serif;
+      user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: transparent !important;
+      overflow: hidden;
+      position: relative;
+      pointer-events: none;
+    }
+
+    /* 🖼️ การ์ดฝั่งซ้าย (วิดีโอ 03.mp4 วนลูป) */
+    .left-card {
+      position: absolute;
+      top: 130px;
+      left: 15px;
+      width: 300px;
+      height: 480px;
+      background: rgba(18, 18, 28, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
+      z-index: 999999 !important;
+      pointer-events: auto !important;
+      overflow: hidden;
+    }
+
+    /* 📱 การ์ดฝั่งขวา (วิดีโอ 02.mp4 วนลูป) */
+    .right-card {
+      position: absolute;
+      top: 130px;
+      right: 15px;
+      width: 300px;
+      height: 480px;
+      background: rgba(18, 18, 28, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      z-index: 999999 !important;
+      pointer-events: auto !important;
+      overflow: hidden;
+    }
+
+    /* วิดีโอวนลูปพื้นหลัง */
+    .video-bg-box {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .video-bg-box video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      outline: none;
+    }
+
+    /* ครอบเลเยอร์ส่วนควบคุมฝั่งขวา ให้กลมกลืนกับวิดีโอ */
+    .card-content-overlay {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: linear-gradient(to top, rgba(10, 15, 30, 0.85) 0%, rgba(10, 15, 30, 0.15) 60%, rgba(10, 15, 30, 0.7) 100%);
+      margin: -12px;
+      padding: 14px;
+    }
+
+    .radio-header {
+      font-size: 13px;
+      font-weight: 700;
+      color: #00f2fe;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 10px rgba(0, 242, 254, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      background: #ff0050;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #ff0050;
+      animation: blink 1.2s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* กล่องเครื่องเล่นวิทยุกระจกโปร่งแสง (Glassmorphism Player Widget) */
+    .glass-player {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      margin-top: auto;
+    }
+
+    .song-info {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .now-playing {
+      font-size: 9px;
+      font-weight: 600;
+      color: #00f2fe;
+      letter-spacing: 1px;
+      margin-bottom: 2px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    }
+
+    .track-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ดีไซน์แท็ก <audio> ให้กลมกลืน สวยงาม */
+    audio {
+      width: 100%;
+      height: 32px;
+      outline: none;
+      border-radius: 6px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    }
+  </style>
 </head>
 <body>
 
-    <!-- ส่วนเครื่องเล่นเพลง (ซ้าย) -->
-    <div class="player-container">
-        <div class="player-header">Myradiohit Radio Player</div>
-        <div class="vinyl-box">
-            <div class="vinyl-center"></div>
-        </div>
-        <div class="now-playing">NOW PLAYING</div>
-        <div class="track-title" id="current-title">Select a track to start</div>
-        <audio id="audio-player" controls></audio>
+  <!-- 🖼️ ฝั่งซ้าย (วิดีโอ 03.mp4 วนลูป) -->
+  <div class="left-card">
+    <div class="video-bg-box">
+      <video autoplay loop muted playsinline preload="auto">
+        <source src="https://ia903200.us.archive.org/8/items/03_20261008_20261008_1411/03.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+
+  <!-- 📱 ฝั่งขวา (วิดีโอ 02.mp4 วนลูป + วิทยุกระจกพ่นฝ้าสุดเรียบหรู) -->
+  <div class="right-card">
+    <div class="video-bg-box">
+      <video autoplay loop muted playsinline preload="auto">
+        <source src="https://ia903201.us.archive.org/13/items/02_20261008/02.mp4" type="video/mp4">
+      </video>
     </div>
 
-    <!-- ส่วนรายการเพลง Playlist (ขวา) -->
-    <div class="playlist-container">
-        <div class="playlist-title">Playlist</div>
-        
-        <div class="playlist-item" onclick="playTrack('สตริงใหม่ล่าสุด', 'https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3')">
-            <div>#1 Tag Hits String 2026</div>
-            <div class="cat">Category: String</div>
+    <div class="card-content-overlay">
+      <div class="radio-header">
+        <div class="live-dot"></div>
+        <span>MYRADIOhit</span>
+      </div>
+
+      <!-- เครื่องเล่นแบบ Glassmorphism สวยๆ กลมกลืนไปกับวิดีโอ -->
+      <div class="glass-player">
+        <div class="song-info">
+          <div class="now-playing">NOW PLAYING</div>
+          <div class="track-title" id="current-title">#1 Tag Hits String 2026</div>
         </div>
 
-        
-    <script>
-        function playTrack(title, url) {
-            const player = document.getElementById('audio-player');
-            const titleElement = document.getElementById('current-title');
-            
-            titleElement.innerText = title;
-            player.src = url;
-            player.play();
-        }
-    </script>
+        <audio id="audio-player" controls preload="metadata">
+          <source src="https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3" type="audio/mpeg">
+          เบราว์เซอร์ไม่รองรับ
+        </audio>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
