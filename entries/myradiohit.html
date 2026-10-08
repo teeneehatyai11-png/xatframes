@@ -13,22 +13,31 @@
       user-select: none;
     }
 
-    body {
+    /* สำคัญ: ให้คลิกทะลุพื้นที่ว่างทั้งหมดไปยังห้องแชท xat */
+    html, body {
+      width: 100%;
+      height: 100%;
       background: transparent !important;
-      color: #fff;
-      width: 100vw;
-      height: 100vh;
       overflow: hidden;
+      pointer-events: none; /* ปล่อยให้การคลิกทะลุพื้นหลัง */
+    }
+
+    body {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 15px 25px;
     }
 
+    /* กำหนดให้กล่องวิทยุและเพลย์ลิสต์รับการคลิกได้ปกติ */
+    .interactive-box {
+      pointer-events: auto !important; /* เปิดรับการคลิกเฉพาะจุดนี้ */
+    }
+
     /* กล่องเครื่องเล่นวิทยุฝั่งซ้าย */
     .player-container {
       width: 250px;
-      background: rgba(10, 20, 38, 0.65);
+      background: rgba(10, 20, 38, 0.75);
       border: 1px solid rgba(56, 189, 248, 0.4);
       border-radius: 16px;
       padding: 18px 15px;
@@ -181,7 +190,7 @@
     /* กล่องรายการเพลงฝั่งขวา */
     .playlist-container {
       width: 250px;
-      background: rgba(10, 20, 38, 0.65);
+      background: rgba(10, 20, 38, 0.75);
       border: 1px solid rgba(56, 189, 248, 0.4);
       border-radius: 16px;
       padding: 15px;
@@ -224,7 +233,7 @@
       padding: 9px 10px;
       border-radius: 8px;
       margin-bottom: 6px;
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(255, 255, 255, 0.05);
       border: 1px solid transparent;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -234,14 +243,14 @@
     }
 
     .playlist-item:hover {
-      background: rgba(56, 189, 248, 0.15);
-      border-color: rgba(56, 189, 248, 0.3);
+      background: rgba(56, 189, 248, 0.2);
+      border-color: rgba(56, 189, 248, 0.4);
     }
 
     .playlist-item.active {
-      background: rgba(56, 189, 248, 0.25);
+      background: rgba(56, 189, 248, 0.3);
       border-color: #38bdf8;
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
     }
 
     .item-num {
@@ -273,7 +282,7 @@
 <body>
 
   <!-- ฝั่งซ้าย: เครื่องเล่นวิทยุ -->
-  <div class="player-container">
+  <div class="player-container interactive-box">
     <div class="player-title">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
       MYRADIOhit
@@ -286,9 +295,9 @@
     </div>
 
     <div class="track-info">
-      <div class="track-title" id="trackTitle">#1 Tag Hits String 2026</div>
+      <div class="track-title" id="trackTitle">#1 สตริงใหม่ล่าสุด 2026</div>
       <div class="track-category" id="trackCategory">เพลงสตริงใหม่ล่าสุด</div>
-      <div class="status-text" id="statusText">พร้อมใช้งาน - กดปุ่ม Play เพื่อฟังเพลง</div>
+      <div class="status-text" id="statusText">คลิกเพื่อเริ่มเล่นเพลง</div>
     </div>
 
     <div class="controls">
@@ -304,11 +313,10 @@
     </div>
   </div>
 
-  <!-- Audio Element พร้อมระบุ Attributes ที่จำเป็นสำหรับ Cross-Origin Frame -->
-  <audio id="audioPlayer" preload="metadata" crossorigin="anonymous"></audio>
+  <audio id="audioPlayer" preload="auto"></audio>
 
   <!-- ฝั่งขวา: รายการเพลง -->
-  <div class="playlist-container">
+  <div class="playlist-container interactive-box">
     <div class="playlist-header">
       <span>รายการเพลง</span>
       <span style="font-size:10px; color:#94a3b8;" id="totalTracks">7 รายการ</span>
@@ -317,37 +325,36 @@
   </div>
 
   <script>
-    // รายชื่อเพลงพร้อมลิงก์ที่ปรับให้รองรับ Direct Stream
     const tracks = [
       {
         title: "#1 สตริงใหม่ล่าสุด 2026",
         category: "เพลงสตริงใหม่ล่าสุด",
-        url: "https://archive.org/download/sting-new/sting%20new.mp3"
+        url: "https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3"
       },
       {
         title: "#2 Thaistation Radio Mix",
         category: "เพลงสตริง",
-        url: "https://archive.org/download/thaistation/thaistation.mp3"
+        url: "https://ia902905.us.archive.org/5/items/thaistation/thaistation.mp3"
       },
       {
         title: "#3 String Pop Selection",
         category: "สตริง 1",
-        url: "https://archive.org/download/radio_202607/1.radio.mp3"
+        url: "https://ia601906.us.archive.org/3/items/radio_202607/1.radio.mp3"
       },
       {
         title: "#4 2-Hour Nonstop Hits",
         category: "สตริง 2 ชม.",
-        url: "https://archive.org/download/thaistation-v.-1/thaistation%20v.1.mp3"
+        url: "https://ia601501.us.archive.org/2/items/thaistation-v.-1/thaistation%20v.1.mp3"
       },
       {
         title: "#5 Thai Country Favorites",
         category: "เพลงลูกทุ่ง",
-        url: "https://archive.org/download/luk-thung-music/Luk%20Thung%20music.mp3"
+        url: "https://ia600903.us.archive.org/29/items/luk-thung-music/Luk%20Thung%20music.mp3"
       },
       {
         title: "#6 Southern Hits New Coll...",
         category: "เพลงใต้ ชุดใหม่",
-        url: "https://archive.org/download/plangtai2/plangtai2.mp3"
+        url: "https://ia601609.us.archive.org/27/items/plangtai2/plangtai2.mp3"
       },
       {
         title: "#7 Southern Melodic Folk",
@@ -370,7 +377,10 @@
       tracks.forEach((track, index) => {
         const item = document.createElement('div');
         item.className = `playlist-item ${index === currentTrackIndex ? 'active' : ''}`;
-        item.onclick = () => loadAndPlay(index);
+        item.onclick = (e) => {
+          e.stopPropagation();
+          loadAndPlay(index);
+        };
         item.innerHTML = `
           <div class="item-num">${index + 1}</div>
           <div class="item-info">
@@ -410,7 +420,7 @@
     }
 
     function playTrack() {
-      statusText.innerText = "กำลังโหลดสัญญาณเพลง...";
+      statusText.innerText = "กำลังเชื่อมต่อ...";
       statusText.style.color = "#38bdf8";
 
       const playPromise = audio.play();
@@ -418,13 +428,13 @@
         playPromise.then(() => {
           playBtn.innerText = '⏸';
           disc.style.animationPlayState = 'running';
-          statusText.innerText = "● กำลังเล่นออนไลน์";
+          statusText.innerText = "● กำลังเล่นเพลง";
           statusText.style.color = "#4ade80";
         }).catch(error => {
           console.error("Playback failed:", error);
           playBtn.innerText = '▶';
           disc.style.animationPlayState = 'paused';
-          statusText.innerText = "กดอีกครั้งเพื่อเปิดเล่น (User Action Required)";
+          statusText.innerText = "คลิกอีกครั้งเพื่อเล่น";
           statusText.style.color = "#f87171";
         });
       }
@@ -452,20 +462,10 @@
       audio.volume = val;
     }
 
-    // ฟัง Event เมื่อเพลงเล่นจบ ให้เล่นเพลงถัดไปอัตโนมัติ
     audio.addEventListener('ended', () => {
       nextTrack();
     });
 
-    // ฟัง Event เมื่อเกิดข้อผิดพลาดในการโหลดสื่อ
-    audio.addEventListener('error', () => {
-      statusText.innerText = "ไม่สามารถโหลดเพลงนี้ได้ กรุณาเลือกเพลงอื่น";
-      statusText.style.color = "#f87171";
-      playBtn.innerText = '▶';
-      disc.style.animationPlayState = 'paused';
-    });
-
-    // เตรียมการเริ่มต้น
     setTrackInfo(0);
     audio.src = tracks[0].url;
   </script>
