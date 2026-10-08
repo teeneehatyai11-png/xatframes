@@ -1,174 +1,196 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MYRADIOhit Player</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MYRADIOhit Player</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Kanit', Arial, sans-serif;
+            user-select: none;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: transparent !important;
+            overflow: hidden;
+            position: relative;
+            pointer-events: none;
+        }
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Kanit', Arial, sans-serif;
-      user-select: none;
-    }
+        /* 🎵 เครื่องเล่นวิทยุด้านซ้าย (ไม่มีแผ่น CD แล้ว) */
+        .player-container {
+            position: absolute;
+            top: 130px;
+            left: 15px;
+            width: 280px;
+            height: 480px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; /* ดันเนื้อหาลงล่าง */
+            z-index: 999999 !important;
+            pointer-events: auto !important;
+            overflow: hidden;
+        }
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      background: transparent !important;
-      overflow: hidden;
-      position: relative;
-      pointer-events: none;
-    }
+        /* 📋 Playlist ด้านขวา (ข้อความและเนื้อหาอยู่ด้านล่างของภาพ) */
+        .playlist-container {
+            position: absolute;
+            top: 130px;
+            right: 15px;
+            width: 280px;
+            height: 480px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; /* ดันข้อความทั้งหมดลงมาด้านล่าง */
+            z-index: 999999 !important;
+            pointer-events: auto !important;
+            overflow: hidden;
+        }
 
-    /* 🖼️ การ์ดฝั่งซ้าย (วิดีโอ 03.mp4 วนลูป) */
-    .left-card {
-      position: absolute;
-      top: 130px;
-      left: 15px;
-      width: 300px;
-      height: 480px;
-      background: rgba(18, 18, 28, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
-      z-index: 999999 !important;
-      pointer-events: auto !important;
-      overflow: hidden;
-    }
+        /* วิดีโอพื้นหลังวนลูป */
+        .video-bg-box {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+        .video-bg-box video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            outline: none;
+            opacity: 0.45; 
+        }
 
-    /* 📱 การ์ดฝั่งขวา (วิดีโอ 02.mp4 วนลูป + แท็ก Audio เล่นเพลง) */
-    .right-card {
-      position: absolute;
-      top: 130px;
-      right: 15px;
-      width: 300px;
-      height: 480px;
-      background: rgba(18, 18, 28, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 16px;
-      padding: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
-      display: flex;
-      flex-direction: column;
-      z-index: 999999 !important;
-      pointer-events: auto !important;
-      overflow: hidden;
-    }
+        /* เลเยอร์เนื้อหาด้านบนวิดีโอ */
+        .content-layer {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
 
-    /* วิดีโอวนลูปพื้นหลัง */
-    .video-bg-box {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      overflow: hidden;
-    }
+        .player-header {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+        .now-playing {
+            font-size: 11px;
+            color: #38bdf8;
+            margin-bottom: 3px;
+        }
+        .track-title {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        audio {
+            width: 100%;
+            height: 35px;
+            outline: none;
+        }
 
-    .video-bg-box video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      outline: none;
-    }
-
-    /* ครอบเลเยอร์ส่วนควบคุมฝั่งขวา */
-    .card-content-overlay {
-      position: relative;
-      z-index: 2;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      background: linear-gradient(to top, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.2) 100%);
-      margin: -12px;
-      padding: 15px;
-    }
-
-    .radio-header {
-      font-size: 13px;
-      font-weight: 700;
-      color: #00f2fe;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-    }
-
-    .song-info {
-      text-align: center;
-      margin-top: auto;
-      margin-bottom: 10px;
-    }
-
-    .now-playing {
-      font-size: 10px;
-      color: #38bdf8;
-      letter-spacing: 1px;
-      margin-bottom: 4px;
-    }
-
-    .track-title {
-      font-size: 13px;
-      font-weight: bold;
-      color: #fff;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.9);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* เครื่องเล่น Audio แท็กมาตรฐาน */
-    audio {
-      width: 100%;
-      height: 36px;
-      outline: none;
-      border-radius: 8px;
-    }
-  </style>
+        .playlist-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 5px;
+        }
+        .playlist-scroll {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .playlist-item {
+            padding: 8px;
+            margin-bottom: 6px;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 12px;
+        }
+        .playlist-item:hover {
+            background: rgba(56, 189, 248, 0.3);
+        }
+        .playlist-item .cat {
+            font-size: 10px;
+            color: #94a3b8;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- 🖼️ ฝั่งซ้าย (วิดีโอ 03.mp4 วนลูป) -->
-  <div class="left-card">
-    <div class="video-bg-box">
-      <video autoplay loop muted playsinline preload="auto">
-        <source src="https://ia903200.us.archive.org/8/items/03_20261008_20261008_1411/03.mp4" type="video/mp4">
-      </video>
+    <!-- ส่วนเครื่องเล่นเพลง (ซ้าย) ไม่มีแผ่น CD -->
+    <div class="player-container">
+        <div class="video-bg-box">
+            <video autoplay loop muted playsinline preload="auto">
+                <source src="https://ia903200.us.archive.org/8/items/03_20261008_20261008_1411/03.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="content-layer">
+            <div class="player-header">Myradiohit Radio Player</div>
+            <div class="now-playing">NOW PLAYING</div>
+            <div class="track-title" id="current-title">Select a track to start</div>
+            <audio id="audio-player" controls preload="metadata"></audio>
+        </div>
     </div>
-  </div>
 
-  <!-- 📱 ฝั่งขวา (วิดีโอ 02.mp4 วนลูป + เพลงใหม่) -->
-  <div class="right-card">
-    <div class="video-bg-box">
-      <video autoplay loop muted playsinline preload="auto">
-        <source src="https://ia903201.us.archive.org/13/items/02_20261008/02.mp4" type="video/mp4">
-      </video>
+    <!-- ส่วนรายการเพลง Playlist (ขวา) ข้อความย้ายมาอยู่ด้านล่าง -->
+    <div class="playlist-container">
+        <div class="video-bg-box">
+            <video autoplay loop muted playsinline preload="auto">
+                <source src="https://ia903201.us.archive.org/13/items/02_20261008/02.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="content-layer">
+            <div class="playlist-title">Playlist</div>
+            <div class="playlist-scroll">
+                <div class="playlist-item" onclick="playTrack('#1 Tag Hits String 2026', 'https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3')">
+                    <div>#1 Tag Hits String 2026</div>
+                    <div class="cat">Category: String</div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="card-content-overlay">
-      <div class="radio-header">MYRADIOhit Player</div>
-
-      <div class="song-info">
-        <div class="now-playing">NOW PLAYING</div>
-        <div class="track-title" id="current-title">#1 Tag Hits String 2026</div>
-      </div>
-
-      <!-- เครื่องเล่น audio มาตรฐานตามไฟล์ที่คุณให้มา -->
-      <audio id="audio-player" controls preload="metadata">
-        <source src="https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3" type="audio/mpeg">
-        เบราว์เซอร์ไม่รองรับ
-      </audio>
-    </div>
-  </div>
-
+    <script>
+        function playTrack(title, url) {
+            const player = document.getElementById('audio-player');
+            const titleElement = document.getElementById('current-title');
+            
+            titleElement.innerText = title;
+            player.src = url;
+            player.play().catch(function(error) {
+                console.log("Playback error: ", error);
+            });
+        }
+    </script>
 </body>
 </html>
