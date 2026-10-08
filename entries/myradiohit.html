@@ -19,7 +19,7 @@
       height: 100%;
       background: transparent !important;
       overflow: hidden;
-      pointer-events: none; /* ปล่อยให้การคลิกทะลุพื้นหลัง */
+      pointer-events: none;
     }
 
     body {
@@ -29,20 +29,20 @@
       padding: 15px 25px;
     }
 
-    /* กำหนดให้กล่องวิทยุและเพลย์ลิสต์รับการคลิกได้ปกติ */
+    /* รับการคลิกเฉพาะตัวกล่องวิทยุและรายการเพลง */
     .interactive-box {
-      pointer-events: auto !important; /* เปิดรับการคลิกเฉพาะจุดนี้ */
+      pointer-events: auto !important;
     }
 
     /* กล่องเครื่องเล่นวิทยุฝั่งซ้าย */
     .player-container {
       width: 250px;
-      background: rgba(10, 20, 38, 0.75);
-      border: 1px solid rgba(56, 189, 248, 0.4);
+      background: rgba(10, 20, 38, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.5);
       border-radius: 16px;
       padding: 18px 15px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6),
-                  inset 0 0 15px rgba(56, 189, 248, 0.15);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7),
+                  inset 0 0 15px rgba(56, 189, 248, 0.2);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       display: flex;
@@ -64,21 +64,21 @@
     }
 
     .disc-outer {
-      width: 130px;
-      height: 130px;
-      background: rgba(15, 23, 42, 0.8);
+      width: 120px;
+      height: 120px;
+      background: rgba(15, 23, 42, 0.9);
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
       box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
       margin-bottom: 15px;
-      border: 2px solid rgba(56, 189, 248, 0.2);
+      border: 2px solid rgba(56, 189, 248, 0.3);
     }
 
     .disc-inner {
-      width: 110px;
-      height: 110px;
+      width: 100px;
+      height: 100px;
       background: radial-gradient(circle, #1e293b 0%, #0f172a 100%);
       border: 4px solid #334155;
       border-radius: 50%;
@@ -90,8 +90,8 @@
     }
 
     .disc-center {
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       background: #38bdf8;
       border-radius: 50%;
       border: 4px solid #0f172a;
@@ -190,12 +190,12 @@
     /* กล่องรายการเพลงฝั่งขวา */
     .playlist-container {
       width: 250px;
-      background: rgba(10, 20, 38, 0.75);
-      border: 1px solid rgba(56, 189, 248, 0.4);
+      background: rgba(10, 20, 38, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.5);
       border-radius: 16px;
       padding: 15px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6),
-                  inset 0 0 15px rgba(56, 189, 248, 0.15);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7),
+                  inset 0 0 15px rgba(56, 189, 248, 0.2);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       max-height: 85vh;
@@ -297,29 +297,29 @@
     <div class="track-info">
       <div class="track-title" id="trackTitle">#1 สตริงใหม่ล่าสุด 2026</div>
       <div class="track-category" id="trackCategory">เพลงสตริงใหม่ล่าสุด</div>
-      <div class="status-text" id="statusText">คลิกเพื่อเริ่มเล่นเพลง</div>
+      <div class="status-text" id="statusText">กด Play เพื่อฟังเพลง</div>
     </div>
 
     <div class="controls">
-      <button class="btn" onclick="prevTrack()" title="เพลงก่อนหน้า">⏮</button>
-      <button class="btn btn-play" id="playBtn" onclick="togglePlay()" title="เล่น/หยุด">▶</button>
-      <button class="btn" onclick="nextTrack()" title="เพลงถัดไป">⏭</button>
+      <button class="btn" id="prevBtn" title="เพลงก่อนหน้า">⏮</button>
+      <button class="btn btn-play" id="playBtn" title="เล่น/หยุด">▶</button>
+      <button class="btn" id="nextBtn" title="เพลงถัดไป">⏭</button>
     </div>
 
     <div class="volume-container">
       <span style="font-size:10px;">🔈</span>
-      <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.8" oninput="changeVolume(this.value)">
+      <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.8">
       <span style="font-size:10px;">🔊</span>
     </div>
   </div>
 
-  <audio id="audioPlayer" preload="auto"></audio>
+  <audio id="audioPlayer"></audio>
 
   <!-- ฝั่งขวา: รายการเพลง -->
   <div class="playlist-container interactive-box">
     <div class="playlist-header">
       <span>รายการเพลง</span>
-      <span style="font-size:10px; color:#94a3b8;" id="totalTracks">7 รายการ</span>
+      <span style="font-size:10px; color:#94a3b8;">7 รายการ</span>
     </div>
     <div class="playlist-scroll" id="playlistItems"></div>
   </div>
@@ -366,6 +366,9 @@
     let currentTrackIndex = 0;
     const audio = document.getElementById('audioPlayer');
     const playBtn = document.getElementById('playBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
     const disc = document.getElementById('disc');
     const trackTitle = document.getElementById('trackTitle');
     const trackCategory = document.getElementById('trackCategory');
@@ -377,10 +380,7 @@
       tracks.forEach((track, index) => {
         const item = document.createElement('div');
         item.className = `playlist-item ${index === currentTrackIndex ? 'active' : ''}`;
-        item.onclick = (e) => {
-          e.stopPropagation();
-          loadAndPlay(index);
-        };
+        item.onclick = () => selectAndPlay(index);
         item.innerHTML = `
           <div class="item-num">${index + 1}</div>
           <div class="item-info">
@@ -392,81 +392,85 @@
       });
     }
 
-    function setTrackInfo(index) {
+    function updateTrackInfo(index) {
       currentTrackIndex = index;
       trackTitle.innerText = tracks[index].title;
       trackCategory.innerText = tracks[index].category;
       renderPlaylist();
     }
 
-    function loadAndPlay(index) {
-      setTrackInfo(index);
-      audio.src = tracks[index].url;
-      audio.load();
-      playTrack();
-    }
-
-    function togglePlay() {
-      if (!audio.src || audio.src === window.location.href) {
-        loadAndPlay(0);
-        return;
-      }
-
-      if (audio.paused) {
-        playTrack();
-      } else {
-        pauseTrack();
-      }
-    }
-
-    function playTrack() {
-      statusText.innerText = "กำลังเชื่อมต่อ...";
+    function playAudio() {
+      statusText.innerText = "กำลังโหลดสัญญาณเพลง...";
       statusText.style.color = "#38bdf8";
 
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
+      const promise = audio.play();
+      if (promise !== undefined) {
+        promise.then(() => {
           playBtn.innerText = '⏸';
           disc.style.animationPlayState = 'running';
           statusText.innerText = "● กำลังเล่นเพลง";
           statusText.style.color = "#4ade80";
-        }).catch(error => {
-          console.error("Playback failed:", error);
+        }).catch(err => {
+          console.log("Play failed:", err);
           playBtn.innerText = '▶';
           disc.style.animationPlayState = 'paused';
-          statusText.innerText = "คลิกอีกครั้งเพื่อเล่น";
+          statusText.innerText = "กดอีกครั้งเพื่อเล่นเพลง";
           statusText.style.color = "#f87171";
         });
       }
     }
 
-    function pauseTrack() {
-      audio.pause();
-      playBtn.innerText = '▶';
-      disc.style.animationPlayState = 'paused';
-      statusText.innerText = "หยุดเล่นชั่วคราว";
-      statusText.style.color = "#94a3b8";
+    function selectAndPlay(index) {
+      updateTrackInfo(index);
+      audio.src = tracks[index].url;
+      playAudio();
     }
 
-    function nextTrack() {
-      const nextIndex = (currentTrackIndex + 1) % tracks.length;
-      loadAndPlay(nextIndex);
+    function togglePlay() {
+      if (!audio.src || audio.src === "" || audio.src === window.location.href) {
+        selectAndPlay(0);
+        return;
+      }
+
+      if (audio.paused) {
+        playAudio();
+      } else {
+        audio.pause();
+        playBtn.innerText = '▶';
+        disc.style.animationPlayState = 'paused';
+        statusText.innerText = "หยุดเล่นชั่วคราว";
+        statusText.style.color = "#94a3b8";
+      }
     }
 
-    function prevTrack() {
+    playBtn.addEventListener('click', togglePlay);
+    prevBtn.addEventListener('click', () => {
       const prevIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
-      loadAndPlay(prevIndex);
-    }
-
-    function changeVolume(val) {
-      audio.volume = val;
-    }
-
-    audio.addEventListener('ended', () => {
-      nextTrack();
+      selectAndPlay(prevIndex);
+    });
+    nextBtn.addEventListener('click', () => {
+      const nextIndex = (currentTrackIndex + 1) % tracks.length;
+      selectAndPlay(nextIndex);
     });
 
-    setTrackInfo(0);
+    volumeSlider.addEventListener('input', (e) => {
+      audio.volume = e.target.value;
+    });
+
+    audio.addEventListener('ended', () => {
+      const nextIndex = (currentTrackIndex + 1) % tracks.length;
+      selectAndPlay(nextIndex);
+    });
+
+    audio.addEventListener('error', () => {
+      statusText.innerText = "ไม่สามารถเล่นเพลงนี้ได้";
+      statusText.style.color = "#f87171";
+      playBtn.innerText = '▶';
+      disc.style.animationPlayState = 'paused';
+    });
+
+    // ตั้งค่าเพลงเริ่มต้น
+    updateTrackInfo(0);
     audio.src = tracks[0].url;
   </script>
 </body>
