@@ -23,7 +23,7 @@
         /* เครื่องเล่นวิทยุด้านซ้าย */
         .player-container {
             width: 280px;
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(15, 23, 42, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 10px;
             padding: 15px;
@@ -86,7 +86,7 @@
         /* Playlist ด้านขวา */
         .playlist-container {
             width: 280px;
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(15, 23, 42, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 10px;
             padding: 15px;
@@ -147,44 +147,44 @@
         </div>
         <div class="now-playing">NOW PLAYING</div>
         <div class="track-title" id="current-title">Select a track to start</div>
-        <audio id="audio-player" controls></audio>
+        <audio id="audio-player" controls preload="auto"></audio>
     </div>
 
     <!-- ส่วนรายการเพลง Playlist (ขวา) -->
     <div class="playlist-container">
         <div class="playlist-title">Playlist</div>
         
-        <div class="playlist-item" id="track-0" onclick="playTrack(0, 'สตริงใหม่ล่าสุด (Tag Hits String 2026)', 'https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3')">
+        <div class="playlist-item" onclick="playTrack(0, 'Tag Hits String 2026', 'https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3')">
             <div>#1 Tag Hits String 2026</div>
             <div class="cat">Category: String</div>
         </div>
 
-        <div class="playlist-item" id="track-1" onclick="playTrack(1, 'เพลตริง (Thaistation Radio Mix)', 'https://ia902905.us.archive.org/5/items/thaistation/thaistation.mp3')">
+        <div class="playlist-item" onclick="playTrack(1, 'Thaistation Radio Mix', 'https://ia902905.us.archive.org/5/items/thaistation/thaistation.mp3')">
             <div>#2 Thaistation Radio Mix</div>
             <div class="cat">Category: String</div>
         </div>
 
-        <div class="playlist-item" id="track-2" onclick="playTrack(2, 'สตริง 1 (String Pop Selection #1)', 'https://ia601906.us.archive.org/3/items/radio_202607/1.radio.mp3')">
+        <div class="playlist-item" onclick="playTrack(2, 'String Pop Selection #1', 'https://ia601906.us.archive.org/3/items/radio_202607/1.radio.mp3')">
             <div>#3 String Pop Selection #1</div>
             <div class="cat">Category: String</div>
         </div>
 
-        <div class="playlist-item" id="track-3" onclick="playTrack(3, 'สตริง 2 ชม (2-Hour Nonstop String Hits)', 'https://ia601501.us.archive.org/2/items/thaistation-v.-1/thaistation%20v.1.mp3')">
+        <div class="playlist-item" onclick="playTrack(3, '2-Hour Nonstop String Hits', 'https://ia601501.us.archive.org/2/items/thaistation-v.-1/thaistation%20v.1.mp3')">
             <div>#4 2-Hour Nonstop String Hits</div>
             <div class="cat">Category: String</div>
         </div>
 
-        <div class="playlist-item" id="track-4" onclick="playTrack(4, 'เพลงลูกทุ่ง (Thai Country Music)', 'https://ia600903.us.archive.org/29/items/luk-thung-music/Luk%20Thung%20music.mp3')">
+        <div class="playlist-item" onclick="playTrack(4, 'Thai Country Music (Luk Thung)', 'https://ia600903.us.archive.org/29/items/luk-thung-music/Luk%20Thung%20music.mp3')">
             <div>#5 Thai Country Music (Luk Thung)</div>
             <div class="cat">Category: Luk Thung</div>
         </div>
 
-        <div class="playlist-item" id="track-5" onclick="playTrack(5, 'เพลงใต้ ชุดใหม่ (Southern Folk Hits)', 'https://ia601609.us.archive.org/27/items/plangtai2/plangtai2.mp3')">
+        <div class="playlist-item" onclick="playTrack(5, 'Southern Folk Hits Collection', 'https://ia601609.us.archive.org/27/items/plangtai2/plangtai2.mp3')">
             <div>#6 Southern Folk Hits Collection</div>
             <div class="cat">Category: Southern Folk</div>
         </div>
 
-        <div class="playlist-item" id="track-6" onclick="playTrack(6, 'เพลงใต้ แนวเพราะ (Southern Melodic)', 'https://files.catbox.moe/k4dtxi.mp3')">
+        <div class="playlist-item" onclick="playTrack(6, 'Southern Melodic Style', 'https://files.catbox.moe/k4dtxi.mp3')">
             <div>#7 Southern Melodic Style</div>
             <div class="cat">Category: Southern Folk</div>
         </div>
@@ -194,13 +194,21 @@
         const player = document.getElementById('audio-player');
         const titleElement = document.getElementById('current-title');
         const vinyl = document.getElementById('vinyl');
+        const items = document.querySelectorAll('.playlist-item');
 
         function playTrack(index, title, url) {
             titleElement.innerText = title;
             player.src = url;
-            player.play();
+            player.load(); // สั่งโหลดไฟล์เสียงใหม่ทันที
+            
+            let playPromise = player.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Autoplay was prevented:", error);
+                });
+            }
 
-            const items = document.querySelectorAll('.playlist-item');
+            // จัดการไฮไลท์แถบรายการเพลงที่กำลังเล่น
             items.forEach((item, idx) => {
                 if (idx === index) {
                     item.classList.add('active');
