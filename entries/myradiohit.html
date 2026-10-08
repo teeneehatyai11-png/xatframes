@@ -8,7 +8,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
             width: 100%; height: 100%; overflow: hidden;
-            font-family: Tahoma, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: transparent;
             color: #fff;
         }
@@ -18,75 +18,61 @@
             padding: 20px 30px;
         }
         
-        /* ด้านซ้าย: เครื่องเล่นเพลง */
+        /* ด้านซ้าย: ฝังเครื่องเล่นวิทยุ Plathong */
         .player-card {
-            width: 230px; background: rgba(10, 16, 26, 0.92);
-            border: 1px solid rgba(0, 240, 255, 0.4); border-radius: 12px; padding: 15px;
+            width: 250px; background: rgba(10, 16, 26, 0.92); backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 240, 255, 0.4); border-radius: 12px; padding: 12px;
             display: flex; flex-direction: column; align-items: center; z-index: 999;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6); pointer-events: auto;
         }
 
-        /* เครื่องเล่นเพลง HTML5 */
-        audio {
-            width: 100%; height: 35px; margin-top: 10px;
+        .radio-iframe {
+            width: 100%;
+            height: 200px;
+            border: none;
+            border-radius: 8px;
+            overflow: hidden;
         }
 
-        /* ตรงกลาง: เว้นว่างให้กรอบแชต xat */
-        .chat-space { width: 650px; height: 486px; pointer-events: none; }
+        /* ตรงกลาง: เว้นว่างให้กรอบแชต xat วางซ้อน */
+        .chat-space {
+            width: 650px;
+            height: 486px;
+            pointer-events: none;
+        }
 
-        /* ด้านขวา: รายชื่อเพลง */
+        /* ด้านขวา: เพลย์ลิสต์/ข้อมูลสถานี */
         .playlist-card {
-            width: 230px; background: rgba(10, 16, 26, 0.92);
+            width: 230px; background: rgba(10, 16, 26, 0.92); backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; padding: 15px; z-index: 999;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6); pointer-events: auto;
         }
-        .track-btn {
-            display: block; width: 100%; text-align: left; background: rgba(255,255,255,0.08);
-            border: 1px solid transparent; color: #fff; padding: 8px; margin-top: 6px;
-            border-radius: 6px; font-size: 11px; cursor: pointer;
+        .info-item {
+            padding: 8px; margin-top: 6px; background: rgba(255,255,255,0.05);
+            border-radius: 6px; font-size: 12px; color: #00f0ff; text-align: center;
         }
-        .track-btn:hover { background: rgba(0, 240, 255, 0.2); border-color: #00f0ff; }
     </style>
 </head>
 <body>
 
     <div class="xatframe-wrapper">
-        <!-- ด้านซ้าย: ตัวเล่นเพลงหลัก -->
+        <!-- ด้านซ้าย: เครื่องเล่นวิทยุ Plathong -->
         <div class="player-card">
-            <div style="font-size:12px; color:#00f0ff; font-weight:bold; margin-bottom:5px;">📻 MYRADIOHIT PLAYER</div>
-            <div style="font-size:11px; color:#ddd; margin-bottom:10px; text-align:center;" id="songTitle">เพลงสตริงใหม่ล่าสุด</div>
-            
-            <!-- ใช้ Controls ดั้งเดิมเพื่อให้กดเล่นผ่านไอเฟรมได้ -->
-            <audio id="mainAudio" controls preload="metadata">
-                <source id="audioSrc" src="https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3" type="audio/mpeg">
-            </audio>
+            <div style="font-size:12px; color:#00f0ff; font-weight:bold; margin-bottom:8px;">📻 MYRADIOHIT STREAM</div>
+            <iframe src="https://radio.plathong.net/main/player/?server=radio14&port=7056" class="radio-iframe" allow="autoplay; encrypted-media" allowfullscreen></iframe>
         </div>
 
-        <!-- ตรงกลาง: เว้นว่างสำหรับแชต xat -->
+        <!-- ตรงกลาง: เว้นว่างไว้สำหรับแชต xat -->
         <div class="chat-space"></div>
 
-        <!-- ด้านขวา: เลือกเปลี่ยนเพลง -->
+        <!-- ด้านขวา: ข้อมูลสถานี -->
         <div class="playlist-card">
-            <div style="font-size:12px; font-weight:bold; color:#00f0ff; margin-bottom:8px;">📋 เลือกช่องฟังเพลง</div>
-            <button class="track-btn" onclick="changeSong('https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3', 'เพลงสตริงใหม่ล่าสุด')">#1 สตริงใหม่ล่าสุด</button>
-            <button class="track-btn" onclick="changeSong('https://ia902905.us.archive.org/5/items/thaistation/thaistation.mp3', 'เพลตริง (Thaistation)')">#2 เพลตริง (Thaistation)</button>
-            <button class="track-btn" onclick="changeSong('https://ia601906.us.archive.org/3/items/radio_202607/1.radio.mp3', 'สตริง 1 Selection')">#3 สตริง 1 Selection</button>
-            <button class="track-btn" onclick="changeSong('https://ia601501.us.archive.org/2/items/thaistation-v.-1/thaistation%20v.1.mp3', 'สตริง 2 ชม (Nonstop)')">#4 สตริง 2 ชม (Nonstop)</button>
+            <div style="font-size:13px; font-weight:bold; color:#00f0ff; margin-bottom:8px;">📋 Station Info</div>
+            <div class="info-item">🟢 LIVE STREAMING</div>
+            <div class="info-item">Server: radio14</div>
+            <div class="info-item">Port: 7056</div>
         </div>
     </div>
-
-    <script>
-        function changeSong(url, name) {
-            var player = document.getElementById('mainAudio');
-            var source = document.getElementById('audioSrc');
-            var title = document.getElementById('songTitle');
-            
-            source.src = url;
-            title.innerText = name;
-            player.load();
-            player.play();
-        }
-    </script>
 
 </body>
 </html>
