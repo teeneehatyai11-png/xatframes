@@ -25,13 +25,13 @@
       pointer-events: none;
     }
 
-    /* 🖼️ กล่องฝั่งซ้าย - ขยับลงมาให้พอดีกับระดับขอบบนของแชต */
+    /* 🖼️ กล่องฝั่งซ้าย - ขยับขึ้นมาที่ top: 130px */
     .left-card {
       position: absolute;
-      top: 155px; /* เลื่อนลงมาให้ตรงกับขอบบนแชต */
+      top: 130px;
       left: 15px;
       width: 300px;
-      height: 485px; /* ปรับความสูงให้ขนานพอดีกับกล่องแชต */
+      height: 480px;
       background: rgba(18, 18, 28, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
@@ -41,13 +41,13 @@
       overflow: hidden;
     }
 
-    /* 📱 กล่องฝั่งขวา - ขยับลงมาระดับเดียวกัน */
+    /* 📱 กล่องฝั่งขวา - ขยับขึ้นมาระดับเดียวกัน */
     .right-card {
       position: absolute;
-      top: 155px; /* เลื่อนลงมาเท่ากับฝั่งซ้าย */
+      top: 130px;
       right: 15px;
       width: 300px;
-      height: 485px; /* ปรับความสูงให้เท่ากัน */
+      height: 480px;
       background: rgba(18, 18, 28, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
@@ -60,7 +60,6 @@
       overflow: hidden;
     }
 
-    /* วิดีโอวนลูปเต็มพื้นที่การ์ด */
     .video-bg-box {
       position: absolute;
       top: 0;
@@ -78,7 +77,6 @@
       outline: none;
     }
 
-    /* เลเยอร์องค์ประกอบฝั่งขวา */
     .card-content-overlay {
       position: relative;
       z-index: 2;
