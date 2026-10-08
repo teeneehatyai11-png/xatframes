@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -23,9 +22,11 @@
       background: transparent !important;
       overflow: hidden;
       position: relative;
+      /* แก้ไข: เปิดให้รับคำสั่งคลิกและการโต้ตอบได้ 100% */
+      pointer-events: auto !important;
     }
 
-    /* 🖼️ การ์ดฝั่งซ้าย (วิดีโอ yc18zg.mp4) */
+    /* 🖼️ การ์ดฝั่งซ้าย (วิดีโอ yc18zg.mp4)[cite: 1] */
     .left-card {
       position: absolute;
       top: 130px;
@@ -41,7 +42,7 @@
       overflow: hidden;
     }
 
-    /* 📱 การ์ดฝั่งขวา (วิดีโอ s9d6v6.mp4 + เครื่องเล่นวิทยุ) */
+    /* 📱 การ์ดฝั่งขวา (วิดีโอ s9d6v6.mp4 + เครื่องเล่นวิทยุ)[cite: 1] */
     .right-card {
       position: absolute;
       top: 130px;
@@ -69,6 +70,7 @@
       height: 100%;
       z-index: 1;
       overflow: hidden;
+      pointer-events: none;
     }
 
     .video-bg-box video {
@@ -81,7 +83,7 @@
     /* ครอบเลเยอร์ส่วนควบคุมฝั่งขวา */
     .card-content-overlay {
       position: relative;
-      z-index: 2;
+      z-index: 10;
       height: 100%;
       display: flex;
       flex-direction: column;
@@ -89,9 +91,10 @@
       background: linear-gradient(to top, rgba(10, 15, 30, 0.9) 0%, rgba(10, 15, 30, 0.2) 50%, rgba(10, 15, 30, 0.8) 100%);
       margin: -12px;
       padding: 14px;
+      pointer-events: auto !important;
     }
 
-    /* ส่วนหัวเปลี่ยนข้อความด้านบนเป็น LIVE ตามสั่ง */
+    /* ข้อความด้านบนเปลี่ยนเป็น LIVE */
     .radio-header {
       font-size: 15px;
       font-weight: 700;
@@ -122,7 +125,7 @@
       50% { opacity: 0.3; transform: scale(0.85); }
     }
 
-    /* กล่องเครื่องเล่นวิทยุกระจก */
+    /* กล่องเครื่องเล่นวิทยุ */
     .glass-player {
       background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(12px);
@@ -136,7 +139,8 @@
       flex-direction: column;
       gap: 10px;
       position: relative;
-      z-index: 10;
+      z-index: 20;
+      pointer-events: auto !important;
     }
 
     .song-info {
@@ -172,6 +176,7 @@
       font-size: 11px;
       outline: none;
       cursor: pointer;
+      pointer-events: auto !important;
     }
 
     .playlist-select option {
@@ -196,6 +201,7 @@
       gap: 8px;
       box-shadow: 0 4px 15px rgba(217, 28, 92, 0.6);
       transition: all 0.2s ease;
+      pointer-events: auto !important;
     }
 
     .play-btn-large:hover {
@@ -209,6 +215,7 @@
       gap: 8px;
       color: #a0aec0;
       font-size: 11px;
+      pointer-events: auto !important;
     }
 
     .volume-box input[type="range"] {
@@ -216,24 +223,13 @@
       height: 4px;
       accent-color: #00f2fe;
       cursor: pointer;
-    }
-
-    /* 🚨 ปุ่มยักษ์ใสคลุมทั้งจอฝั่งขวา เพื่อแก้ปัญหา xat ไม่เล่นเพลง */
-    #global-unlock-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 9999;
-      background: rgba(0, 0, 0, 0.01);
-      cursor: pointer;
+      pointer-events: auto !important;
     }
   </style>
 </head>
 <body>
 
-  <!-- ตัวเล่นเพลงหลัก -->
+  <!-- แท็กเสียง Audio -->
   <audio id="audio-player" preload="auto"></audio>
 
   <!-- 🖼️ ฝั่งซ้าย (วิดีโอ yc18zg.mp4)[cite: 1] -->
@@ -247,9 +243,6 @@
 
   <!-- 📱 ฝั่งขวา (วิดีโอ s9d6v6.mp4)[cite: 1] -->
   <div class="right-card">
-    <!-- Overlay แตะครั้งแรกปลดล็อกเสียงสำหรับ xat -->
-    <div id="global-unlock-overlay" title="คลิกเพื่อเปิดระบบเสียง"></div>
-
     <div class="video-bg-box">
       <video autoplay loop muted playsinline preload="auto">
         <source src="https://files.catbox.moe/s9d6v6.mp4" type="video/mp4">
@@ -303,72 +296,59 @@
     const title = document.getElementById('current-title');
     const stationSelect = document.getElementById('station-select');
     const volumeRange = document.getElementById('volume-range');
-    const globalOverlay = document.getElementById('global-unlock-overlay');
 
     let currentIndex = 0;
     let isPlaying = false;
 
-    // ตั้งค่าเบื้องต้น
     audio.src = playlist[0].url;
     audio.volume = 1.0;
 
-    // ฟังก์ชันสั่งเล่นเสียงแบบบังคับ
-    function forcePlay() {
+    function playAudio() {
       audio.play().then(() => {
         isPlaying = true;
         btnIcon.className = 'fas fa-pause';
         btnText.textContent = 'หยุดฟังวิทยุ';
-        if (globalOverlay) globalOverlay.style.display = 'none';
       }).catch(err => {
-        console.log("Playback error: ", err);
+        console.log("Audio play error:", err);
       });
     }
 
-    function forcePause() {
+    function pauseAudio() {
       audio.pause();
       isPlaying = false;
       btnIcon.className = 'fas fa-play';
       btnText.textContent = 'กดเพื่อฟังวิทยุสด';
     }
 
-    // เมื่อคลิกครั้งแรกที่การ์ดฝั่งขวา ให้ปลดล็อกระบบเสียงและเล่นทันที
-    globalOverlay.addEventListener('click', () => {
-      forcePlay();
-    });
-
-    // ปุ่มกดเปิด/ปิด
-    mainPlayBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
+    mainPlayBtn.onclick = function(e) {
+      e.preventDefault();
       if (isPlaying) {
-        forcePause();
+        pauseAudio();
       } else {
-        forcePlay();
+        playAudio();
       }
-    });
+    };
 
-    // เปลี่ยนสถานี
-    stationSelect.addEventListener('change', (e) => {
-      currentIndex = parseInt(e.target.value);
+    stationSelect.onchange = function() {
+      currentIndex = parseInt(this.value);
       title.textContent = playlist[currentIndex].name;
       audio.src = playlist[currentIndex].url;
       audio.load();
-      forcePlay();
-    });
+      playAudio();
+    };
 
-    // ปรับระดับเสียง
-    volumeRange.addEventListener('input', (e) => {
-      audio.volume = parseFloat(e.target.value);
-    });
+    volumeRange.oninput = function() {
+      audio.volume = parseFloat(this.value);
+    };
 
-    // เพลงจบให้เล่นเพลงถัดไปอัตโนมัติ
-    audio.addEventListener('ended', () => {
+    audio.onended = function() {
       currentIndex = (currentIndex + 1) % playlist.length;
       stationSelect.value = currentIndex;
       title.textContent = playlist[currentIndex].name;
       audio.src = playlist[currentIndex].url;
       audio.load();
-      forcePlay();
-    });
+      playAudio();
+    };
   </script>
 
 </body>
