@@ -16,7 +16,7 @@
       user-select: none;
     }
 
-    /* ซ่อนแถบเลื่อน และทำให้คลิกทะลุพื้นหลังไปยังแชท xat ตรงกลางได้ */
+    /* คลิกทะลุพื้นหลังไปยังห้องแชทตรงกลางได้ */
     html, body {
       width: 100%;
       height: 100%;
@@ -28,18 +28,18 @@
     body {
       color: #fff;
       display: flex;
-      justify-content: space-between; /* ซ้าย-ขวา */
+      justify-content: space-between;
       align-items: center;
       padding: 15px 20px;
       position: relative;
     }
 
-    /* อนุญาตให้คลิกเฉพาะกล่องวิทยุทางซ้ายและเครื่องเล่นทางขวา */
+    /* บังคับเปิดรับคลิกเฉพาะตัวกล่องวิทยุและรายการเพลง */
     .interactive-box {
       pointer-events: auto !important;
     }
 
-    /* 🖼️ ภาพพื้นหลังเบลอ (แสดงเฉพาะในกล่องเพื่อไม่ให้บังแชท) */
+    /* ภาพพื้นหลังเบลอเรืองแสง */
     .bg-blurred {
       position: absolute;
       top: 0;
@@ -64,13 +64,11 @@
       z-index: 2;
     }
 
-    /* ========================================================= */
-    /* 📋 กล่องรายการเพลง (ฝั่งซ้าย)                              */
-    /* ========================================================= */
+    /* 📋 รายการเพลงฝั่งซ้าย */
     .playlist-container {
       width: 260px;
       max-height: 85vh;
-      background: rgba(18, 18, 28, 0.85);
+      background: rgba(18, 18, 28, 0.88);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.18);
@@ -158,26 +156,23 @@
       color: #aaa;
     }
 
-
-    /* ========================================================= */
-    /* 📱 การ์ดกล่องเครื่องเล่น TIKTOK (ฝั่งขวามือ)                */
-    /* ========================================================= */
+    /* 📱 กล่องเครื่องเล่น TIKTOK ฝั่งขวา */
     .player-card {
       position: relative;
       z-index: 10;
       width: 280px;
       height: 85vh;
       max-height: 520px;
-      background: rgba(18, 18, 28, 0.85);
+      background: rgba(18, 18, 28, 0.88);
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
       border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 16px;
+      padding: 12px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85),
                   0 0 20px rgba(255, 0, 80, 0.25);
       display: flex;
       flex-direction: column;
-      padding: 12px;
       overflow: hidden;
     }
 
@@ -229,12 +224,6 @@
       border-radius: 8px;
       object-fit: cover;
       border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .song-title-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
 
     .song-info h2 {
@@ -335,37 +324,35 @@
     }
 
     .btn-play {
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       background: linear-gradient(45deg, #ff0050, #00f2fe);
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 13px;
+      font-size: 14px;
       box-shadow: 0 3px 10px rgba(255, 0, 80, 0.5);
     }
   </style>
 </head>
 <body>
 
-  <!-- 📋 รายการเพลงฝั่งซ้ายมือ -->
+  <!-- รายการเพลงฝั่งซ้าย -->
   <div class="playlist-container interactive-box">
     <div class="playlist-header">
       <span>รายการเพลง</span>
-      <span style="font-size:10px; color:#aaa;" id="total-tracks">7 เพลง</span>
+      <span style="font-size:10px; color:#aaa;">7 เพลง</span>
     </div>
     <div class="playlist-scroll" id="playlist-items"></div>
   </div>
 
-  <!-- 📱 เครื่องเล่น TikTok Photo Lyric ฝั่งขวามือ -->
+  <!-- เครื่องเล่น TikTok ฝั่งขวา -->
   <div class="player-card interactive-box">
-    <!-- ภาพพื้นหลังเรืองแสงภายในกล่อง -->
     <div class="bg-blurred" id="bg-blurred"></div>
     <div class="bg-overlay"></div>
     
     <div style="position: relative; z-index: 5; height: 100%; display: flex; flex-direction: column;">
-      <!-- TikTok Header -->
       <div class="tiktok-badge">
         <div class="tiktok-channel">
           <div class="tiktok-icon"><i class="fa-brands fa-tiktok"></i></div>
@@ -374,24 +361,19 @@
         <div class="live-tag">LIVE</div>
       </div>
 
-      <!-- ข้อมูลเพลงปัจจุบัน -->
       <div class="song-header">
-        <img src="https://xatimg.com/image/V6YjIf8rzCsg.png" alt="Logo" class="song-logo" id="song-logo">
+        <img src="https://xatimg.com/image/V6YjIf8rzCsg.png" alt="Logo" class="song-logo">
         <div class="song-info">
-          <div class="song-title-wrapper">
-            <h2 id="song-title">#1 สตริงใหม่ล่าสุด 2026</h2>
-          </div>
+          <h2><span id="song-title">#1 สตริงใหม่ล่าสุด 2026</span></h2>
           <p id="artist-name">เพลงสตริงใหม่ล่าสุด</p>
         </div>
       </div>
 
-      <!-- 🖼️ กรอบแสดงภาพสไลด์ -->
       <div class="photo-display-area">
         <img src="" id="photo-viewer" alt="Music Photo Slide">
         <div class="photo-caption" id="photo-caption">Chill Music Mood</div>
       </div>
 
-      <!-- Controls -->
       <div class="controls">
         <div class="progress-bar-container">
           <span id="current-time">0:00</span>
@@ -406,13 +388,11 @@
         </div>
       </div>
     </div>
-
   </div>
 
-  <audio id="audio-player" crossorigin="anonymous"></audio>
+  <audio id="audio-player" preload="auto"></audio>
 
   <script>
-    // สไลด์รูปภาพสลับแสดงผลตามเวลา
     const defaultSlides = [
       { time: 0.0, image: "https://xatimg.com/image/P8z2aOMls66d.png", caption: "✨ รวมเพลงเพราะจาก TIKTOK" },
       { time: 2.5, image: "https://xatimg.com/image/p5YKtEmIMo4X.png", caption: "🎧 ฟังเพลงชิลๆ ด้วยกัน" },
@@ -422,42 +402,42 @@
       { time: 12.5, image: "https://xatimg.com/image/0asGwujZ28p9.png", caption: "🌌 บรรยากาศยามค่ำคืน" }
     ];
 
-    // ข้อมูลรายการเพลงทั้งหมด
+    // ปรับเปลี่ยนระบบการดึง Streaming Direct Links
     const tracksData = [
       {
         title: "#1 สตริงใหม่ล่าสุด 2026",
         artist: "เพลงสตริงใหม่ล่าสุด",
-        audioSrc: "https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3",
+        audioSrc: "https://ia800607.us.archive.org/28/items/sting-new/sting%20new.mp3",
         slides: defaultSlides
       },
       {
         title: "#2 Thaistation Radio Mix",
         artist: "เพลงสตริง",
-        audioSrc: "https://ia902905.us.archive.org/5/items/thaistation/thaistation.mp3",
+        audioSrc: "https://ia802905.us.archive.org/5/items/thaistation/thaistation.mp3",
         slides: defaultSlides
       },
       {
         title: "#3 String Pop Selection",
         artist: "สตริง 1",
-        audioSrc: "https://ia601906.us.archive.org/3/items/radio_202607/1.radio.mp3",
+        audioSrc: "https://ia801906.us.archive.org/3/items/radio_202607/1.radio.mp3",
         slides: defaultSlides
       },
       {
         title: "#4 2-Hour Nonstop Hits",
         artist: "สตริง 2 ชม.",
-        audioSrc: "https://ia601501.us.archive.org/2/items/thaistation-v.-1/thaistation%20v.1.mp3",
+        audioSrc: "https://ia801501.us.archive.org/2/items/thaistation-v.-1/thaistation%20v.1.mp3",
         slides: defaultSlides
       },
       {
         title: "#5 Thai Country Favorites",
         artist: "เพลงลูกทุ่ง",
-        audioSrc: "https://ia600903.us.archive.org/29/items/luk-thung-music/Luk%20Thung%20music.mp3",
+        audioSrc: "https://ia800903.us.archive.org/29/items/luk-thung-music/Luk%20Thung%20music.mp3",
         slides: defaultSlides
       },
       {
         title: "#6 Southern Hits New Coll...",
         artist: "เพลงใต้ ชุดใหม่",
-        audioSrc: "https://ia601609.us.archive.org/27/items/plangtai2/plangtai2.mp3",
+        audioSrc: "https://ia801609.us.archive.org/27/items/plangtai2/plangtai2.mp3",
         slides: defaultSlides
       },
       {
@@ -484,14 +464,14 @@
     const photoCaption = document.getElementById('photo-caption');
     const bgBlurred = document.getElementById('bg-blurred');
 
-    // สร้างรายการเพลงทางซ้ายมือ
     function renderPlaylist() {
       const container = document.getElementById('playlist-items');
       container.innerHTML = '';
       tracksData.forEach((track, index) => {
         const item = document.createElement('div');
         item.className = `playlist-item ${index === currentTrackIndex ? 'active' : ''}`;
-        item.onclick = () => {
+        item.onclick = (e) => {
+          e.stopPropagation();
           loadTrack(index);
           playAudio();
         };
@@ -513,6 +493,7 @@
       songTitle.innerText = track.title;
       artistName.innerText = track.artist;
       audio.src = track.audioSrc;
+      audio.load();
 
       currentSlideIndex = 0;
       updatePhoto(track.slides[0].image, track.slides[0].caption);
@@ -535,7 +516,7 @@
         promise.then(() => {
           playIcon.className = 'fa-solid fa-pause';
         }).catch(err => {
-          console.log("Playback error:", err);
+          console.log("Error playing audio:", err);
           playIcon.className = 'fa-solid fa-play';
         });
       }
@@ -565,7 +546,8 @@
       }
     });
 
-    playBtn.addEventListener('click', () => {
+    playBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       if (audio.paused) {
         playAudio();
       } else {
@@ -574,13 +556,15 @@
       }
     });
 
-    document.getElementById('next-track').addEventListener('click', () => {
+    document.getElementById('next-track').addEventListener('click', (e) => {
+      e.stopPropagation();
       currentTrackIndex = (currentTrackIndex + 1) % tracksData.length;
       loadTrack(currentTrackIndex);
       playAudio();
     });
 
-    document.getElementById('prev-track').addEventListener('click', () => {
+    document.getElementById('prev-track').addEventListener('click', (e) => {
+      e.stopPropagation();
       currentTrackIndex = (currentTrackIndex - 1 + tracksData.length) % tracksData.length;
       loadTrack(currentTrackIndex);
       playAudio();
@@ -607,7 +591,7 @@
       playAudio();
     });
 
-    // เริ่มต้นหน้าเว็บ
+    // เริ่มต้นเตรียมการ
     loadTrack(0);
   </script>
 </body>
