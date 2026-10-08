@@ -13,7 +13,7 @@
       user-select: none;
     }
 
-    /* สำคัญ: ให้คลิกทะลุพื้นที่ว่างทั้งหมดไปยังห้องแชท xat */
+    /* ให้คลิกทะลุพื้นที่ว่างไปยังแชท xat ได้ */
     html, body {
       width: 100%;
       height: 100%;
@@ -29,7 +29,7 @@
       padding: 15px 25px;
     }
 
-    /* รับการคลิกเฉพาะตัวกล่องวิทยุและรายการเพลง */
+    /* เปิดให้คลิกเฉพาะกล่องวิทยุและรายการเพลง */
     .interactive-box {
       pointer-events: auto !important;
     }
@@ -313,7 +313,7 @@
     </div>
   </div>
 
-  <audio id="audioPlayer"></audio>
+  <audio id="audioPlayer" crossorigin="anonymous"></audio>
 
   <!-- ฝั่งขวา: รายการเพลง -->
   <div class="playlist-container interactive-box">
@@ -325,6 +325,7 @@
   </div>
 
   <script>
+    // ทุกลิงก์แปลงเป็น HTTPS ทั้งหมดเพื่อป้องกันเบราว์เซอร์บล็อก
     const tracks = [
       {
         title: "#1 สตริงใหม่ล่าสุด 2026",
@@ -400,7 +401,7 @@
     }
 
     function playAudio() {
-      statusText.innerText = "กำลังโหลดสัญญาณเพลง...";
+      statusText.innerText = "กำลังเชื่อมต่อ...";
       statusText.style.color = "#38bdf8";
 
       const promise = audio.play();
@@ -463,13 +464,13 @@
     });
 
     audio.addEventListener('error', () => {
-      statusText.innerText = "ไม่สามารถเล่นเพลงนี้ได้";
+      statusText.innerText = "ไม่สามารถโหลดเพลงได้";
       statusText.style.color = "#f87171";
       playBtn.innerText = '▶';
       disc.style.animationPlayState = 'paused';
     });
 
-    // ตั้งค่าเพลงเริ่มต้น
+    // เริ่มต้น
     updateTrackInfo(0);
     audio.src = tracks[0].url;
   </script>
