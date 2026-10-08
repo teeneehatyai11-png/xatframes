@@ -18,7 +18,7 @@
             position: relative;
         }
 
-        /* วิดีโอพื้นหลัง ดันภาพผู้หญิงไปฝั่งขวา */
+        /* วิดีโอพื้นหลังใหม่ */
         .bg-video {
             position: fixed;
             top: 0;
@@ -30,18 +30,17 @@
             z-index: -999;
         }
 
-        /* กล่องวิทยุที่สามารถใช้เมาส์คลิกลากเลื่อนได้ */
+        /* จัดตำแหน่งให้อยู่กึ่งกลางแนวตั้ง (กลางกล่องแชท) และอยู่ชิดซ้าย */
         .left-sidebar {
-            position: absolute;
-            top: 20px;
+            position: fixed;
+            top: 50%;
             left: 20px;
+            transform: translateY(-50%);
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            width: 270px;
+            gap: 8px;
+            width: 260px;
             z-index: 2147483647;
-            cursor: move; /* เปลี่ยนรูปเมาส์ให้รู้ว่าลากได้ */
-            user-select: none;
         }
 
         /* เครื่องเล่นวิทยุ */
@@ -61,13 +60,6 @@
             justify-content: space-between;
             align-items: center;
         }
-        .drag-hint {
-            font-size: 8px;
-            color: #38bdf8;
-            background: rgba(56, 189, 248, 0.1);
-            padding: 1px 4px;
-            border-radius: 3px;
-        }
         .on-air-badge {
             background: #0ea5e9;
             color: #fff;
@@ -77,43 +69,11 @@
             font-weight: bold;
         }
         
-        .main-display {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .track-info-box {
             background: rgba(30, 41, 59, 0.8);
-            padding: 6px 8px;
+            padding: 6px 10px;
             border-radius: 6px;
             margin-bottom: 8px;
-        }
-        .vinyl-container {
-            width: 40px;
-            height: 40px;
-            background: #000;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #0ea5e9;
-            flex-shrink: 0;
-        }
-        .vinyl-center {
-            width: 12px;
-            height: 12px;
-            background: #38bdf8;
-            border-radius: 50%;
-        }
-        .rotating {
-            animation: spin 3s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .track-info {
-            overflow: hidden;
-            flex-grow: 1;
         }
         .now-playing-label {
             font-size: 8px;
@@ -127,13 +87,15 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            margin-top: 2px;
         }
         .category-text {
             font-size: 9px;
             color: #94a3b8;
+            margin-top: 1px;
         }
 
-        /* ปุ่มควบคุม */
+        /* ปุ่มควบคุมและแถบเวลา */
         .controls-row {
             display: flex;
             align-items: center;
@@ -190,7 +152,7 @@
             gap: 4px;
         }
         .volume-box input[type="range"] {
-            width: 55px;
+            width: 70px;
             accent-color: #0ea5e9;
         }
 
@@ -201,7 +163,7 @@
             border-radius: 8px;
             padding: 10px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.9);
-            max-height: 210px;
+            max-height: 200px;
             overflow-y: auto;
             backdrop-filter: blur(5px);
         }
@@ -248,29 +210,23 @@
 </head>
 <body>
 
-    <!-- วิดีโอพื้นหลัง -->
+    <!-- วิดีโอพื้นหลังใหม่ -->
     <video class="bg-video" autoplay muted loop playsinline>
-        <source src="https://files.catbox.moe/nhlsex.mp4" type="video/mp4">
+        <source src="https://files.catbox.moe/ebhsth.mp4" type="video/mp4">
     </video>
 
-    <!-- ชุดเครื่องเล่นวิทยุที่สามารถลากเลื่อนได้ -->
-    <div class="left-sidebar" id="draggable-player">
+    <!-- ชุดเครื่องเล่นฝั่งซ้าย (อยู่กึ่งกลางแนวตั้งพอดีกับกล่องแชท) -->
+    <div class="left-sidebar">
         <div class="player-box">
             <div class="player-top-bar">
                 <span>MYRADIOhit</span>
-                <span class="drag-hint">↔ ลากย้ายได้</span>
                 <span class="on-air-badge">ON AIR</span>
             </div>
             
-            <div class="main-display">
-                <div class="vinyl-container" id="vinyl">
-                    <div class="vinyl-center"></div>
-                </div>
-                <div class="track-info">
-                    <div class="now-playing-label">NOW PLAYING</div>
-                    <div class="track-name" id="current-title">Select track</div>
-                    <div class="category-text" id="current-cat">Category</div>
-                </div>
+            <div class="track-info-box">
+                <div class="now-playing-label">NOW PLAYING</div>
+                <div class="track-name" id="current-title">Select track</div>
+                <div class="category-text" id="current-cat">Category</div>
             </div>
 
             <div class="controls-row">
@@ -317,144 +273,4 @@
                 <div class="cat">String</div>
             </div>
 
-            <div class="playlist-item" onclick="selectTrack(4, 'Thai Country Music', 'Luk Thung', 'https://ia600903.us.archive.org/29/items/luk-thung-music/Luk%20Thung%20music.mp3')">
-                <div class="title">#5 Thai Country Music (Luk Thung)</div>
-                <div class="cat">Luk Thung</div>
-            </div>
-
-            <div class="playlist-item" onclick="selectTrack(5, 'Southern Folk Hits', 'Southern', 'https://ia601609.us.archive.org/27/items/plangtai2/plangtai2.mp3')">
-                <div class="title">#6 Southern Folk Hits Collection</div>
-                <div class="cat">Southern Folk</div>
-            </div>
-
-            <div class="playlist-item" onclick="selectTrack(6, 'Southern Melodic Style', 'Southern', 'https://files.catbox.moe/k4dtxi.mp3')">
-                <div class="title">#7 Southern Melodic Style</div>
-                <div class="cat">Southern Folk</div>
-            </div>
-        </div>
-    </div>
-
-    <audio id="audio-player" preload="auto"></audio>
-
-    <script>
-        const audio = document.getElementById('audio-player');
-        const playBtn = document.getElementById('play-pause-btn');
-        const titleEl = document.getElementById('current-title');
-        const catEl = document.getElementById('current-cat');
-        const vinyl = document.getElementById('vinyl');
-        const progressFill = document.getElementById('progress-fill');
-        const currentTimeEl = document.getElementById('current-time');
-        const durationTimeEl = document.getElementById('duration-time');
-        const playlistItems = document.querySelectorAll('.playlist-item');
-
-        let isPlaying = false;
-        let currentTrackUrl = "";
-
-        function selectTrack(index, title, cat, url) {
-            titleEl.innerText = title;
-            catEl.innerText = cat;
-            currentTrackUrl = url;
-            audio.src = url;
-            audio.load();
-            
-            audio.play().then(() => {
-                isPlaying = true;
-                playBtn.innerText = "❚❚";
-                vinyl.classList.add('rotating');
-            }).catch(e => {
-                console.log("Playback error:", e);
-            });
-
-            playlistItems.forEach((item, idx) => {
-                if (idx === index) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-        }
-
-        function togglePlay() {
-            if (!currentTrackUrl) {
-                playlistItems[0].click();
-                return;
-            }
-            if (isPlaying) {
-                audio.pause();
-                isPlaying = false;
-                playBtn.innerText = "▶";
-                vinyl.classList.remove('rotating');
-            } else {
-                audio.play().then(() => {
-                    isPlaying = true;
-                    playBtn.innerText = "❚❚";
-                    vinyl.classList.add('rotating');
-                }).catch(e => {
-                    console.log("Playback error:", e);
-                });
-            }
-        }
-
-        audio.addEventListener('timeupdate', () => {
-            if (audio.duration) {
-                const percent = (audio.currentTime / audio.duration) * 100;
-                progressFill.style.width = percent + '%';
-                currentTimeEl.innerText = formatTime(audio.currentTime);
-                durationTimeEl.innerText = formatTime(audio.duration);
-            }
-        });
-
-        function seekAudio(event) {
-            if (!audio.duration) return;
-            const width = event.currentTarget.clientWidth;
-            const clickX = event.offsetX;
-            audio.currentTime = (clickX / width) * audio.duration;
-        }
-
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return mins + ":" + (secs < 10 ? "0" : "") + secs;
-        }
-
-        audio.addEventListener('ended', () => {
-            isPlaying = false;
-            playBtn.innerText = "▶";
-            vinyl.classList.remove('rotating');
-        });
-
-        // ฟังก์ชันรองรับการลากเลื่อนกล่องวิทยุ (Draggable)
-        const draggablePlayer = document.getElementById('draggable-player');
-        let isDragging = false;
-        let startX, startY, initialX, initialY;
-
-        draggablePlayer.addEventListener('mousedown', (e) => {
-            // ป้องกันไม่ให้การคลิกปุ่มควบคุมหรือสไลเดอร์เป็นการลากกล่อง
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.closest('.playlist-item') || e.target.closest('.progress-bar-container')) {
-                return;
-            }
-            isDragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            initialX = draggablePlayer.offsetLeft;
-            initialY = draggablePlayer.offsetTop;
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', onMouseUp);
-        });
-
-        function onMouseMove(e) {
-            if (!isDragging) return;
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-            draggablePlayer.style.left = (initialX + dx) + 'px';
-            draggablePlayer.style.top = (initialY + dy) + 'px';
-        }
-
-        function onMouseUp() {
-            isDragging = false;
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', onMouseUp);
-        }
-    </script>
-</body>
-</html>
+            <div class="playlist-item" onclick="selectTrack(4, 'Thai Country Music', 'Luk Thung', '
