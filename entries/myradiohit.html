@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>MYRADIOhit Player</title>
+    <title>MYRADIOhit Stream</title>
     <style>
         * {
             box-sizing: border-box;
@@ -18,7 +18,7 @@
             position: relative;
         }
 
-        /* วิดีโอพื้นหลังใหม่ */
+        /* วิดีโอพื้นหลังใหม่ ดันภาพไปทางขวา */
         .bg-video {
             position: fixed;
             top: 0;
@@ -30,247 +30,115 @@
             z-index: -999;
         }
 
-        /* จัดตำแหน่งให้อยู่กึ่งกลางแนวตั้ง (กลางกล่องแชท) และอยู่ชิดซ้าย */
-        .left-sidebar {
+        /* กล่องวิทยุฝั่งซ้ายที่สามารถลากเลื่อนได้ และอยู่กึ่งกลางแนวตั้งตอนเริ่ม */
+        .draggable-sidebar {
             position: fixed;
             top: 50%;
             left: 20px;
             transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            width: 260px;
+            width: 270px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.9);
+            backdrop-filter: blur(5px);
             z-index: 2147483647;
+            overflow: hidden;
+            cursor: move; /* เปลี่ยนรูปเมาส์ให้รู้ว่าลากได้ */
+            user-select: none;
         }
 
-        /* เครื่องเล่นวิทยุ */
-        .player-box {
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid rgba(56, 189, 248, 0.4);
-            border-radius: 8px;
-            padding: 10px 12px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.9);
-            backdrop-filter: blur(5px);
-        }
-        .player-top-bar {
-            font-size: 10px;
-            color: #94a3b8;
-            margin-bottom: 6px;
+        /* ส่วนหัวสำหรับใช้คลิกลากเลื่อน */
+        .drag-header {
+            background: rgba(30, 41, 59, 0.9);
+            padding: 8px 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-        .on-air-badge {
-            background: #0ea5e9;
-            color: #fff;
-            font-size: 8px;
-            padding: 2px 5px;
-            border-radius: 3px;
-            font-weight: bold;
-        }
-        
-        .track-info-box {
-            background: rgba(30, 41, 59, 0.8);
-            padding: 6px 10px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-        }
-        .now-playing-label {
-            font-size: 8px;
-            color: #38bdf8;
-            font-weight: bold;
-        }
-        .track-name {
-            font-size: 10px;
-            font-weight: bold;
-            color: #fff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-top: 2px;
-        }
-        .category-text {
-            font-size: 9px;
-            color: #94a3b8;
-            margin-top: 1px;
-        }
-
-        /* ปุ่มควบคุมและแถบเวลา */
-        .controls-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
-        .play-btn {
-            width: 28px;
-            height: 28px;
-            background: #0ea5e9;
-            border: none;
-            border-radius: 50%;
-            color: #fff;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             font-size: 11px;
-            flex-shrink: 0;
-        }
-        .play-btn:hover {
-            background: #0284c7;
-        }
-        .progress-bar-container {
-            flex-grow: 1;
-            background: #1e293b;
-            height: 5px;
-            border-radius: 3px;
-            cursor: pointer;
-            overflow: hidden;
-        }
-        .progress-fill {
-            background: #38bdf8;
-            height: 100%;
-            width: 0%;
-        }
-        .time-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 8px;
-            color: #94a3b8;
-            margin-bottom: 6px;
-        }
-        .bottom-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 6px;
-        }
-        .volume-box {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .volume-box input[type="range"] {
-            width: 70px;
-            accent-color: #0ea5e9;
-        }
-
-        /* รายชื่อเพลง Playlist */
-        .playlist-box {
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid rgba(56, 189, 248, 0.4);
-            border-radius: 8px;
-            padding: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.9);
-            max-height: 200px;
-            overflow-y: auto;
-            backdrop-filter: blur(5px);
-        }
-        .playlist-header {
-            font-size: 10px;
             font-weight: bold;
-            color: #fff;
-            margin-bottom: 6px;
+            color: #38bdf8;
             border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 4px;
-        }
-        .playlist-item {
-            padding: 6px 8px;
-            margin-bottom: 4px;
-            background: rgba(30, 41, 59, 0.8);
-            border-radius: 4px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .playlist-item:hover {
-            background: rgba(56, 189, 248, 0.3);
-        }
-        .playlist-item.active {
-            background: rgba(14, 165, 233, 0.4);
-            border: 1px solid #0ea5e9;
-        }
-        .playlist-item .title {
-            font-size: 10px;
-            color: #f8fafc;
-            font-weight: bold;
-        }
-        .playlist-item .cat {
-            font-size: 8px;
-            color: #94a3b8;
         }
 
-        .playlist-box::-webkit-scrollbar {
-            width: 3px;
+        .drag-hint {
+            font-size: 8px;
+            color: #94a3b8;
+            background: rgba(56, 189, 248, 0.1);
+            padding: 1px 5px;
+            border-radius: 3px;
         }
-        .playlist-box::-webkit-scrollbar-thumb {
-            background: #38bdf8;
+
+        /* กรอบ iframe วิทยุ */
+        .radio-frame-container {
+            padding: 10px;
+            background: transparent;
+        }
+
+        .radio-frame-container iframe {
+            width: 100%;
+            height: 140px;
+            border: none;
+            border-radius: 6px;
         }
     </style>
 </head>
 <body>
 
-    <!-- วิดีโอพื้นหลังใหม่ -->
+    <!-- วิดีโอพื้นหลัง -->
     <video class="bg-video" autoplay muted loop playsinline>
         <source src="https://files.catbox.moe/ebhsth.mp4" type="video/mp4">
     </video>
 
-    <!-- ชุดเครื่องเล่นฝั่งซ้าย (อยู่กึ่งกลางแนวตั้งพอดีกับกล่องแชท) -->
-    <div class="left-sidebar">
-        <div class="player-box">
-            <div class="player-top-bar">
-                <span>MYRADIOhit</span>
-                <span class="on-air-badge">ON AIR</span>
-            </div>
-            
-            <div class="track-info-box">
-                <div class="now-playing-label">NOW PLAYING</div>
-                <div class="track-name" id="current-title">Select track</div>
-                <div class="category-text" id="current-cat">Category</div>
-            </div>
-
-            <div class="controls-row">
-                <button class="play-btn" id="play-pause-btn" onclick="togglePlay()">▶</button>
-                <div class="progress-bar-container" onclick="seekAudio(event)">
-                    <div class="progress-fill" id="progress-fill"></div>
-                </div>
-            </div>
-
-            <div class="time-info">
-                <span id="current-time">0:00</span>
-                <span id="duration-time">0:00</span>
-            </div>
-
-            <div class="bottom-controls">
-                <div class="volume-box">
-                    <span style="font-size: 10px;">🔊</span>
-                    <input type="range" min="0" max="1" step="0.05" value="1" oninput="audio.volume = this.value">
-                </div>
-                <span style="font-size: 8px; color: #38bdf8;">LIVE STREAM</span>
-            </div>
+    <!-- กล่องวิทยุฝั่งซ้ายแบบลากเลื่อนได้ อยู่กึ่งกลางแนวตั้ง -->
+    <div class="draggable-sidebar" id="draggable-box">
+        <div class="drag-header" id="drag-handle">
+            <span>MYRADIOhit Live</span>
+            <span class="drag-hint">↔ กดลากย้ายได้</span>
         </div>
+        <div class="radio-frame-container">
+            <iframe src="https://radio.plathong.net/main/player/?server=radio9&port=7264" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+    </div>
 
-        <div class="playlist-box">
-            <div class="playlist-header">Playlist</div>
+    <script>
+        // ระบบควบคุมการลากเลื่อนกล่องวิทยุ (Draggable)
+        const box = document.getElementById('draggable-box');
+        const handle = document.getElementById('drag-handle');
 
-            <div class="playlist-item" onclick="selectTrack(0, 'Tag Hits String 2026', 'String', 'https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3')">
-                <div class="title">#1 Tag Hits String 2026</div>
-                <div class="cat">String</div>
-            </div>
+        let isDragging = false;
+        let startX, startY, initialX, initialY;
 
-            <div class="playlist-item" onclick="selectTrack(1, 'Thaistation Radio Mix', 'String', 'https://ia902905.us.archive.org/5/items/thaistation/thaistation.mp3')">
-                <div class="title">#2 Thaistation Radio Mix</div>
-                <div class="cat">String</div>
-            </div>
+        handle.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            // เมื่อเริ่มลาก ให้ยกเลิก transform แนวตั้ง เพื่อให้คำนวณพิกัด pixel บนหน้าจอได้แม่นยำ
+            const rect = box.getBoundingClientRect();
+            box.style.transform = 'none';
+            box.style.top = rect.top + 'px';
+            box.style.left = rect.left + 'px';
 
-            <div class="playlist-item" onclick="selectTrack(2, 'String Pop Selection #1', 'String', 'https://ia601906.us.archive.org/3/items/radio_202607/1.radio.mp3')">
-                <div class="title">#3 String Pop Selection #1</div>
-                <div class="cat">String</div>
-            </div>
+            startX = e.clientX;
+            startY = e.clientY;
+            initialX = box.offsetLeft;
+            initialY = box.offsetTop;
 
-            <div class="playlist-item" onclick="selectTrack(3, '2-Hour Nonstop String Hits', 'String', 'https://ia601501.us.archive.org/2/items/thaistation-v.-1/thaistation%20v.1.mp3')">
-                <div class="title">#4 2-Hour Nonstop String Hits</div>
-                <div class="cat">String</div>
-            </div>
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
 
-            <div class="playlist-item" onclick="selectTrack(4, 'Thai Country Music', 'Luk Thung', '
+        function onMouseMove(e) {
+            if (!isDragging) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            box.style.left = (initialX + dx) + 'px';
+            box.style.top = (initialY + dy) + 'px';
+        }
+
+        function onMouseUp() {
+            isDragging = false;
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        }
+    </script>
+</body>
+</html>
