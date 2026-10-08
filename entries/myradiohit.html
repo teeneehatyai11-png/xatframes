@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>Mytadent Radio Player</title>
+    <title>MYRADIOhit Player</title>
     <style>
         * {
             box-sizing: border-box;
@@ -14,15 +14,16 @@
             background: #000;
             color: #fff;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
-            padding: 0 30px;
+            padding-left: 40px;
+            padding-top: 60px; /* เลื่อนลงมาจากขอบด้านบน */
             height: 100vh;
             overflow: hidden;
             position: relative;
         }
 
-        /* วิดีโอพื้นหลัง */
+        /* วิดีโอพื้นหลัง (เลื่อนจัดตำแหน่งให้เห็นผู้หญิงฝั่งขวา) */
         .bg-video {
             position: fixed;
             top: 0;
@@ -30,24 +31,33 @@
             width: 100vw;
             height: 100vh;
             object-fit: cover;
+            object-position: center right;
             z-index: -1;
+        }
+
+        /* คอนเทนเนอร์รวมฝั่งซ้าย (วิทยุ + รายชื่อเพลง) */
+        .left-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 300px;
+            z-index: 1;
+            max-height: 85vh;
         }
 
         /* เครื่องเล่นวิทยุด้านซ้าย */
         .player-box {
-            width: 290px;
-            background: rgba(18, 24, 36, 0.9);
-            border: 1px solid rgba(30, 41, 59, 0.8);
-            border-radius: 8px;
-            padding: 15px;
+            background: rgba(15, 23, 42, 0.92);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 10px;
+            padding: 12px 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
-            z-index: 1;
+            backdrop-filter: blur(8px);
         }
         .player-top-bar {
             font-size: 11px;
-            color: #64748b;
-            margin-bottom: 12px;
+            color: #94a3b8;
+            margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -59,26 +69,38 @@
             padding: 2px 6px;
             border-radius: 3px;
             font-weight: bold;
+            box-shadow: 0 0 8px rgba(14, 165, 233, 0.6);
+        }
+        
+        .main-display {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(30, 41, 59, 0.6);
+            padding: 8px 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
         .vinyl-container {
-            width: 130px;
-            height: 130px;
+            width: 50px;
+            height: 50px;
             background: #000;
             border-radius: 50%;
-            margin: 10px auto 15px auto;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 6px solid #1a2234;
-            box-shadow: 0 0 15px rgba(0,0,0,0.9);
+            border: 3px solid #0ea5e9;
+            flex-shrink: 0;
+            box-shadow: 0 0 10px rgba(0,0,0,0.8);
             position: relative;
         }
         .vinyl-center {
-            width: 45px;
-            height: 45px;
-            background: #0ea5e9;
+            width: 16px;
+            height: 16px;
+            background: #38bdf8;
             border-radius: 50%;
-            border: 3px solid #fff;
+            border: 2px solid #fff;
         }
         .rotating {
             animation: spin 3s linear infinite;
@@ -87,38 +109,43 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .track-info {
+            overflow: hidden;
+            flex-grow: 1;
+        }
         .now-playing-label {
-            font-size: 10px;
-            color: #64748b;
+            font-size: 9px;
+            color: #38bdf8;
             letter-spacing: 0.5px;
+            font-weight: bold;
         }
         .track-name {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
-            color: #38bdf8;
-            margin-bottom: 12px;
+            color: #fff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            height: 16px;
+            margin-top: 2px;
         }
         .category-text {
-            font-size: 11px;
+            font-size: 10px;
             color: #94a3b8;
-            margin-bottom: 12px;
+            margin-top: 1px;
         }
-        
-        /* ควบคุมเครื่องเล่น */
+
+        /* แถบควบคุมเครื่องเล่น */
         .controls-row {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .play-btn {
-            width: 36px;
-            height: 36px;
-            background: #0ea5e9;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
             border: none;
             border-radius: 50%;
             color: #fff;
@@ -126,23 +153,25 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 13px;
             flex-shrink: 0;
-            box-shadow: 0 2px 5px rgba(14, 165, 233, 0.4);
+            box-shadow: 0 3px 10px rgba(14, 165, 233, 0.4);
+            transition: 0.2s;
         }
         .play-btn:hover {
-            background: #0284c7;
+            transform: scale(1.05);
         }
         .progress-bar-container {
             flex-grow: 1;
             background: #1e293b;
-            height: 5px;
+            height: 6px;
             border-radius: 3px;
             position: relative;
             cursor: pointer;
+            overflow: hidden;
         }
         .progress-fill {
-            background: #0ea5e9;
+            background: #38bdf8;
             height: 100%;
             width: 0%;
             border-radius: 3px;
@@ -150,16 +179,16 @@
         .time-info {
             display: flex;
             justify-content: space-between;
-            font-size: 10px;
-            color: #64748b;
-            margin-bottom: 12px;
+            font-size: 9px;
+            color: #94a3b8;
+            margin-bottom: 8px;
         }
         .bottom-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-top: 1px solid #1e293b;
-            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding-top: 8px;
         }
         .volume-box {
             display: flex;
@@ -167,75 +196,73 @@
             gap: 5px;
         }
         .volume-box input[type="range"] {
-            width: 70px;
+            width: 65px;
             accent-color: #0ea5e9;
             height: 4px;
         }
         .onair-link {
-            font-size: 10px;
-            color: #0ea5e9;
+            font-size: 9px;
+            color: #38bdf8;
             text-decoration: none;
         }
         .onair-link:hover {
             text-decoration: underline;
         }
 
-        /* รายชื่อเพลง Playlist ด้านขวา */
+        /* รายชื่อเพลง Playlist ด้านซ้าย (อยู่ใต้วิทยุ) */
         .playlist-box {
-            width: 290px;
-            background: rgba(18, 24, 36, 0.9);
-            border: 1px solid rgba(30, 41, 59, 0.8);
-            border-radius: 8px;
-            padding: 15px;
+            background: rgba(15, 23, 42, 0.92);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 10px;
+            padding: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            max-height: 360px;
+            max-height: 230px;
             overflow-y: auto;
-            backdrop-filter: blur(5px);
-            z-index: 1;
+            backdrop-filter: blur(8px);
         }
         .playlist-header {
-            font-size: 13px;
+            font-size: 11px;
             font-weight: bold;
             color: #fff;
-            margin-bottom: 12px;
-            border-bottom: 1px solid #1e293b;
-            padding-bottom: 8px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding-bottom: 5px;
         }
         .playlist-item {
-            padding: 8px 10px;
-            margin-bottom: 6px;
-            background: rgba(26, 34, 52, 0.8);
-            border-radius: 5px;
+            padding: 7px 9px;
+            margin-bottom: 5px;
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 6px;
             cursor: pointer;
             transition: 0.2s;
             border: 1px solid transparent;
         }
         .playlist-item:hover {
-            background: #1e293b;
-            border-color: #0ea5e9;
+            background: rgba(56, 189, 248, 0.15);
+            border-color: rgba(56, 189, 248, 0.4);
         }
         .playlist-item.active {
             background: rgba(14, 165, 233, 0.3);
             border-color: #0ea5e9;
         }
         .playlist-item .title {
-            font-size: 12px;
+            font-size: 11px;
             color: #f8fafc;
             font-weight: bold;
         }
         .playlist-item .cat {
-            font-size: 10px;
-            color: #64748b;
-            margin-top: 2px;
+            font-size: 9px;
+            color: #94a3b8;
+            margin-top: 1px;
         }
 
         /* แต่ง Scrollbar */
         .playlist-box::-webkit-scrollbar {
-            width: 4px;
+            width: 3px;
         }
         .playlist-box::-webkit-scrollbar-thumb {
-            background: #1e293b;
-            border-radius: 4px;
+            background: #38bdf8;
+            border-radius: 3px;
         }
     </style>
 </head>
@@ -246,81 +273,89 @@
         <source src="https://files.catbox.moe/nhlsex.mp4" type="video/mp4">
     </video>
 
-    <!-- เครื่องเล่นวิทยุด้านซ้าย -->
-    <div class="player-box">
-        <div class="player-top-bar">
-            <span>Mytadent Radio Player</span>
-            <span class="on-air-badge">ON AIR</span>
-        </div>
-        <div class="vinyl-container" id="vinyl">
-            <div class="vinyl-center"></div>
-        </div>
-        <div class="now-playing-label">NOW PLAYING</div>
-        <div class="track-name" id="current-title">Select a track to start</div>
-        <div class="category-text" id="current-cat">Category</div>
+    <!-- คอนเทนเนอร์ฝั่งซ้าย (วิทยุ + รายชื่อเพลง) -->
+    <div class="left-sidebar">
+        <!-- เครื่องเล่นวิทยุ -->
+        <div class="player-box">
+            <div class="player-top-bar">
+                <span>MYRADIOhit Player</span>
+                <span class="on-air-badge">ON AIR</span>
+            </div>
+            
+            <div class="main-display">
+                <div class="vinyl-container" id="vinyl">
+                    <div class="vinyl-center"></div>
+                </div>
+                <div class="track-info">
+                    <div class="now-playing-label">NOW PLAYING</div>
+                    <div class="track-name" id="current-title">Select a track</div>
+                    <div class="category-text" id="current-cat">Category: None</div>
+                </div>
+            </div>
 
-        <div class="controls-row">
-            <button class="play-btn" id="play-pause-btn" onclick="togglePlay()">▶</button>
-            <div class="progress-bar-container" id="progress-container" onclick="seekAudio(event)">
-                <div class="progress-fill" id="progress-fill"></div>
+            <div class="controls-row">
+                <button class="play-btn" id="play-pause-btn" onclick="togglePlay()">▶</button>
+                <div class="progress-bar-container" id="progress-container" onclick="seekAudio(event)">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+
+            <div class="time-info">
+                <span id="current-time">0:00</span>
+                <span id="duration-time">0:00</span>
+            </div>
+
+            <div class="bottom-controls">
+                <div class="volume-box">
+                    <span style="font-size: 11px; color: #94a3b8;">🔊</span>
+                    <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="1" oninput="changeVolume(this.value)">
+                </div>
+                <a href="#" class="onair-link">BROADCAST</a>
             </div>
         </div>
 
-        <div class="time-info">
-            <span id="current-time">0:00</span>
-            <span id="duration-time">0:00</span>
-        </div>
+        <!-- รายชื่อเพลง Playlist -->
+        <div class="playlist-box">
+            <div class="playlist-header">Playlist</div>
 
-        <div class="bottom-controls">
-            <div class="volume-box">
-                <span style="font-size: 12px; color: #64748b;">🔊</span>
-                <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="1" oninput="changeVolume(this.value)">
+            <div class="playlist-item" onclick="selectTrack(0, '#1 Tag Hits String 2026', 'Category: String', 'https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3')">
+                <div class="title">#1 Tag Hits String 2026</div>
+                <div class="cat">Category: String</div>
             </div>
-            <a href="#" class="onair-link">BROADCAST TO ON AIR</a>
+
+            <div class="playlist-item" onclick="selectTrack(1, '#2 Thaistation Radio Mix', 'Category: String', 'https://ia902905.us.archive.org/5/items/thaistation/thaistation.mp3')">
+                <div class="title">#2 Thaistation Radio Mix</div>
+                <div class="cat">Category: String</div>
+            </div>
+
+            <div class="playlist-item" onclick="selectTrack(2, '#3 String Pop Selection #1', 'Category: String', 'https://ia601906.us.archive.org/3/items/radio_202607/1.radio.mp3')">
+                <div class="title">#3 String Pop Selection #1</div>
+                <div class="cat">Category: String</div>
+            </div>
+
+            <div class="playlist-item" onclick="selectTrack(3, '#4 2-Hour Nonstop String Hits', 'Category: String', 'https://ia601501.us.archive.org/2/items/thaistation-v.-1/thaistation%20v.1.mp3')">
+                <div class="title">#4 2-Hour Nonstop String Hits</div>
+                <div class="cat">Category: String</div>
+            </div>
+
+            <div class="playlist-item" onclick="selectTrack(4, '#5 Thai Country Music (Luk Thung)', 'Category: Luk Thung', 'https://ia600903.us.archive.org/29/items/luk-thung-music/Luk%20Thung%20music.mp3')">
+                <div class="title">#5 Thai Country Music (Luk Thung)</div>
+                <div class="cat">Category: Luk Thung</div>
+            </div>
+
+            <div class="playlist-item" onclick="selectTrack(5, '#6 Southern Folk Hits Collection', 'Category: Southern Folk', 'https://ia601609.us.archive.org/27/items/plangtai2/plangtai2.mp3')">
+                <div class="title">#6 Southern Folk Hits Collection</div>
+                <div class="cat">Category: Southern Folk</div>
+            </div>
+
+            <div class="playlist-item" onclick="selectTrack(6, '#7 Southern Melodic Style', 'Category: Southern Folk', 'https://files.catbox.moe/k4dtxi.mp3')">
+                <div class="title">#7 Southern Melodic Style</div>
+                <div class="cat">Category: Southern Folk</div>
+            </div>
         </div>
     </div>
 
-    <!-- รายชื่อเพลง Playlist ด้านขวา -->
-    <div class="playlist-box">
-        <div class="playlist-header">Playlist</div>
-
-        <div class="playlist-item" onclick="selectTrack(0, 'Tag Hits String 2026', 'Category: String', 'https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3')">
-            <div class="title">#1 Tag Hits String 2026</div>
-            <div class="cat">Category: String</div>
-        </div>
-
-        <div class="playlist-item" onclick="selectTrack(1, 'Thaistation Radio Mix', 'Category: String', 'https://ia902905.us.archive.org/5/items/thaistation/thaistation.mp3')">
-            <div class="title">#2 Thaistation Radio Mix</div>
-            <div class="cat">Category: String</div>
-        </div>
-
-        <div class="playlist-item" onclick="selectTrack(2, 'String Pop Selection #1', 'Category: String', 'https://ia601906.us.archive.org/3/items/radio_202607/1.radio.mp3')">
-            <div class="title">#3 String Pop Selection #1</div>
-            <div class="cat">Category: String</div>
-        </div>
-
-        <div class="playlist-item" onclick="selectTrack(3, '2-Hour Nonstop String Hits', 'Category: String', 'https://ia601501.us.archive.org/2/items/thaistation-v.-1/thaistation%20v.1.mp3')">
-            <div class="title">#4 2-Hour Nonstop String Hits</div>
-            <div class="cat">Category: String</div>
-        </div>
-
-        <div class="playlist-item" onclick="selectTrack(4, 'Thai Country Music (Luk Thung)', 'Category: Luk Thung', 'https://ia600903.us.archive.org/29/items/luk-thung-music/Luk%20Thung%20music.mp3')">
-            <div class="title">#5 Thai Country Music (Luk Thung)</div>
-            <div class="cat">Category: Luk Thung</div>
-        </div>
-
-        <div class="playlist-item" onclick="selectTrack(5, 'Southern Folk Hits Collection', 'Category: Southern Folk', 'https://ia601609.us.archive.org/27/items/plangtai2/plangtai2.mp3')">
-            <div class="title">#6 Southern Folk Hits Collection</div>
-            <div class="cat">Category: Southern Folk</div>
-        </div>
-
-        <div class="playlist-item" onclick="selectTrack(6, 'Southern Melodic Style', 'Category: Southern Folk', 'https://files.catbox.moe/k4dtxi.mp3')">
-            <div class="title">#7 Southern Melodic Style</div>
-            <div class="cat">Category: Southern Folk</div>
-        </div>
-    </div>
-
-    <!-- Audio Element ซ่อนไว้ทำงานเบื้องหลัง -->
+    <!-- Audio Element -->
     <audio id="audio-player" preload="auto"></audio>
 
     <script>
@@ -348,7 +383,9 @@
                 isPlaying = true;
                 playBtn.innerText = "❚❚";
                 vinyl.classList.add('rotating');
-            }).catch(e => console.log("Play error:", e));
+            }).catch(e => {
+                console.log("Play error:", e);
+            });
 
             playlistItems.forEach((item, idx) => {
                 if (idx === index) {
@@ -374,7 +411,9 @@
                     isPlaying = true;
                     playBtn.innerText = "❚❚";
                     vinyl.classList.add('rotating');
-                }).catch(e => console.log("Play error:", e));
+                }).catch(e => {
+                    console.log("Play error:", e);
+                });
             }
         }
 
