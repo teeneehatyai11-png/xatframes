@@ -18,7 +18,7 @@
             position: relative;
         }
 
-        /* วิดีโอพื้นหลัง ดันภาพผู้หญิงไปโผล่ฝั่งขวา */
+        /* วิดีโอพื้นหลัง ดันภาพผู้หญิงไปฝั่งขวา */
         .bg-video {
             position: fixed;
             top: 0;
@@ -30,17 +30,18 @@
             z-index: -999;
         }
 
-        /* เอาวิทยุและเพลย์ลิสต์มาไว้ฝั่งซ้ายมือ และตั้ง z-index ให้สูงที่สุดเพื่อไม่ให้โดนทับและคลิกได้ */
+        /* กล่องวิทยุที่สามารถใช้เมาส์คลิกลากเลื่อนได้ */
         .left-sidebar {
-            position: fixed;
+            position: absolute;
             top: 20px;
             left: 20px;
             display: flex;
             flex-direction: column;
             gap: 10px;
             width: 270px;
-            z-index: 2147483647; /* สูงสุดเพื่อให้คลิกได้เสมอ */
-            pointer-events: auto;
+            z-index: 2147483647;
+            cursor: move; /* เปลี่ยนรูปเมาส์ให้รู้ว่าลากได้ */
+            user-select: none;
         }
 
         /* เครื่องเล่นวิทยุ */
@@ -59,6 +60,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        .drag-hint {
+            font-size: 8px;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.1);
+            padding: 1px 4px;
+            border-radius: 3px;
         }
         .on-air-badge {
             background: #0ea5e9;
@@ -186,7 +194,7 @@
             accent-color: #0ea5e9;
         }
 
-        /* รายชื่อเพลง Playlist ด้านซ้าย */
+        /* รายชื่อเพลง Playlist */
         .playlist-box {
             background: rgba(15, 23, 42, 0.95);
             border: 1px solid rgba(56, 189, 248, 0.4);
@@ -245,11 +253,12 @@
         <source src="https://files.catbox.moe/nhlsex.mp4" type="video/mp4">
     </video>
 
-    <!-- ชุดเครื่องเล่นและเพลย์ลิสต์ฝั่งซ้ายมือ (ลอยเหนือหน้าต่างแชทและคลิกได้แน่นอน) -->
-    <div class="left-sidebar">
+    <!-- ชุดเครื่องเล่นวิทยุที่สามารถลากเลื่อนได้ -->
+    <div class="left-sidebar" id="draggable-player">
         <div class="player-box">
             <div class="player-top-bar">
                 <span>MYRADIOhit</span>
+                <span class="drag-hint">↔ ลากย้ายได้</span>
                 <span class="on-air-badge">ON AIR</span>
             </div>
             
@@ -413,6 +422,39 @@
             playBtn.innerText = "▶";
             vinyl.classList.remove('rotating');
         });
+
+        // ฟังก์ชันรองรับการลากเลื่อนกล่องวิทยุ (Draggable)
+        const draggablePlayer = document.getElementById('draggable-player');
+        let isDragging = false;
+        let startX, startY, initialX, initialY;
+
+        draggablePlayer.addEventListener('mousedown', (e) => {
+            // ป้องกันไม่ให้การคลิกปุ่มควบคุมหรือสไลเดอร์เป็นการลากกล่อง
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.closest('.playlist-item') || e.target.closest('.progress-bar-container')) {
+                return;
+            }
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            initialX = draggablePlayer.offsetLeft;
+            initialY = draggablePlayer.offsetTop;
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+
+        function onMouseMove(e) {
+            if (!isDragging) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            draggablePlayer.style.left = (initialX + dx) + 'px';
+            draggablePlayer.style.top = (initialY + dy) + 'px';
+        }
+
+        function onMouseUp() {
+            isDragging = false;
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        }
     </script>
 </body>
 </html>
