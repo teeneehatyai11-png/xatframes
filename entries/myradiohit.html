@@ -16,68 +16,41 @@
       user-select: none;
     }
 
-    /* พื้นหลังโปร่งใส และปล่อยให้เมาส์กดทะลุไปห้องแชทตรงกลางได้ */
+    /* พื้นหลังโปร่งใสและปล่อยให้กดทะลุตรงกลางได้ */
     html, body {
       width: 100%;
       height: 100%;
       background: transparent !important;
       overflow: hidden;
+      position: relative;
       pointer-events: none;
     }
 
-    body {
-      color: #fff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 20px;
-      position: relative;
-    }
-
-    /* บังคับให้กล่องซ้าย-ขวา รับการคลิกได้แน่นอน 100% */
-    .interactive-box {
-      pointer-events: auto !important;
-      position: relative;
-      z-index: 999999 !important;
-    }
-
-    .bg-blurred {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background-size: cover; background-position: center;
-      filter: blur(20px) brightness(0.4);
-      transform: scale(1.1);
-      transition: background-image 0.5s ease-in-out;
-      z-index: 1;
-    }
-
-    .bg-overlay {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(135deg, rgba(255, 0, 80, 0.25), rgba(0, 242, 254, 0.2));
-      z-index: 2;
-    }
-
-    /* 📋 รายการเพลงฝั่งซ้าย */
+    /* กล่องฝั่งซ้าย (รายการเพลง) */
     .playlist-container {
-      width: 260px;
-      max-height: 85vh;
-      background: rgba(18, 18, 28, 0.92);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      position: absolute;
+      top: 20px;
+      left: 15px;
+      width: 250px;
+      height: calc(100vh - 40px);
+      max-height: 520px;
+      background: rgba(18, 18, 28, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
-      padding: 15px;
+      padding: 12px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
       display: flex;
       flex-direction: column;
+      z-index: 999999 !important;
+      pointer-events: auto !important;
     }
 
     .playlist-header {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       color: #00f2fe;
-      margin-bottom: 12px;
-      padding-bottom: 8px;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.15);
       display: flex;
       justify-content: space-between;
@@ -92,108 +65,97 @@
       padding: 8px 10px;
       border-radius: 8px;
       margin-bottom: 6px;
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.08);
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 10px;
-      transition: 0.2s;
     }
 
     .playlist-item:hover {
-      background: rgba(0, 242, 254, 0.2);
+      background: rgba(0, 242, 254, 0.25);
     }
 
     .playlist-item.active {
-      background: rgba(255, 0, 80, 0.3);
+      background: rgba(255, 0, 80, 0.35);
       border: 1px solid #ff0050;
     }
 
     .item-num { font-size: 11px; color: #00f2fe; font-weight: bold; }
-    .item-title { color: #fff; font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .item-sub { font-size: 10px; color: #aaa; }
+    .item-title { color: #fff; font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .item-sub { font-size: 9px; color: #aaa; }
 
-    /* 📱 เครื่องเล่น TikTok ฝั่งขวา */
+    /* กล่องฝั่งขวา (เครื่องเล่น TikTok) */
     .player-card {
-      width: 280px;
-      height: 85vh;
-      max-height: 530px;
-      background: rgba(18, 18, 28, 0.92);
-      backdrop-filter: blur(25px);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      position: absolute;
+      top: 20px;
+      right: 15px;
+      width: 270px;
+      height: calc(100vh - 40px);
+      max-height: 520px;
+      background: rgba(18, 18, 28, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
       padding: 12px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
       display: flex;
       flex-direction: column;
+      z-index: 999999 !important;
+      pointer-events: auto !important;
       overflow: hidden;
     }
 
-    .tiktok-badge { display: flex; justify-content: space-between; margin-bottom: 8px; }
-    .tiktok-channel { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; }
-    .tiktok-icon { width: 22px; height: 22px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: -2px -2px 6px #ff0050, 2px 2px 6px #00f2fe; font-size: 11px; }
-    .live-tag { background: linear-gradient(45deg, #ff0050, #00f2fe); padding: 2px 8px; border-radius: 10px; font-size: 9px; font-weight: 700; }
+    .bg-blurred {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-size: cover; background-position: center;
+      filter: blur(20px) brightness(0.4);
+      transform: scale(1.1);
+      z-index: 1;
+    }
 
-    .song-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-    .song-logo { width: 34px; height: 34px; border-radius: 8px; object-fit: cover; }
-    .song-info h2 { font-size: 12px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 190px; }
-    .song-info p { font-size: 10px; color: #aaa; }
+    .bg-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(135deg, rgba(255, 0, 80, 0.25), rgba(0, 242, 254, 0.2));
+      z-index: 2;
+    }
+
+    .tiktok-badge { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .tiktok-channel { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: #fff; }
+    .tiktok-icon { width: 20px; height: 20px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; }
+    .live-tag { background: linear-gradient(45deg, #ff0050, #00f2fe); padding: 2px 6px; border-radius: 10px; font-size: 9px; font-weight: 700; color: #fff; }
+
+    .song-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .song-logo { width: 30px; height: 30px; border-radius: 6px; object-fit: cover; }
+    .song-info h2 { font-size: 11px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+    .song-info p { font-size: 9px; color: #aaa; }
 
     .photo-display-area {
       flex: 1;
       position: relative;
       width: 100%;
-      border-radius: 12px;
+      border-radius: 10px;
       overflow: hidden;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       background: #000;
     }
 
-    .photo-display-area img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.2s ease; }
-    .photo-caption { position: absolute; bottom: 0; left: 0; width: 100%; padding: 6px; background: linear-gradient(transparent, rgba(0,0,0,0.85)); color: #fff; font-size: 11px; text-align: center; }
+    .photo-display-area img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-caption { position: absolute; bottom: 0; left: 0; width: 100%; padding: 4px; background: rgba(0,0,0,0.7); color: #fff; font-size: 10px; text-align: center; }
 
-    /* ปุ่มควบคุมเล่นเพลงแบบใหญ่ ชัดเจน */
-    .controls-box {
-      background: rgba(0, 0, 0, 0.5);
-      padding: 10px;
-      border-radius: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .btn-play-big {
-      width: 100%;
-      padding: 8px;
-      background: linear-gradient(45deg, #ff0050, #00f2fe);
-      border: none;
-      border-radius: 8px;
-      color: #fff;
-      font-weight: bold;
-      font-size: 13px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 12px rgba(255, 0, 80, 0.4);
-    }
-
-    .btn-play-big:hover {
-      opacity: 0.9;
-    }
-
+    /* เครื่องเล่น Audio มาตรฐาน */
     audio {
       width: 100%;
-      height: 32px;
-      margin-top: 4px;
+      height: 36px;
+      outline: none;
     }
   </style>
 </head>
 <body>
 
-  <!-- 📋 รายการเพลงฝั่งซ้าย -->
-  <div class="playlist-container interactive-box">
+  <!-- รายการเพลงซ้ายมือ -->
+  <div class="playlist-container">
     <div class="playlist-header">
       <span>รายการเพลง</span>
       <span style="font-size:10px; color:#aaa;">7 เพลง</span>
@@ -201,8 +163,8 @@
     <div class="playlist-scroll" id="playlist-items"></div>
   </div>
 
-  <!-- 📱 เครื่องเล่น TikTok ฝั่งขวา -->
-  <div class="player-card interactive-box">
+  <!-- เครื่องเล่นขวามือ -->
+  <div class="player-card">
     <div class="bg-blurred" id="bg-blurred"></div>
     <div class="bg-overlay"></div>
     
@@ -210,7 +172,7 @@
       <div class="tiktok-badge">
         <div class="tiktok-channel">
           <div class="tiktok-icon"><i class="fa-brands fa-tiktok"></i></div>
-          <span>Chill Music TH (@chillmusic.th)</span>
+          <span>Chill Music TH</span>
         </div>
         <div class="live-tag">LIVE</div>
       </div>
@@ -228,16 +190,8 @@
         <div class="photo-caption" id="photo-caption">Chill Music Mood</div>
       </div>
 
-      <!-- ส่วนควบคุมเล่นเพลง -->
-      <div class="controls-box">
-        <button class="btn-play-big" id="main-play-btn">
-          <i class="fa-solid fa-play" id="main-play-icon"></i>
-          <span id="play-btn-text">กดเพื่อเริ่มเล่นเพลง</span>
-        </button>
-        
-        <!-- แถบ Audio เล่นตรงของเบราว์เซอร์สำหรับกรณี xat ล็อก JS -->
-        <audio id="audio-player" controls controlsList="nodownload"></audio>
-      </div>
+      <!-- ใช้ Audio Controls หลักที่รับคลิกได้แน่นอน -->
+      <audio id="audio-player" controls controlsList="nodownload"></audio>
     </div>
   </div>
 
@@ -270,9 +224,6 @@
     const photoViewer = document.getElementById('photo-viewer');
     const photoCaption = document.getElementById('photo-caption');
     const bgBlurred = document.getElementById('bg-blurred');
-    const mainPlayBtn = document.getElementById('main-play-btn');
-    const mainPlayIcon = document.getElementById('main-play-icon');
-    const playBtnText = document.getElementById('play-btn-text');
 
     function renderPlaylist() {
       const container = document.getElementById('playlist-items');
@@ -280,10 +231,7 @@
       tracksData.forEach((track, index) => {
         const item = document.createElement('div');
         item.className = `playlist-item ${index === currentTrackIndex ? 'active' : ''}`;
-        item.onclick = (e) => {
-          e.stopPropagation();
-          selectTrack(index);
-        };
+        item.onclick = () => selectTrack(index);
         item.innerHTML = `
           <div class="item-num">${index + 1}</div>
           <div>
@@ -307,53 +255,14 @@
       updatePhoto(track.slides[0].image, track.slides[0].caption);
       renderPlaylist();
 
-      playAudio();
+      audio.play().catch(e => console.log("Click play on audio controls"));
     }
 
     function updatePhoto(imgUrl, captionText) {
-      photoViewer.style.opacity = '0';
-      setTimeout(() => {
-        photoViewer.src = imgUrl;
-        photoCaption.innerText = captionText;
-        bgBlurred.style.backgroundImage = `url('${imgUrl}')`;
-        photoViewer.style.opacity = '1';
-      }, 150);
+      photoViewer.src = imgUrl;
+      photoCaption.innerText = captionText;
+      bgBlurred.style.backgroundImage = `url('${imgUrl}')`;
     }
-
-    function playAudio() {
-      const promise = audio.play();
-      if (promise !== undefined) {
-        promise.then(() => {
-          mainPlayIcon.className = 'fa-solid fa-pause';
-          playBtnText.innerText = 'หยุดเล่นชั่วคราว';
-        }).catch(err => {
-          console.log("Play blocked by browser, user click needed");
-          mainPlayIcon.className = 'fa-solid fa-play';
-          playBtnText.innerText = 'กดเพื่อเริ่มเล่นเพลง';
-        });
-      }
-    }
-
-    mainPlayBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (audio.paused) {
-        playAudio();
-      } else {
-        audio.pause();
-        mainPlayIcon.className = 'fa-solid fa-play';
-        playBtnText.innerText = 'กดเพื่อเล่นต่อ';
-      }
-    });
-
-    audio.addEventListener('play', () => {
-      mainPlayIcon.className = 'fa-solid fa-pause';
-      playBtnText.innerText = 'กำลังเล่นเพลง...';
-    });
-
-    audio.addEventListener('pause', () => {
-      mainPlayIcon.className = 'fa-solid fa-play';
-      playBtnText.innerText = 'กดเพื่อเล่นต่อ';
-    });
 
     audio.addEventListener('timeupdate', () => {
       const currentTime = audio.currentTime;
@@ -377,7 +286,6 @@
       selectTrack(nextIndex);
     });
 
-    // เริ่มต้น
     selectTrack(0);
   </script>
 </body>
