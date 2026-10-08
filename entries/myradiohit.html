@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -22,7 +23,6 @@
       background: transparent !important;
       overflow: hidden;
       position: relative;
-      pointer-events: none;
     }
 
     /* 🖼️ การ์ดฝั่งซ้าย (วิดีโอ yc18zg.mp4) */
@@ -91,8 +91,9 @@
       padding: 14px;
     }
 
+    /* ส่วนหัวเปลี่ยนข้อความด้านบนเป็น LIVE ตามสั่ง */
     .radio-header {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 700;
       color: #ff0050;
       padding-bottom: 6px;
@@ -100,7 +101,7 @@
       text-align: center;
       text-transform: uppercase;
       letter-spacing: 2px;
-      text-shadow: 0 0 10px rgba(ff, 0, 80, 0.6);
+      text-shadow: 0 0 10px rgba(255, 0, 80, 0.8);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -121,19 +122,21 @@
       50% { opacity: 0.3; transform: scale(0.85); }
     }
 
-    /* กล่องเครื่องเล่นวิทยุกระจกโปร่งแสง (Glassmorphism Widget) */
+    /* กล่องเครื่องเล่นวิทยุกระจก */
     .glass-player {
-      background: rgba(15, 23, 42, 0.75);
+      background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 14px;
       padding: 12px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
       margin-top: auto;
       display: flex;
       flex-direction: column;
       gap: 10px;
+      position: relative;
+      z-index: 10;
     }
 
     .song-info {
@@ -159,18 +162,16 @@
       text-overflow: ellipsis;
     }
 
-    /* กล่องเลือกช่องสถานีเพลง */
     .playlist-select {
       width: 100%;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.8);
       color: #00f2fe;
-      border: 1px solid rgba(0, 242, 254, 0.4);
+      border: 1px solid rgba(0, 242, 254, 0.5);
       border-radius: 8px;
       padding: 6px 10px;
       font-size: 11px;
       outline: none;
       cursor: pointer;
-      text-overflow: ellipsis;
     }
 
     .playlist-select option {
@@ -178,10 +179,10 @@
       color: #fff;
     }
 
-    /* ปุ่มเล่นเพลงสไตล์เกรเดียนต์ตรงตามรูป "กดเพื่อฟังวิทยุสด" */
+    /* ปุ่มกดเล่นเพลง "กดเพื่อฟังวิทยุสด" */
     .play-btn-large {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       background: linear-gradient(90deg, #d91c5c 0%, #00c6ff 100%);
       border: none;
       border-radius: 20px;
@@ -193,42 +194,47 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      box-shadow: 0 4px 15px rgba(217, 28, 92, 0.5);
+      box-shadow: 0 4px 15px rgba(217, 28, 92, 0.6);
       transition: all 0.2s ease;
     }
 
     .play-btn-large:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 198, 255, 0.6);
+      transform: scale(1.02);
+      box-shadow: 0 6px 20px rgba(0, 198, 255, 0.8);
     }
 
-    .play-btn-large:active {
-      transform: translateY(0);
-    }
-
-    /* ตัวควบคุมความดังเสียง */
     .volume-box {
       display: flex;
       align-items: center;
       gap: 8px;
       color: #a0aec0;
       font-size: 11px;
-      padding: 0 4px;
     }
 
     .volume-box input[type="range"] {
       flex: 1;
       height: 4px;
-      border-radius: 2px;
       accent-color: #00f2fe;
+      cursor: pointer;
+    }
+
+    /* 🚨 ปุ่มยักษ์ใสคลุมทั้งจอฝั่งขวา เพื่อแก้ปัญหา xat ไม่เล่นเพลง */
+    #global-unlock-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 9999;
+      background: rgba(0, 0, 0, 0.01);
       cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <!-- แท็กเสียง Audio ซ่อนสำหรับเล่นแบบ Background -->
-  <audio id="audio-player" preload="auto" crossorigin="anonymous"></audio>
+  <!-- ตัวเล่นเพลงหลัก -->
+  <audio id="audio-player" preload="auto"></audio>
 
   <!-- 🖼️ ฝั่งซ้าย (วิดีโอ yc18zg.mp4)[cite: 1] -->
   <div class="left-card">
@@ -239,8 +245,11 @@
     </div>
   </div>
 
-  <!-- 📱 ฝั่งขวา (วิดีโอ s9d6v6.mp4 + เครื่องเล่นวิทยุ)[cite: 1] -->
+  <!-- 📱 ฝั่งขวา (วิดีโอ s9d6v6.mp4)[cite: 1] -->
   <div class="right-card">
+    <!-- Overlay แตะครั้งแรกปลดล็อกเสียงสำหรับ xat -->
+    <div id="global-unlock-overlay" title="คลิกเพื่อเปิดระบบเสียง"></div>
+
     <div class="video-bg-box">
       <video autoplay loop muted playsinline preload="auto">
         <source src="https://files.catbox.moe/s9d6v6.mp4" type="video/mp4">
@@ -248,35 +257,30 @@
     </div>
 
     <div class="card-content-overlay">
-      <!-- ข้อความส่วนหัวเปลี่ยนเป็น LIVE ตามที่ระบุ -->
       <div class="radio-header">
         <div class="live-dot"></div>
         <span>LIVE</span>
       </div>
 
-      <!-- เครื่องเล่นเพลง -->
       <div class="glass-player">
         <div class="song-info">
           <div class="now-playing">NOW PLAYING</div>
           <div class="track-title" id="current-title">รวมเพลงเพราะฟังสบาย</div>
         </div>
 
-        <!-- รายการเลือกสถานีเพลง -->
-        <select class="playlist-select" id="station-select" onchange="selectStation(this.value)">
+        <select class="playlist-select" id="station-select">
           <option value="0">1. รวมเพลงเพราะฟังสบาย</option>
           <option value="1">2. รวมเพลงเพราะฟังสบายตอนทำงาน</option>
           <option value="2">3. รวมเพลงเพราะฟังสบาย (สถานีที่ 3)</option>
           <option value="3">4. รวมเพลงเพราะวันพักผ่อน</option>
         </select>
 
-        <!-- ตัวปรับความดังเสียง -->
         <div class="volume-box">
           <i class="fas fa-volume-up" id="vol-icon"></i>
-          <input type="range" id="volume-range" min="0" max="1" step="0.05" value="0.8" oninput="setVolume(this.value)">
+          <input type="range" id="volume-range" min="0" max="1" step="0.05" value="1">
         </div>
 
-        <!-- ปุ่มกดเล่นเพลงขนาดใหญ่แบบในภาพ -->
-        <button class="play-btn-large" id="main-play-btn" onclick="togglePlay()">
+        <button class="play-btn-large" id="main-play-btn">
           <i class="fas fa-play" id="btn-icon"></i>
           <span id="btn-text">กดเพื่อฟังวิทยุสด</span>
         </button>
@@ -298,89 +302,73 @@
     const btnText = document.getElementById('btn-text');
     const title = document.getElementById('current-title');
     const stationSelect = document.getElementById('station-select');
+    const volumeRange = document.getElementById('volume-range');
+    const globalOverlay = document.getElementById('global-unlock-overlay');
 
     let currentIndex = 0;
     let isPlaying = false;
 
-    // ตั้งค่าเพลงเริ่มต้น
+    // ตั้งค่าเบื้องต้น
     audio.src = playlist[0].url;
+    audio.volume = 1.0;
 
-    function togglePlay() {
-      if (isPlaying) {
-        audio.pause();
-        updateUI(false);
-      } else {
-        // โหลดเนื้อหาใหม่และสั่งเล่นเพื่อแก้ปัญหากดเล่นไม่ได้
-        if (!audio.src) {
-          audio.src = playlist[currentIndex].url;
-        }
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-          playPromise.then(() => {
-            updateUI(true);
-          }).catch(error => {
-            console.log("Autoplay / Audio Error: ", error);
-            // กรณีโดนบล็อก ให้พยายามโหลดและเล่นอีกครั้ง
-            audio.load();
-            audio.play().then(() => updateUI(true));
-          });
-        }
-      }
-    }
-
-    function selectStation(index) {
-      currentIndex = parseInt(index);
-      title.textContent = playlist[currentIndex].name;
-      audio.src = playlist[currentIndex].url;
-      audio.load();
-      
+    // ฟังก์ชันสั่งเล่นเสียงแบบบังคับ
+    function forcePlay() {
       audio.play().then(() => {
-        updateUI(true);
+        isPlaying = true;
+        btnIcon.className = 'fas fa-pause';
+        btnText.textContent = 'หยุดฟังวิทยุ';
+        if (globalOverlay) globalOverlay.style.display = 'none';
       }).catch(err => {
-        console.log("Error loading station:", err);
-        updateUI(false);
+        console.log("Playback error: ", err);
       });
     }
 
-    function setVolume(val) {
-      audio.volume = val;
-      const volIcon = document.getElementById('vol-icon');
-      if (val == 0) {
-        volIcon.className = 'fas fa-volume-mute';
-      } else if (val < 0.5) {
-        volIcon.className = 'fas fa-volume-down';
-      } else {
-        volIcon.className = 'fas fa-volume-up';
-      }
+    function forcePause() {
+      audio.pause();
+      isPlaying = false;
+      btnIcon.className = 'fas fa-play';
+      btnText.textContent = 'กดเพื่อฟังวิทยุสด';
     }
 
-    function updateUI(playing) {
-      isPlaying = playing;
-      if (playing) {
-        btnIcon.className = 'fas fa-pause';
-        btnText.textContent = 'หยุดฟังวิทยุ';
-      } else {
-        btnIcon.className = 'fas fa-play';
-        btnText.textContent = 'กดเพื่อฟังวิทยุสด';
-      }
-    }
+    // เมื่อคลิกครั้งแรกที่การ์ดฝั่งขวา ให้ปลดล็อกระบบเสียงและเล่นทันที
+    globalOverlay.addEventListener('click', () => {
+      forcePlay();
+    });
 
-    // เมื่อเพลงจบให้เล่นเพลงถัดไปอัตโนมัติ
+    // ปุ่มกดเปิด/ปิด
+    mainPlayBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (isPlaying) {
+        forcePause();
+      } else {
+        forcePlay();
+      }
+    });
+
+    // เปลี่ยนสถานี
+    stationSelect.addEventListener('change', (e) => {
+      currentIndex = parseInt(e.target.value);
+      title.textContent = playlist[currentIndex].name;
+      audio.src = playlist[currentIndex].url;
+      audio.load();
+      forcePlay();
+    });
+
+    // ปรับระดับเสียง
+    volumeRange.addEventListener('input', (e) => {
+      audio.volume = parseFloat(e.target.value);
+    });
+
+    // เพลงจบให้เล่นเพลงถัดไปอัตโนมัติ
     audio.addEventListener('ended', () => {
       currentIndex = (currentIndex + 1) % playlist.length;
       stationSelect.value = currentIndex;
-      selectStation(currentIndex);
+      title.textContent = playlist[currentIndex].name;
+      audio.src = playlist[currentIndex].url;
+      audio.load();
+      forcePlay();
     });
-
-    // ปลดล็อกระบบ Audio Context เมื่อผู้ใช้มีการคลิกหน้าจอครั้งแรก
-    document.body.addEventListener('click', function unlockAudio() {
-      if (!isPlaying && audio.paused) {
-        audio.play().then(() => {
-          updateUI(true);
-        }).catch(() => {});
-      }
-      document.body.removeEventListener('click', unlockAudio);
-    }, { once: true });
   </script>
 
 </body>
