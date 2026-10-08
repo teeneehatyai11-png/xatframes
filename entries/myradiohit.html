@@ -13,7 +13,6 @@
       user-select: none;
     }
 
-    /* ให้คลิกทะลุพื้นที่ว่างไปยังแชท xat ได้ */
     html, body {
       width: 100%;
       height: 100%;
@@ -29,22 +28,20 @@
       padding: 15px 25px;
     }
 
-    /* เปิดให้คลิกเฉพาะกล่องวิทยุและรายการเพลง */
     .interactive-box {
       pointer-events: auto !important;
     }
 
-    /* กล่องเครื่องเล่นวิทยุฝั่งซ้าย */
+    /* เครื่องเล่นวิทยุซ้าย */
     .player-container {
-      width: 250px;
-      background: rgba(10, 20, 38, 0.85);
+      width: 260px;
+      background: rgba(10, 20, 38, 0.9);
       border: 1px solid rgba(56, 189, 248, 0.5);
       border-radius: 16px;
       padding: 18px 15px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7),
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8),
                   inset 0 0 15px rgba(56, 189, 248, 0.2);
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -56,29 +53,25 @@
       color: #38bdf8;
       align-self: flex-start;
       margin-bottom: 12px;
-      letter-spacing: 0.5px;
       text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
 
     .disc-outer {
-      width: 120px;
-      height: 120px;
+      width: 110px;
+      height: 110px;
       background: rgba(15, 23, 42, 0.9);
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
       box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       border: 2px solid rgba(56, 189, 248, 0.3);
     }
 
     .disc-inner {
-      width: 100px;
-      height: 100px;
+      width: 90px;
+      height: 90px;
       background: radial-gradient(circle, #1e293b 0%, #0f172a 100%);
       border: 4px solid #334155;
       border-radius: 50%;
@@ -90,12 +83,11 @@
     }
 
     .disc-center {
-      width: 30px;
-      height: 30px;
+      width: 26px;
+      height: 26px;
       background: #38bdf8;
       border-radius: 50%;
-      border: 4px solid #0f172a;
-      box-shadow: 0 0 8px #38bdf8;
+      border: 3px solid #0f172a;
     }
 
     @keyframes spin {
@@ -105,7 +97,7 @@
     .track-info {
       text-align: center;
       width: 100%;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
 
     .track-title {
@@ -115,89 +107,33 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      margin-bottom: 3px;
     }
 
     .track-category {
       font-size: 11px;
       color: #38bdf8;
+      margin-top: 2px;
     }
 
-    .status-text {
-      font-size: 10px;
-      color: #94a3b8;
-      margin-top: 4px;
-      height: 14px;
-    }
-
-    .controls {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      margin-bottom: 15px;
+    /* เครื่องเล่นเพลงมาตรฐานของเบราว์เซอร์ */
+    audio {
       width: 100%;
+      height: 36px;
+      border-radius: 8px;
+      outline: none;
+      margin-top: 5px;
     }
 
-    .btn {
-      background: transparent;
-      border: none;
-      color: #94a3b8;
-      cursor: pointer;
-      font-size: 18px;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .btn:hover {
-      color: #38bdf8;
-      transform: scale(1.15);
-    }
-
-    .btn-play {
-      width: 44px;
-      height: 44px;
-      background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
-      color: #0f172a;
-      border-radius: 50%;
-      font-size: 20px;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
-    }
-
-    .btn-play:hover {
-      background: linear-gradient(135deg, #7dd3fc 0%, #0369a1 100%);
-      color: #0f172a;
-      box-shadow: 0 0 18px rgba(56, 189, 248, 0.8);
-    }
-
-    .volume-container {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 0 5px;
-    }
-
-    .volume-slider {
-      width: 100%;
-      height: 4px;
-      accent-color: #38bdf8;
-      cursor: pointer;
-    }
-
-    /* กล่องรายการเพลงฝั่งขวา */
+    /* กล่องเพลย์ลิสต์ขวา */
     .playlist-container {
-      width: 250px;
-      background: rgba(10, 20, 38, 0.85);
+      width: 260px;
+      background: rgba(10, 20, 38, 0.9);
       border: 1px solid rgba(56, 189, 248, 0.5);
       border-radius: 16px;
       padding: 15px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7),
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8),
                   inset 0 0 15px rgba(56, 189, 248, 0.2);
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
       max-height: 85vh;
       display: flex;
       flex-direction: column;
@@ -210,23 +146,11 @@
       margin-bottom: 10px;
       padding-bottom: 8px;
       border-bottom: 1px solid rgba(56, 189, 248, 0.2);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
 
     .playlist-scroll {
       overflow-y: auto;
       flex: 1;
-      padding-right: 4px;
-    }
-
-    .playlist-scroll::-webkit-scrollbar {
-      width: 4px;
-    }
-    .playlist-scroll::-webkit-scrollbar-thumb {
-      background: rgba(56, 189, 248, 0.4);
-      border-radius: 4px;
     }
 
     .playlist-item {
@@ -236,7 +160,6 @@
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid transparent;
       cursor: pointer;
-      transition: all 0.2s ease;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -244,24 +167,17 @@
 
     .playlist-item:hover {
       background: rgba(56, 189, 248, 0.2);
-      border-color: rgba(56, 189, 248, 0.4);
     }
 
     .playlist-item.active {
       background: rgba(56, 189, 248, 0.3);
       border-color: #38bdf8;
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
     }
 
     .item-num {
       font-size: 11px;
       color: #38bdf8;
       font-weight: bold;
-      min-width: 18px;
-    }
-
-    .item-info {
-      overflow: hidden;
     }
 
     .item-title {
@@ -281,12 +197,9 @@
 </head>
 <body>
 
-  <!-- ฝั่งซ้าย: เครื่องเล่นวิทยุ -->
+  <!-- เครื่องเล่นวิทยุฝั่งซ้าย -->
   <div class="player-container interactive-box">
-    <div class="player-title">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-      MYRADIOhit
-    </div>
+    <div class="player-title">MYRADIOhit</div>
     
     <div class="disc-outer">
       <div class="disc-inner" id="disc">
@@ -297,35 +210,22 @@
     <div class="track-info">
       <div class="track-title" id="trackTitle">#1 สตริงใหม่ล่าสุด 2026</div>
       <div class="track-category" id="trackCategory">เพลงสตริงใหม่ล่าสุด</div>
-      <div class="status-text" id="statusText">กด Play เพื่อฟังเพลง</div>
     </div>
 
-    <div class="controls">
-      <button class="btn" id="prevBtn" title="เพลงก่อนหน้า">⏮</button>
-      <button class="btn btn-play" id="playBtn" title="เล่น/หยุด">▶</button>
-      <button class="btn" id="nextBtn" title="เพลงถัดไป">⏭</button>
-    </div>
-
-    <div class="volume-container">
-      <span style="font-size:10px;">🔈</span>
-      <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.8">
-      <span style="font-size:10px;">🔊</span>
-    </div>
+    <!-- HTML5 Audio Controller ตรงมาตรฐานผ่านระบบความปลอดภัยเบราว์เซอร์ -->
+    <audio id="audioPlayer" controls controlsList="nodownload"></audio>
   </div>
 
-  <audio id="audioPlayer" crossorigin="anonymous"></audio>
-
-  <!-- ฝั่งขวา: รายการเพลง -->
+  <!-- รายการเพลงฝั่งขวา -->
   <div class="playlist-container interactive-box">
-    <div class="playlist-header">
-      <span>รายการเพลง</span>
-      <span style="font-size:10px; color:#94a3b8;">7 รายการ</span>
-    </div>
+    <div class="playlist-header">รายการเพลง (7 เพลง)</div>
     <div class="playlist-scroll" id="playlistItems"></div>
   </div>
 
   <script>
-    // ทุกลิงก์แปลงเป็น HTTPS ทั้งหมดเพื่อป้องกันเบราว์เซอร์บล็อก
+    // Proxy URL ป้องกัน CORS Block บน iFrame
+    const corsProxy = "https://api.allorigins.win/raw?url=";
+
     const tracks = [
       {
         title: "#1 สตริงใหม่ล่าสุด 2026",
@@ -366,14 +266,9 @@
 
     let currentTrackIndex = 0;
     const audio = document.getElementById('audioPlayer');
-    const playBtn = document.getElementById('playBtn');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const volumeSlider = document.getElementById('volumeSlider');
     const disc = document.getElementById('disc');
     const trackTitle = document.getElementById('trackTitle');
     const trackCategory = document.getElementById('trackCategory');
-    const statusText = document.getElementById('statusText');
 
     function renderPlaylist() {
       const container = document.getElementById('playlistItems');
@@ -381,10 +276,10 @@
       tracks.forEach((track, index) => {
         const item = document.createElement('div');
         item.className = `playlist-item ${index === currentTrackIndex ? 'active' : ''}`;
-        item.onclick = () => selectAndPlay(index);
+        item.onclick = () => selectTrack(index);
         item.innerHTML = `
           <div class="item-num">${index + 1}</div>
-          <div class="item-info">
+          <div>
             <div class="item-title">${track.title}</div>
             <div class="item-sub">${track.category}</div>
           </div>
@@ -393,86 +288,35 @@
       });
     }
 
-    function updateTrackInfo(index) {
+    function selectTrack(index) {
       currentTrackIndex = index;
       trackTitle.innerText = tracks[index].title;
       trackCategory.innerText = tracks[index].category;
       renderPlaylist();
+
+      // โหลด URL ผ่าน Proxy ป้องกันการบล็อก
+      const rawUrl = tracks[index].url;
+      audio.src = rawUrl.includes('archive.org') ? corsProxy + encodeURIComponent(rawUrl) : rawUrl;
+      audio.play().catch(e => console.log("User action needed:", e));
     }
 
-    function playAudio() {
-      statusText.innerText = "กำลังเชื่อมต่อ...";
-      statusText.style.color = "#38bdf8";
-
-      const promise = audio.play();
-      if (promise !== undefined) {
-        promise.then(() => {
-          playBtn.innerText = '⏸';
-          disc.style.animationPlayState = 'running';
-          statusText.innerText = "● กำลังเล่นเพลง";
-          statusText.style.color = "#4ade80";
-        }).catch(err => {
-          console.log("Play failed:", err);
-          playBtn.innerText = '▶';
-          disc.style.animationPlayState = 'paused';
-          statusText.innerText = "กดอีกครั้งเพื่อเล่นเพลง";
-          statusText.style.color = "#f87171";
-        });
-      }
-    }
-
-    function selectAndPlay(index) {
-      updateTrackInfo(index);
-      audio.src = tracks[index].url;
-      playAudio();
-    }
-
-    function togglePlay() {
-      if (!audio.src || audio.src === "" || audio.src === window.location.href) {
-        selectAndPlay(0);
-        return;
-      }
-
-      if (audio.paused) {
-        playAudio();
-      } else {
-        audio.pause();
-        playBtn.innerText = '▶';
-        disc.style.animationPlayState = 'paused';
-        statusText.innerText = "หยุดเล่นชั่วคราว";
-        statusText.style.color = "#94a3b8";
-      }
-    }
-
-    playBtn.addEventListener('click', togglePlay);
-    prevBtn.addEventListener('click', () => {
-      const prevIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
-      selectAndPlay(prevIndex);
-    });
-    nextBtn.addEventListener('click', () => {
-      const nextIndex = (currentTrackIndex + 1) % tracks.length;
-      selectAndPlay(nextIndex);
+    audio.addEventListener('play', () => {
+      disc.style.animationPlayState = 'running';
     });
 
-    volumeSlider.addEventListener('input', (e) => {
-      audio.volume = e.target.value;
+    audio.addEventListener('pause', () => {
+      disc.style.animationPlayState = 'paused';
     });
 
     audio.addEventListener('ended', () => {
       const nextIndex = (currentTrackIndex + 1) % tracks.length;
-      selectAndPlay(nextIndex);
+      selectTrack(nextIndex);
     });
 
-    audio.addEventListener('error', () => {
-      statusText.innerText = "ไม่สามารถโหลดเพลงได้";
-      statusText.style.color = "#f87171";
-      playBtn.innerText = '▶';
-      disc.style.animationPlayState = 'paused';
-    });
-
-    // เริ่มต้น
-    updateTrackInfo(0);
-    audio.src = tracks[0].url;
+    // เริ่มต้นหน้าเว็บ
+    renderPlaylist();
+    const initUrl = tracks[0].url;
+    audio.src = initUrl.includes('archive.org') ? corsProxy + encodeURIComponent(initUrl) : initUrl;
   </script>
 </body>
 </html>
