@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>MYRADIOhit Player</title>
+    <title>Mytadent Radio Player</title>
     <style>
         * {
             box-sizing: border-box;
@@ -16,46 +16,56 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 40px;
+            padding: 0 30px;
             height: 100vh;
             overflow: hidden;
         }
-        /* เครื่องเล่นวิทยุด้านซ้าย */
-        .player-container {
-            width: 280px;
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 10px;
+
+        /* เครื่องเล่นวิทยุด้านซ้าย (สไตล์ตามภาพต้นฉบับ) */
+        .player-box {
+            width: 290px;
+            background: #121824;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
             padding: 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
-        .player-header {
-            font-size: 12px;
-            color: #94a3b8;
-            margin-bottom: 10px;
+        .player-top-bar {
+            font-size: 11px;
+            color: #64748b;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .vinyl-box {
-            width: 120px;
-            height: 120px;
+        .on-air-badge {
+            background: #0ea5e9;
+            color: #fff;
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .vinyl-container {
+            width: 130px;
+            height: 130px;
             background: #000;
             border-radius: 50%;
-            margin: 15px auto;
+            margin: 10px auto 15px auto;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 4px solid #1e293b;
-            box-shadow: 0 0 15px rgba(0,0,0,0.8);
+            border: 6px solid #1a2234;
+            box-shadow: 0 0 15px rgba(0,0,0,0.9);
             position: relative;
         }
         .vinyl-center {
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             background: #0ea5e9;
             border-radius: 50%;
-            border: 2px solid #fff;
+            border: 3px solid #fff;
         }
-        /* เอฟเฟกต์แผ่นเสียงหมุนตอนเล่นเพลง */
         .rotating {
             animation: spin 3s linear infinite;
         }
@@ -63,169 +73,321 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .now-playing {
-            font-size: 11px;
-            color: #38bdf8;
-            margin-bottom: 5px;
-            text-transform: uppercase;
+        .now-playing-label {
+            font-size: 10px;
+            color: #64748b;
+            letter-spacing: 0.5px;
         }
-        .track-title {
-            font-size: 13px;
+        .track-name {
+            font-size: 12px;
             font-weight: bold;
-            margin-bottom: 15px;
+            color: #38bdf8;
+            margin-bottom: 12px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            height: 18px;
+            height: 16px;
         }
-        audio {
-            width: 100%;
-            height: 35px;
+        .category-text {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-bottom: 12px;
+        }
+        
+        /* ควบคุมเครื่องเล่น */
+        .controls-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .play-btn {
+            width: 36px;
+            height: 36px;
+            background: #0ea5e9;
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(14, 165, 233, 0.4);
+        }
+        .play-btn:hover {
+            background: #0284c7;
+        }
+        .progress-bar-container {
+            flex-grow: 1;
+            background: #1e293b;
+            height: 5px;
+            border-radius: 3px;
+            position: relative;
+            cursor: pointer;
+        }
+        .progress-fill {
+            background: #0ea5e9;
+            height: 100%;
+            width: 0%;
+            border-radius: 3px;
+        }
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+        .bottom-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #1e293b;
+            padding-top: 10px;
+        }
+        .volume-box {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .volume-box input[type="range"] {
+            width: 70px;
+            accent-color: #0ea5e9;
+            height: 4px;
+        }
+        .onair-link {
+            font-size: 10px;
+            color: #0ea5e9;
+            text-decoration: none;
+        }
+        .onair-link:hover {
+            text-decoration: underline;
         }
 
-        /* Playlist ด้านขวา */
-        .playlist-container {
-            width: 280px;
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 10px;
+        /* รายชื่อเพลง Playlist ด้านขวา (สไตล์ตามภาพต้นฉบับ) */
+        .playlist-box {
+            width: 290px;
+            background: #121824;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
             padding: 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-            max-height: 380px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            max-height: 360px;
             overflow-y: auto;
-            backdrop-filter: blur(5px);
         }
-        .playlist-title {
-            font-size: 14px;
+        .playlist-header {
+            font-size: 13px;
             font-weight: bold;
-            margin-bottom: 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 5px;
-            color: #f8fafc;
+            color: #fff;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 8px;
         }
         .playlist-item {
             padding: 8px 10px;
             margin-bottom: 6px;
-            background: rgba(30, 41, 59, 0.7);
-            border-radius: 6px;
+            background: #1a2234;
+            border-radius: 5px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 12px;
+            transition: 0.2s;
             border: 1px solid transparent;
         }
         .playlist-item:hover {
-            background: rgba(56, 189, 248, 0.2);
-            border-color: rgba(56, 189, 248, 0.4);
+            background: #1e293b;
+            border-color: #0ea5e9;
         }
         .playlist-item.active {
-            background: rgba(14, 165, 233, 0.3);
+            background: rgba(14, 165, 233, 0.2);
             border-color: #0ea5e9;
+        }
+        .playlist-item .title {
+            font-size: 12px;
+            color: #f8fafc;
+            font-weight: bold;
         }
         .playlist-item .cat {
             font-size: 10px;
-            color: #94a3b8;
+            color: #64748b;
             margin-top: 2px;
         }
 
-        /* แต่ง Scrollbar ให้สวยงาม */
-        .playlist-container::-webkit-scrollbar {
-            width: 5px;
+        /* แต่ง Scrollbar */
+        .playlist-box::-webkit-scrollbar {
+            width: 4px;
         }
-        .playlist-container::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.2);
-            border-radius: 10px;
+        .playlist-box::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
 
-    <!-- ส่วนเครื่องเล่นเพลง (ซ้าย) -->
-    <div class="player-container">
-        <div class="player-header">MYRADIOhit Player</div>
-        <div class="vinyl-box" id="vinyl">
+    <!-- เครื่องเล่นวิทยุด้านซ้าย -->
+    <div class="player-box">
+        <div class="player-top-bar">
+            <span>Mytadent Radio Player</span>
+            <span class="on-air-badge">ON AIR</span>
+        </div>
+        <div class="vinyl-container" id="vinyl">
             <div class="vinyl-center"></div>
         </div>
-        <div class="now-playing">NOW PLAYING</div>
-        <div class="track-title" id="current-title">Select a track to start</div>
-        <audio id="audio-player" controls preload="auto"></audio>
+        <div class="now-playing-label">NOW PLAYING</div>
+        <div class="track-name" id="current-title">Select a track to start</div>
+        <div class="category-text" id="current-cat">Category</div>
+
+        <div class="controls-row">
+            <button class="play-btn" id="play-pause-btn" onclick="togglePlay()">▶</button>
+            <div class="progress-bar-container" id="progress-container" onclick="seekAudio(event)">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="time-info">
+            <span id="current-time">0:00</span>
+            <span id="duration-time">0:00</span>
+        </div>
+
+        <div class="bottom-controls">
+            <div class="volume-box">
+                <span style="font-size: 12px; color: #64748b;">🔊</span>
+                <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="1" oninput="changeVolume(this.value)">
+            </div>
+            <a href="#" class="onair-link">BROADCAST TO ON AIR</a>
+        </div>
     </div>
 
-    <!-- ส่วนรายการเพลง Playlist (ขวา) -->
-    <div class="playlist-container">
-        <div class="playlist-title">Playlist</div>
-        
-        <div class="playlist-item" onclick="playTrack(0, 'Tag Hits String 2026', 'https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3')">
-            <div>#1 Tag Hits String 2026</div>
+    <!-- รายชื่อเพลง Playlist ด้านขวา -->
+    <div class="playlist-box">
+        <div class="playlist-header">Playlist</div>
+
+        <div class="playlist-item" onclick="selectTrack(0, 'Tag Hits String 2026', 'Category: String', 'https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3')">
+            <div class="title">#1 Tag Hits String 2026</div>
             <div class="cat">Category: String</div>
         </div>
 
-        <div class="playlist-item" onclick="playTrack(1, 'Thaistation Radio Mix', 'https://ia902905.us.archive.org/5/items/thaistation/thaistation.mp3')">
-            <div>#2 Thaistation Radio Mix</div>
+        <div class="playlist-item" onclick="selectTrack(1, 'Thaistation Radio Mix', 'Category: String', 'https://ia902905.us.archive.org/5/items/thaistation/thaistation.mp3')">
+            <div class="title">#2 Thaistation Radio Mix</div>
             <div class="cat">Category: String</div>
         </div>
 
-        <div class="playlist-item" onclick="playTrack(2, 'String Pop Selection #1', 'https://ia601906.us.archive.org/3/items/radio_202607/1.radio.mp3')">
-            <div>#3 String Pop Selection #1</div>
+        <div class="playlist-item" onclick="selectTrack(2, 'String Pop Selection #1', 'Category: String', 'https://ia601906.us.archive.org/3/items/radio_202607/1.radio.mp3')">
+            <div class="title">#3 String Pop Selection #1</div>
             <div class="cat">Category: String</div>
         </div>
 
-        <div class="playlist-item" onclick="playTrack(3, '2-Hour Nonstop String Hits', 'https://ia601501.us.archive.org/2/items/thaistation-v.-1/thaistation%20v.1.mp3')">
-            <div>#4 2-Hour Nonstop String Hits</div>
+        <div class="playlist-item" onclick="selectTrack(3, '2-Hour Nonstop String Hits', 'Category: String', 'https://ia601501.us.archive.org/2/items/thaistation-v.-1/thaistation%20v.1.mp3')">
+            <div class="title">#4 2-Hour Nonstop String Hits</div>
             <div class="cat">Category: String</div>
         </div>
 
-        <div class="playlist-item" onclick="playTrack(4, 'Thai Country Music (Luk Thung)', 'https://ia600903.us.archive.org/29/items/luk-thung-music/Luk%20Thung%20music.mp3')">
-            <div>#5 Thai Country Music (Luk Thung)</div>
+        <div class="playlist-item" onclick="selectTrack(4, 'Thai Country Music (Luk Thung)', 'Category: Luk Thung', 'https://ia600903.us.archive.org/29/items/luk-thung-music/Luk%20Thung%20music.mp3')">
+            <div class="title">#5 Thai Country Music (Luk Thung)</div>
             <div class="cat">Category: Luk Thung</div>
         </div>
 
-        <div class="playlist-item" onclick="playTrack(5, 'Southern Folk Hits Collection', 'https://ia601609.us.archive.org/27/items/plangtai2/plangtai2.mp3')">
-            <div>#6 Southern Folk Hits Collection</div>
+        <div class="playlist-item" onclick="selectTrack(5, 'Southern Folk Hits Collection', 'Category: Southern Folk', 'https://ia601609.us.archive.org/27/items/plangtai2/plangtai2.mp3')">
+            <div class="title">#6 Southern Folk Hits Collection</div>
             <div class="cat">Category: Southern Folk</div>
         </div>
 
-        <div class="playlist-item" onclick="playTrack(6, 'Southern Melodic Style', 'https://files.catbox.moe/k4dtxi.mp3')">
-            <div>#7 Southern Melodic Style</div>
+        <div class="playlist-item" onclick="selectTrack(6, 'Southern Melodic Style', 'Category: Southern Folk', 'https://files.catbox.moe/k4dtxi.mp3')">
+            <div class="title">#7 Southern Melodic Style</div>
             <div class="cat">Category: Southern Folk</div>
         </div>
     </div>
 
+    <!-- Audio Element ซ่อนไว้ทำงานเบื้องหลัง -->
+    <audio id="audio-player" preload="auto"></audio>
+
     <script>
-        const player = document.getElementById('audio-player');
-        const titleElement = document.getElementById('current-title');
+        const audio = document.getElementById('audio-player');
+        const playBtn = document.getElementById('play-pause-btn');
+        const titleEl = document.getElementById('current-title');
+        const catEl = document.getElementById('current-cat');
         const vinyl = document.getElementById('vinyl');
-        const items = document.querySelectorAll('.playlist-item');
+        const progressFill = document.getElementById('progress-fill');
+        const currentTimeEl = document.getElementById('current-time');
+        const durationTimeEl = document.getElementById('duration-time');
+        const playlistItems = document.querySelectorAll('.playlist-item');
 
-        function playTrack(index, title, url) {
-            titleElement.innerText = title;
-            player.src = url;
-            player.load(); // สั่งโหลดไฟล์เสียงใหม่ทันที
+        let isPlaying = false;
+        let currentTrackUrl = "";
+
+        function selectTrack(index, title, cat, url) {
+            titleEl.innerText = title;
+            catEl.innerText = cat;
+            currentTrackUrl = url;
+            audio.src = url;
+            audio.load();
             
-            let playPromise = player.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.log("Autoplay was prevented:", error);
-                });
-            }
+            audio.play().then(() => {
+                isPlaying = true;
+                playBtn.innerText = "❚❚";
+                vinyl.classList.add('rotating');
+            }).catch(e => console.log("Play error:", e));
 
-            // จัดการไฮไลท์แถบรายการเพลงที่กำลังเล่น
-            items.forEach((item, idx) => {
+            playlistItems.forEach((item, idx) => {
                 if (idx === index) {
                     item.classList.add('active');
                 } else {
                     item.classList.remove('active');
                 }
             });
-
-            vinyl.classList.add('rotating');
         }
 
-        player.addEventListener('pause', () => {
-            vinyl.classList.remove('rotating');
+        function togglePlay() {
+            if (!currentTrackUrl) {
+                // ถ้ายังไม่เลือกเพลง ให้กดปุ่มแล้วเล่นเพลงแรกอัตโนมัติ
+                playlistItems[0].click();
+                return;
+            }
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+                playBtn.innerText = "▶";
+                vinyl.classList.remove('rotating');
+            } else {
+                audio.play().then(() => {
+                    isPlaying = true;
+                    playBtn.innerText = "❚❚";
+                    vinyl.classList.add('rotating');
+                }).catch(e => console.log("Play error:", e));
+            }
+        }
+
+        audio.addEventListener('timeupdate', () => {
+            if (audio.duration) {
+                const percent = (audio.currentTime / audio.duration) * 100;
+                progressFill.style.width = percent + '%';
+                currentTimeEl.innerText = formatTime(audio.currentTime);
+                durationTimeEl.innerText = formatTime(audio.duration);
+            }
         });
 
-        player.addEventListener('play', () => {
-            vinyl.classList.add('rotating');
+        function seekAudio(event) {
+            if (!audio.duration) return;
+            const width = event.currentTarget.clientWidth;
+            const clickX = event.offsetX;
+            audio.currentTime = (clickX / width) * audio.duration;
+        }
+
+        function changeVolume(val) {
+            audio.volume = val;
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return mins + ":" + (secs < 10 ? "0" : "") + secs;
+        }
+
+        audio.addEventListener('ended', () => {
+            isPlaying = false;
+            playBtn.innerText = "▶";
+            vinyl.classList.remove('rotating');
         });
     </script>
 </body>
