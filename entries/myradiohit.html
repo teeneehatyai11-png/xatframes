@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MYRADIOhit Player</title>
+    <title>MYRADIOhit Mini Player</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -20,7 +20,7 @@
             overflow: hidden;
         }
 
-        /* 🖼️ การ์ดฝั่งซ้าย (วิดีโอ yc18zg.mp4) */
+        /* 🖼️ การ์ดฝั่งซ้าย (วิดีโอ yc18zg.mp4)[cite: 1, 3] */
         .left-card {
             position: absolute;
             top: 100px;
@@ -34,7 +34,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
         }
 
-        /* 📱 การ์ดฝั่งขวา (วิดีโอ s9d6v6.mp4 + วิทยุ) */
+        /* 📱 การ์ดฝั่งขวา (วิดีโอ s9d6v6.mp4 + เครื่องเล่นมินิ)[cite: 1, 3] */
         .right-card {
             position: absolute;
             top: 100px;
@@ -50,7 +50,6 @@
             flex-direction: column;
         }
 
-        /* วิดีโอพื้นหลัง */
         .video-bg-box {
             position: absolute;
             top: 0;
@@ -66,7 +65,6 @@
             object-fit: cover;
         }
 
-        /* เลเยอร์ครอบส่วนควบคุม */
         .card-content-overlay {
             position: relative;
             z-index: 10;
@@ -107,75 +105,36 @@
             50% { opacity: 0.3; }
         }
 
-        /* กล่องเครื่องเล่น Glassmorphism */
-        .glass-player {
+        /* 🎧 กล่องเครื่องเล่นขนาดมินิ (Mini Glass Player) */
+        .glass-player-mini {
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 14px;
-            padding: 12px;
+            padding: 10px 12px;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
-        .song-info {
-            text-align: center;
-            width: 100%;
-        }
-
-        .now-playing {
-            font-size: 9px;
-            font-weight: 700;
-            color: #00f2fe;
-            letter-spacing: 1.5px;
-            margin-bottom: 2px;
-        }
-
-        .track-title {
-            font-size: 12px;
-            font-weight: 600;
-            color: #ffffff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .playlist-select {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            color: #00f2fe;
-            border: 1px solid rgba(0, 242, 254, 0.5);
-            border-radius: 8px;
-            padding: 6px 10px;
-            font-size: 11px;
-            outline: none;
-            cursor: pointer;
-        }
-
-        .playlist-select option {
-            background: #12121c;
-            color: #fff;
-        }
-
-        /* 🔵 ปุ่มเปิด/ปิดวงกลมนีออน */
+        /* 🔵 ปุ่มเปิด/ปิดวงกลมขนาดพอดีมือ */
         .round-play-btn {
-            width: 55px;
-            height: 55px;
+            width: 46px;
+            height: 46px;
+            min-width: 46px;
             border-radius: 50%;
             background: linear-gradient(135deg, #ff007f, #00f2fe);
             border: 2px solid rgba(255, 255, 255, 0.9);
             color: #ffffff;
-            font-size: 20px;
+            font-size: 16px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.6);
+            box-shadow: 0 0 12px rgba(0, 242, 254, 0.6);
             transition: transform 0.2s;
-            margin: 2px 0;
         }
 
         .round-play-btn:active {
@@ -183,26 +142,41 @@
         }
 
         .round-play-btn i.fa-play {
-            margin-left: 3px;
+            margin-left: 2px;
+        }
+
+        .player-info-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            overflow: hidden;
+        }
+
+        .track-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .volume-box {
-            width: 100%;
             display: flex;
             align-items: center;
-            gap: 8px;
-            color: #a0aec0;
-            font-size: 11px;
+            gap: 6px;
+            color: #00f2fe;
+            font-size: 10px;
         }
 
         .volume-box input[type="range"] {
             flex: 1;
-            height: 4px;
+            height: 3px;
             accent-color: #00f2fe;
             cursor: pointer;
         }
 
-        /* ซ่อน Audio แบบให้ยังทำงานได้ */
         audio {
             display: none;
         }
@@ -210,10 +184,10 @@
 </head>
 <body>
 
-    <!-- ใช้ HTML Audio Element เดิมที่คุณส่งมา -->
-    <audio id="audio-player" preload="none"></audio>
+    <!-- ไฟล์เพลงตัวเดิมที่เปิดดังชัวร์[cite: 3] -->
+    <audio id="audio-player" src="https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3" preload="none"></audio>
 
-    <!-- ฝั่งซ้าย (วิดีโอ yc18zg.mp4) -->
+    <!-- ฝั่งซ้าย (วิดีโอ yc18zg.mp4)[cite: 1, 3] -->
     <div class="left-card">
         <div class="video-bg-box">
             <video autoplay loop muted playsinline>
@@ -222,7 +196,7 @@
         </div>
     </div>
 
-    <!-- ฝั่งขวา (วิดีโอ s9d6v6.mp4 + วิทยุ) -->
+    <!-- ฝั่งขวา (วิดีโอ s9d6v6.mp4 + วิทยุมินิ)[cite: 1, 3] -->
     <div class="right-card">
         <div class="video-bg-box">
             <video autoplay loop muted playsinline>
@@ -236,27 +210,19 @@
                 <span>LIVE</span>
             </div>
 
-            <div class="glass-player">
-                <div class="song-info">
-                    <div class="now-playing">NOW PLAYING</div>
-                    <div class="track-title" id="current-title">1. รวมเพลงเพราะฟังสบาย</div>
-                </div>
-
-                <select class="playlist-select" id="station-select">
-                    <option value="https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3">1. รวมเพลงเพราะฟังสบาย</option>
-                    <option value="https://ia902905.us.archive.org/5/items/thaistation/thaistation.mp3">2. รวมเพลงเพราะฟังสบายตอนทำงาน</option>
-                    <option value="https://ia601906.us.archive.org/3/items/radio_202607/1.radio.mp3">3. รวมเพลงเพราะฟังสบาย (สถานีที่ 3)</option>
-                    <option value="https://ia601501.us.archive.org/2/items/thaistation-v.-1/thaistation%20v.1.mp3">4. รวมเพลงเพราะวันพักผ่อน</option>
-                </select>
-
-                <!-- 🔵 ปุ่มเปิด/ปิดทรงกลม -->
+            <!-- เครื่องเล่นวิทยุไซส์มินิ กระทัดรัด -->
+            <div class="glass-player-mini">
+                <!-- ปุ่มกลมกด เปิด/ปิด[cite: 3] -->
                 <button class="round-play-btn" id="toggle-btn" onclick="togglePlayPause()">
                     <i class="fas fa-play" id="btn-icon"></i>
                 </button>
 
-                <div class="volume-box">
-                    <i class="fas fa-volume-up"></i>
-                    <input type="range" id="volume-range" min="0" max="1" step="0.05" value="1" oninput="setVolume(this.value)">
+                <div class="player-info-box">
+                    <div class="track-title">#1 Tag Hits String 2026</div>
+                    <div class="volume-box">
+                        <i class="fas fa-volume-up"></i>
+                        <input type="range" id="volume-range" min="0" max="1" step="0.05" value="1" oninput="setVolume(this.value)">
+                    </div>
                 </div>
             </div>
         </div>
@@ -265,47 +231,25 @@
     <script>
         const player = document.getElementById('audio-player');
         const btnIcon = document.getElementById('btn-icon');
-        const stationSelect = document.getElementById('station-select');
-        const titleElement = document.getElementById('current-title');
 
-        // ฟังก์ชันสลับ เปิด / ปิด (Toggle Play & Pause)
+        // ฟังก์ชันสลับ เปิด / ปิด (Play / Pause)[cite: 3]
         function togglePlayPause() {
-            // ถ้ายังไม่มีเพลง ให้เอาเพลงแรกจาก select มาใส่
-            if (!player.src || player.src === "" || player.src === window.location.href) {
-                player.src = stationSelect.value;
-            }
-
-            // เช็กสถานะว่าเล่นอยู่หรือไม่
             if (player.paused) {
                 player.play().then(() => {
-                    btnIcon.className = "fas fa-pause"; // เปลี่ยนเป็นไอคอนหยุด
+                    btnIcon.className = "fas fa-pause"; // สลับเป็นไอคอนหยุด[cite: 3]
                 }).catch(err => {
-                    console.log("Play blocked: ", err);
+                    console.log("Play error: ", err);
                 });
             } else {
-                player.pause(); // สั่งหยุดเพลง
-                btnIcon.className = "fas fa-play"; // เปลี่ยนกลับเป็นไอคอนเล่น
+                player.pause(); // สั่งหยุดเพลง[cite: 3]
+                btnIcon.className = "fas fa-play"; // สลับกลับเป็นไอคอนเล่น[cite: 3]
             }
         }
 
-        // เปลี่ยนเพลงเมื่อเลือกจาก Dropdown
-        stationSelect.addEventListener('change', function() {
-            const selectedText = this.options[this.selectedIndex].text;
-            titleElement.innerText = selectedText;
-            player.src = this.value;
-            
-            // เล่นเพลงทันทีหลังเปลี่ยนสถานี
-            player.play().then(() => {
-                btnIcon.className = "fas fa-pause";
-            });
-        });
-
-        // ปรับความดังเสียง
         function setVolume(val) {
             player.volume = val;
         }
 
-        // เมื่อเพลงจบ ให้สลับไอคอนกลับเป็นปุ่ม Play
         player.onended = function() {
             btnIcon.className = "fas fa-play";
         };
