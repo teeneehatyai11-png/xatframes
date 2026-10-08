@@ -1,146 +1,338 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <title>MYRADIOhit Player</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-        body {
-            background: transparent;
-            color: #fff;
-            height: 100vh;
-            overflow: hidden;
-            position: relative;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MYRADIOhit - Full Video & Photo Player Frame</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-        /* วิดีโอพื้นหลัง */
-        .bg-video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            object-position: 85% center;
-            z-index: -999;
-        }
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Kanit', sans-serif;
+      user-select: none;
+    }
 
-        /* กล่องวิทยุฝั่งขวา ลากเลื่อนได้ */
-        .draggable-sidebar {
-            position: fixed;
-            top: 50%;
-            right: 20px;
-            transform: translateY(-50%);
-            width: 290px;
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid rgba(56, 189, 248, 0.4);
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.9);
-            backdrop-filter: blur(5px);
-            z-index: 2147483647;
-            user-select: none;
-            overflow: hidden;
-        }
+    /* พื้นหลังโปร่งใสและยกเลิก pointer-events ของ body เพื่อให้กดทะลุแชทตรงกลางได้ */
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: transparent !important;
+      overflow: hidden;
+      position: relative;
+      pointer-events: none;
+    }
 
-        /* ส่วนหัวสำหรับลากเลื่อน */
-        .drag-header {
-            background: rgba(30, 41, 59, 0.9);
-            padding: 8px 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 11px;
-            font-weight: bold;
-            color: #38bdf8;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            cursor: move;
-        }
+    /* 📋 กล่องรายการเพลงฝั่งซ้าย */
+    .playlist-container {
+      position: absolute;
+      top: 20px;
+      left: 15px;
+      width: 250px;
+      height: calc(100vh - 40px);
+      max-height: 540px;
+      background: rgba(18, 18, 28, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      z-index: 999999 !important;
+      pointer-events: auto !important;
+    }
 
-        .drag-hint {
-            font-size: 8px;
-            color: #94a3b8;
-            background: rgba(56, 189, 248, 0.1);
-            padding: 1px 5px;
-            border-radius: 3px;
-        }
+    .playlist-header {
+      font-size: 13px;
+      font-weight: 700;
+      color: #00f2fe;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      justify-content: space-between;
+    }
 
-        /* กรอบตัวเล่นวิทยุทางการ */
-        .player-container {
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.4);
-        }
+    .playlist-scroll {
+      overflow-y: auto;
+      flex: 1;
+    }
 
-        .player-container iframe {
-            width: 100%;
-            height: 130px;
-            border: none;
-            border-radius: 6px;
-        }
-    </style>
+    .playlist-item {
+      padding: 8px 10px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .playlist-item:hover {
+      background: rgba(0, 242, 254, 0.25);
+    }
+
+    .playlist-item.active {
+      background: rgba(255, 0, 80, 0.35);
+      border: 1px solid #ff0050;
+    }
+
+    .item-num { font-size: 11px; color: #00f2fe; font-weight: bold; }
+    .item-title { color: #fff; font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* 📱 กล่องเครื่องเล่นฝั่งขวาแบบแสดงผลภาพ/วิดีโอเต็มการ์ด */
+    .player-card {
+      position: absolute;
+      top: 20px;
+      right: 15px;
+      width: 300px;
+      height: calc(100vh - 40px);
+      max-height: 540px;
+      background: rgba(18, 18, 28, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      z-index: 999999 !important;
+      pointer-events: auto !important;
+      overflow: hidden;
+    }
+
+    .tiktok-badge {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .tiktok-channel {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .tiktok-icon {
+      width: 20px;
+      height: 20px;
+      background: #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #fff;
+      box-shadow: -2px -2px 6px #ff0050, 2px 2px 6px #00f2fe;
+    }
+
+    .live-tag {
+      background: linear-gradient(45deg, #ff0050, #00f2fe);
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 9px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .song-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .song-logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      object-fit: cover;
+    }
+
+    .song-info h2 {
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 190px;
+    }
+
+    .song-info p {
+      font-size: 9px;
+      color: #aaa;
+    }
+
+    /* 🎬 กรอบวิดีโอหลักปรับเต็มพื้นที่การ์ด (Full Container) */
+    .media-container {
+      flex: 1;
+      width: 100%;
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    /* ภาพสไลด์บนแบบคลุมเต็มพื้นที่ด้านบน */
+    .photo-slide-box {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .photo-slide-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* ปรับภาพให้เต็มกรอบเนียนสวย */
+      transition: opacity 0.3s ease;
+    }
+
+    .photo-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 4px;
+      background: rgba(0, 0, 0, 0.75);
+      color: #fff;
+      font-size: 10px;
+      text-align: center;
+    }
+
+    /* เครื่องเล่นวิดีโอ .mp4 เต็มส่วนล่าง */
+    .video-box {
+      flex: 1;
+      width: 100%;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* ปรับวิดีโอให้เต็มพื้นที่ */
+      outline: none;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- วิดีโอพื้นหลัง -->
-    <video class="bg-video" autoplay muted loop playsinline>
-        <source src="https://files.catbox.moe/ebhsth.mp4" type="video/mp4">
-    </video>
+  <!-- รายการเพลงซ้ายมือ -->
+  <div class="playlist-container">
+    <div class="playlist-header">
+      <span>รายการเพลง</span>
+      <span style="font-size:10px; color:#aaa;">7 รายการ</span>
+    </div>
+    <div class="playlist-scroll" id="playlist-items"></div>
+  </div>
 
-    <!-- กล่องวิทยุฝั่งขวา -->
-    <div class="draggable-sidebar" id="draggable-box">
-        <div class="drag-header" id="drag-handle">
-            <span>MYRADIOhit Live</span>
-            <span class="drag-hint">↔ ลากย้ายได้</span>
-        </div>
-        
-        <div class="player-container">
-            <!-- ใช้เครื่องเล่นหลักของ plathong โดยตรงเพื่อให้ปุ่มกดและระบบเสียงทำงานสมบูรณ์ -->
-            <iframe src="https://radio.plathong.net/main/player/?server=radio9&port=7264" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        </div>
+  <!-- เครื่องเล่นขวามือ (ภาพ + วิดีโอ แบบเต็มการ์ด) -->
+  <div class="player-card">
+    <div class="tiktok-badge">
+      <div class="tiktok-channel">
+        <div class="tiktok-icon"><i class="fa-brands fa-tiktok"></i></div>
+        <span>Chill Music TH</span>
+      </div>
+      <div class="live-tag">LIVE</div>
     </div>
 
-    <script>
-        // ระบบลากเลื่อนกล่องวิทยุ
-        const box = document.getElementById('draggable-box');
-        const handle = document.getElementById('drag-handle');
+    <div class="song-header">
+      <img src="https://xatimg.com/image/V6YjIf8rzCsg.png" alt="Logo" class="song-logo">
+      <div class="song-info">
+        <h2><span id="song-title">วิดีโอเพลงสตรีมมิ่ง</span></h2>
+        <p>MYRADIOhit Online</p>
+      </div>
+    </div>
 
-        let isDragging = false;
-        let startX, startY, initialX, initialY;
+    <!-- ส่วนแสดงสื่อหลักแบบขยายเต็มกรอบการ์ด -->
+    <div class="media-container">
+      <!-- ภาพสไลด์เต็มกรอบ上 -->
+      <div class="photo-slide-box">
+        <img src="https://xatimg.com/image/P8z2aOMls66d.png" id="photo-viewer" alt="Slide Photo">
+        <div class="photo-caption" id="photo-caption">✨ รวมเพลงเพราะจาก TIKTOK</div>
+      </div>
 
-        handle.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            const rect = box.getBoundingClientRect();
-            box.style.top = rect.top + 'px';
-            box.style.left = rect.left + 'px';
-            box.style.right = 'auto';
-            box.style.transform = 'none';
+      <!-- เล่นวิดีโอ .mp4 เต็มกรอบ下 -->
+      <div class="video-box">
+        <video id="main-video" controls preload="metadata" controlsList="nodownload">
+          <source src="https://ia601406.us.archive.org/23/items/vedio_202610/vedio.mp4" type="video/mp4">
+          เบราว์เซอร์ของคุณไม่รองรับการเล่นวิดีโอ
+        </video>
+      </div>
+    </div>
+  </div>
 
-            startX = e.clientX;
-            startY = e.clientY;
-            initialX = box.offsetLeft;
-            initialY = box.offsetTop;
+  <script>
+    const slides = [
+      { image: "https://xatimg.com/image/P8z2aOMls66d.png", caption: "✨ รวมเพลงเพราะจาก TIKTOK" },
+      { image: "https://xatimg.com/image/p5YKtEmIMo4X.png", caption: "🎧 ฟังเพลงชิลๆ ด้วยกัน" },
+      { image: "https://xatimg.com/image/XVWLwqjqqstE.png", caption: "👫 มิตรภาพและความทรงจำ" },
+      { image: "https://xatimg.com/image/A98tLWd84hNA.png", caption: "💫 ค่ำคืนนี้ยาวนาน" },
+      { image: "https://xatimg.com/image/V4VgGwkfe6yV.png", caption: "🎵 เสียงเพลงบรรเลงต่อ..." },
+      { image: "https://xatimg.com/image/0asGwujZ28p9.png", caption: "🌌 บรรยากาศยามค่ำคืน" }
+    ];
 
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', onMouseUp);
-        });
+    const tracksData = [
+      { title: "#1 วิดีโอเพลงสตริงใหม่ล่าสุด" },
+      { title: "#2 Thaistation Radio Mix" },
+      { title: "#3 String Pop Selection" },
+      { title: "#4 2-Hour Nonstop Hits" },
+      { title: "#5 Thai Country Favorites" },
+      { title: "#6 Southern Hits Collection" },
+      { title: "#7 Southern Melodic Folk" }
+    ];
 
-        function onMouseMove(e) {
-            if (!isDragging) return;
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-            box.style.left = (initialX + dx) + 'px';
-            box.style.top = (initialY + dy) + 'px';
-        }
+    let currentSlideIndex = 0;
+    const photoViewer = document.getElementById('photo-viewer');
+    const photoCaption = document.getElementById('photo-caption');
+    const songTitle = document.getElementById('song-title');
 
-        function onMouseUp() {
-            isDragging = false;
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', onMouseUp);
-        }
-    </script>
+    // สลับสไลด์ภาพอัตโนมัติทุกๆ 4 วินาที
+    setInterval(() => {
+      currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+      photoViewer.style.opacity = '0.3';
+      setTimeout(() => {
+        photoViewer.src = slides[currentSlideIndex].image;
+        photoCaption.innerText = slides[currentSlideIndex].caption;
+        photoViewer.style.opacity = '1';
+      }, 200);
+    }, 4000);
+
+    function renderPlaylist() {
+      const container = document.getElementById('playlist-items');
+      container.innerHTML = '';
+      tracksData.forEach((track, index) => {
+        const item = document.createElement('div');
+        item.className = `playlist-item ${index === 0 ? 'active' : ''}`;
+        item.onclick = () => {
+          songTitle.innerText = track.title;
+          document.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
+          item.classList.add('active');
+        };
+        item.innerHTML = `
+          <div class="item-num">${index + 1}</div>
+          <div class="item-title">${track.title}</div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    renderPlaylist();
+  </script>
 </body>
 </html>
