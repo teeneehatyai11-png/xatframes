@@ -20,7 +20,7 @@
             height: 100vh;
             overflow: hidden;
         }
-        /* เครื่องเล่นวิทยุด้านซ้าย (ขยับลงมา 100px) */
+        /* เครื่องเล่นวิทยุด้านซ้าย */
         .player-container {
             width: 280px;
             background: rgba(15, 23, 42, 0.9);
@@ -28,7 +28,6 @@
             border-radius: 8px;
             padding: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            margin-top: 100px;
         }
         .player-header {
             font-size: 12px;
@@ -71,7 +70,7 @@
             height: 35px;
         }
 
-        /* Playlist ด้านขวา (ขยับลงมา 100px) */
+        /* Playlist ด้านขวา */
         .playlist-container {
             width: 280px;
             background: rgba(15, 23, 42, 0.9);
@@ -81,7 +80,6 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             max-height: 90vh;
             overflow-y: auto;
-            margin-top: 100px;
         }
         .playlist-title {
             font-size: 14px;
@@ -129,8 +127,8 @@
             <div>#1 Tag Hits String 2026</div>
             <div class="cat">Category: String</div>
         </div>
-    </div>
 
+        
     <script>
         function playTrack(title, url) {
             const player = document.getElementById('audio-player');
