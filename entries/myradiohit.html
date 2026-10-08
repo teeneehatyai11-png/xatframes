@@ -2,120 +2,172 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MYRADIOhit xatframe</title>
+    <title>MYRADIOhit Player</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body {
-            width: 100%; height: 100%; overflow: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
             background: transparent;
             color: #fff;
-        }
-        .xatframe-wrapper {
-            position: relative; width: 100vw; height: 100vh;
-            display: flex; justify-content: flex-end; align-items: center;
-            padding: 20px 30px;
-        }
-
-        /* กล่องเครื่องเล่นวิทยุด้านขวา */
-        .right-player-card {
-            width: 260px;
-            background: rgba(12, 18, 32, 0.92);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 240, 255, 0.4);
-            border-radius: 16px;
-            padding: 20px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 999;
-            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.7), 0 0 15px rgba(0, 240, 255, 0.2);
-            pointer-events: auto;
-            text-align: center;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 10px;
+            height: 100vh;
+            overflow: hidden;
         }
-
-        /* รูปแผ่นเสียงหมุนเรืองแสง */
+        /* เครื่องเล่นวิทยุด้านซ้าย */
+        .player-container {
+            width: 280px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .player-header {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
         .vinyl-box {
-            position: relative;
-            width: 110px;
-            height: 110px;
-            margin: 15px 0;
+            width: 120px;
+            height: 120px;
+            background: #000;
+            border-radius: 50%;
+            margin: 15px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid #1e293b;
+            box-shadow: 0 0 10px rgba(0,0,0,0.8);
         }
-        .vinyl {
-            width: 100%; height: 100%; border-radius: 50%;
-            background: radial-gradient(circle, #333 15%, #111 18%, #111 38%, #222 40%, #111 42%, #111 68%, #000 70%);
-            border: 3px solid #222; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
-            animation: spin 4s linear infinite;
-            animation-play-state: paused;
-        }
-        .vinyl.playing { animation-play-state: running; }
         .vinyl-center {
-            width: 30px; height: 30px; background: #00f0ff;
-            border-radius: 50%; border: 3px solid #fff;
-            box-shadow: 0 0 10px #00f0ff;
+            width: 40px;
+            height: 40px;
+            background: #0ea5e9;
+            border-radius: 50%;
         }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* ตัวเล่นเสียง Native HTML5 */
-        audio {
-            width: 100%; height: 36px; margin-top: 10px;
-            border-radius: 20px; outline: none;
-        }
-
-        /* ปุ่มลิงก์สำรองเผื่อเบราว์เซอร์บล็อก iframe */
-        .pop-btn {
-            display: inline-block;
-            margin-top: 12px;
+        .now-playing {
             font-size: 11px;
-            color: #00f0ff;
-            text-decoration: none;
-            border: 1px dashed rgba(0, 240, 255, 0.5);
-            padding: 5px 12px;
-            border-radius: 15px;
-            transition: all 0.2s;
+            color: #38bdf8;
+            margin-bottom: 5px;
         }
-        .pop-btn:hover { background: rgba(0, 240, 255, 0.2); color: #fff; }
+        .track-title {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        audio {
+            width: 100%;
+            height: 35px;
+        }
+
+        /* Playlist ด้านขวา */
+        .playlist-container {
+            width: 280px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .playlist-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 5px;
+        }
+        .playlist-item {
+            padding: 8px;
+            margin-bottom: 6px;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 12px;
+        }
+        .playlist-item:hover {
+            background: rgba(56, 189, 248, 0.3);
+        }
+        .playlist-item .cat {
+            font-size: 10px;
+            color: #94a3b8;
+        }
     </style>
 </head>
 <body>
 
-    <div class="xatframe-wrapper">
-        <!-- เครื่องเล่นวิทยุสวยๆ ด้านขวาอย่างเดียว -->
-        <div class="right-player-card">
-            <div style="font-size: 13px; font-weight: bold; color: #00f0ff; letter-spacing: 1px;">📻 MYRADIOHIT LIVE</div>
-            <div style="font-size: 10px; color: #aaa; margin-top: 3px;">Plathong Stream Server</div>
+    <!-- ส่วนเครื่องเล่นเพลง (ซ้าย) -->
+    <div class="player-container">
+        <div class="player-header">Myradiohit Radio Player</div>
+        <div class="vinyl-box">
+            <div class="vinyl-center"></div>
+        </div>
+        <div class="now-playing">NOW PLAYING</div>
+        <div class="track-title" id="current-title">Select a track to start</div>
+        <audio id="audio-player" controls></audio>
+    </div>
 
-            <div class="vinyl-box">
-                <div class="vinyl" id="vinylRecord">
-                    <div class="vinyl-center"></div>
-                </div>
-            </div>
+    <!-- ส่วนรายการเพลง Playlist (ขวา) -->
+    <div class="playlist-container">
+        <div class="playlist-title">Playlist</div>
+        
+        <div class="playlist-item" onclick="playTrack('สตริงใหม่ล่าสุด', 'https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3')">
+            <div>#1 Tag Hits String 2026</div>
+            <div class="cat">Category: String</div>
+        </div>
 
-            <!-- เครื่องเล่นวิทยุสตรีมตรง -->
-            <audio id="radioPlayer" controls preload="none" onplay="onAudioPlay()" onpause="onAudioPause()">
-                <source src="https://radio14.plathong.net/7056/;stream.mp3?type=http" type="audio/mpeg">
-                เบราว์เซอร์ของคุณไม่รองรับการเล่นเสียง
-            </audio>
+        <div class="playlist-item" onclick="playTrack('เพลตริง (Thaistation)', 'https://ia902905.us.archive.org/5/items/thaistation/thaistation.mp3')">
+            <div>#2 Thaistation Radio Mix</div>
+            <div class="cat">Category: String</div>
+        </div>
 
-            <a href="https://radio14.plathong.net/7056/;stream.mp3?type=http" target="_blank" class="pop-btn">
-                🔗 เปิดฟังหน้าต่างใหม่
-            </a>
+        <div class="playlist-item" onclick="playTrack('สตริง 1', 'https://ia601906.us.archive.org/3/items/radio_202607/1.radio.mp3')">
+            <div>#3 String Pop Selection #1</div>
+            <div class="cat">Category: String</div>
+        </div>
+
+        <div class="playlist-item" onclick="playTrack('สตริง 2 ชม', 'https://ia601501.us.archive.org/2/items/thaistation-v.-1/thaistation%20v.1.mp3')">
+            <div>#4 2-Hour Nonstop String Hits</div>
+            <div class="cat">Category: String</div>
+        </div>
+
+        <div class="playlist-item" onclick="playTrack('เพลงลูกทุ่ง', 'https://ia600903.us.archive.org/29/items/luk-thung-music/Luk%20Thung%20music.mp3')">
+            <div>#5 Thai Country Music (Luk Thung)</div>
+            <div class="cat">Category: Luk Thung</div>
+        </div>
+
+        <div class="playlist-item" onclick="playTrack('เพลงใต้ ชุดใหม่', 'https://ia601609.us.archive.org/27/items/plangtai2/plangtai2.mp3')">
+            <div>#6 Southern Folk Hits Collection</div>
+            <div class="cat">Category: Southern Folk</div>
+        </div>
+
+        <div class="playlist-item" onclick="playTrack('เพลงใต้ แนวเพราะ', 'https://files.catbox.moe/k4dtxi.mp3')">
+            <div>#7 Southern Melodic Style</div>
+            <div class="cat">Category: Southern Folk</div>
         </div>
     </div>
 
     <script>
-        const vinyl = document.getElementById('vinylRecord');
-
-        function onAudioPlay() {
-            vinyl.classList.add('playing');
-        }
-
-        function onAudioPause() {
-            vinyl.classList.remove('playing');
+        function playTrack(title, url) {
+            const player = document.getElementById('audio-player');
+            const titleElement = document.getElementById('current-title');
+            
+            titleElement.innerText = title;
+            player.src = url;
+            player.play();
         }
     </script>
-
 </body>
 </html>
