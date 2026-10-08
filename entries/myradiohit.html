@@ -30,7 +30,7 @@
             z-index: -999;
         }
 
-        /* กล่องวิทยุฝั่งขวาแบบลากเลื่อนได้ อยู่กึ่งกลางแนวตั้งตอนเริ่ม */
+        /* กล่องวิทยุฝั่งขวา แบบลากเลื่อนได้ */
         .draggable-sidebar {
             position: fixed;
             top: 50%;
@@ -47,7 +47,7 @@
             user-select: none;
         }
 
-        /* ส่วนหัวสำหรับใช้คลิกลากเลื่อน */
+        /* ส่วนหัวสำหรับคลิกลากเลื่อน */
         .drag-header {
             background: rgba(30, 41, 59, 0.9);
             padding: 8px 12px;
@@ -69,142 +69,38 @@
             border-radius: 3px;
         }
 
-        /* ส่วนควบคุมเครื่องเล่นวิทยุ */
-        .player-content {
+        /* กรอบตัวเล่นวิทยุสตรีมมิ่งหลัก */
+        .radio-container {
             padding: 10px;
-        }
-
-        .track-info-box {
-            background: rgba(30, 41, 59, 0.8);
-            padding: 6px 10px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-        }
-        .now-playing-label {
-            font-size: 8px;
-            color: #38bdf8;
-            font-weight: bold;
-        }
-        .track-name {
-            font-size: 10px;
-            font-weight: bold;
-            color: #fff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-top: 2px;
-        }
-        .category-text {
-            font-size: 9px;
-            color: #94a3b8;
-            margin-top: 1px;
-        }
-
-        .controls-row {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 8px;
-            margin-bottom: 6px;
         }
-        .play-btn {
-            width: 28px;
-            height: 28px;
-            background: #0ea5e9;
+
+        .radio-frame {
+            width: 100%;
+            height: 120px;
             border: none;
-            border-radius: 50%;
-            color: #fff;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            flex-shrink: 0;
-        }
-        .play-btn:hover {
-            background: #0284c7;
-        }
-        .progress-bar-container {
-            flex-grow: 1;
-            background: #1e293b;
-            height: 5px;
-            border-radius: 3px;
-            cursor: pointer;
-            overflow: hidden;
-        }
-        .progress-fill {
-            background: #38bdf8;
-            height: 100%;
-            width: 0%;
-        }
-        .time-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 8px;
-            color: #94a3b8;
-            margin-bottom: 8px;
-        }
-        .bottom-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 6px;
-            margin-bottom: 8px;
-        }
-        .volume-box {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .volume-box input[type="range"] {
-            width: 70px;
-            accent-color: #0ea5e9;
+            border-radius: 6px;
+            background: #000;
         }
 
-        /* รายชื่อเพลง Playlist */
-        .playlist-box {
-            background: rgba(15, 23, 42, 0.95);
-            border-top: 1px solid rgba(255,255,255,0.1);
-            max-height: 150px;
-            overflow-y: auto;
-            padding-top: 6px;
-        }
-        .playlist-header {
-            font-size: 10px;
-            font-weight: bold;
-            color: #fff;
-            margin-bottom: 4px;
-        }
-        .playlist-item {
-            padding: 5px 8px;
-            margin-bottom: 3px;
-            background: rgba(30, 41, 59, 0.8);
-            border-radius: 4px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .playlist-item:hover {
-            background: rgba(56, 189, 248, 0.3);
-        }
-        .playlist-item.active {
-            background: rgba(14, 165, 233, 0.4);
-            border: 1px solid #0ea5e9;
-        }
-        .playlist-item .title {
+        .on-air-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             font-size: 9px;
-            color: #f8fafc;
-            font-weight: bold;
-        }
-        .playlist-item .cat {
-            font-size: 7px;
             color: #94a3b8;
+            padding: 0 4px;
         }
 
-        .playlist-box::-webkit-scrollbar {
-            width: 3px;
-        }
-        .playlist-box::-webkit-scrollbar-thumb {
-            background: #38bdf8;
+        .live-badge {
+            background: #0ea5e9;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 8px;
         }
     </style>
 </head>
@@ -215,147 +111,26 @@
         <source src="https://files.catbox.moe/ebhsth.mp4" type="video/mp4">
     </video>
 
-    <!-- กล่องวิทยุฝั่งขวา แบบลากเลื่อนได้ -->
+    <!-- กล่องวิทยุฝั่งขวา (ลากเลื่อนได้ + กดเล่นสตรีมได้แน่นอน) -->
     <div class="draggable-sidebar" id="draggable-box">
         <div class="drag-header" id="drag-handle">
             <span>MYRADIOhit Live</span>
-            <span class="drag-hint">↔ กดลากย้ายได้</span>
+            <span class="drag-hint">↔ ลากย้ายได้</span>
         </div>
         
-        <div class="player-content">
-            <div class="track-info-box">
-                <div class="now-playing-label">NOW PLAYING</div>
-                <div class="track-name" id="current-title">Select track</div>
-                <div class="category-text" id="current-cat">Category</div>
-            </div>
-
-            <div class="controls-row">
-                <button class="play-btn" id="play-pause-btn" onclick="togglePlay()">▶</button>
-                <div class="progress-bar-container" onclick="seekAudio(event)">
-                    <div class="progress-fill" id="progress-fill"></div>
-                </div>
-            </div>
-
-            <div class="time-info">
-                <span id="current-time">0:00</span>
-                <span id="duration-time">0:00</span>
-            </div>
-
-            <div class="bottom-controls">
-                <div class="volume-box">
-                    <span style="font-size: 10px;">🔊</span>
-                    <input type="range" min="0" max="1" step="0.05" value="1" oninput="audio.volume = this.value">
-                </div>
-                <span style="font-size: 8px; color: #38bdf8;">ON AIR</span>
-            </div>
-
-            <div class="playlist-box">
-                <div class="playlist-header">Playlist</div>
-                <div class="playlist-item" onclick="selectTrack(0, 'Tag Hits String 2026', 'String', 'https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3')">
-                    <div class="title">#1 Tag Hits String 2026</div>
-                    <div class="cat">String</div>
-                </div>
-                <div class="playlist-item" onclick="selectTrack(1, 'Thaistation Radio Mix', 'String', 'https://ia902905.us.archive.org/5/items/thaistation/thaistation.mp3')">
-                    <div class="title">#2 Thaistation Radio Mix</div>
-                    <div class="cat">String</div>
-                </div>
-                <div class="playlist-item" onclick="selectTrack(2, 'Thai Country Music', 'Luk Thung', 'https://ia600903.us.archive.org/29/items/luk-thung-music/Luk%20Thung%20music.mp3')">
-                    <div class="title">#3 Thai Country Music</div>
-                    <div class="cat">Luk Thung</div>
-                </div>
-                <div class="playlist-item" onclick="selectTrack(3, 'Southern Folk Hits', 'Southern', 'https://ia601609.us.archive.org/27/items/plangtai2/plangtai2.mp3')">
-                    <div class="title">#4 Southern Folk Hits Collection</div>
-                    <div class="cat">Southern Folk</div>
-                </div>
+        <div class="radio-container">
+            <!-- ตัวเล่นวิทยุหลักจากเซิร์ฟเวอร์โดยตรง ป้องกันการบล็อกการเล่น -->
+            <iframe class="radio-frame" src="https://radio.plathong.net/main/player/?server=radio9&port=7264" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            
+            <div class="on-air-info">
+                <span>SERVER: radio9 (Port 7264)</span>
+                <span class="live-badge">ON AIR</span>
             </div>
         </div>
     </div>
 
-    <audio id="audio-player" preload="auto"></audio>
-
     <script>
-        const audio = document.getElementById('audio-player');
-        const playBtn = document.getElementById('play-pause-btn');
-        const titleEl = document.getElementById('current-title');
-        const catEl = document.getElementById('current-cat');
-        const progressFill = document.getElementById('progress-fill');
-        const currentTimeEl = document.getElementById('current-time');
-        const durationTimeEl = document.getElementById('duration-time');
-        const playlistItems = document.querySelectorAll('.playlist-item');
-
-        let isPlaying = false;
-        let currentTrackUrl = "";
-
-        function selectTrack(index, title, cat, url) {
-            titleEl.innerText = title;
-            catEl.innerText = cat;
-            currentTrackUrl = url;
-            audio.src = url;
-            audio.load();
-            
-            audio.play().then(() => {
-                isPlaying = true;
-                playBtn.innerText = "❚❚";
-            }).catch(e => {
-                console.log("Playback error:", e);
-            });
-
-            playlistItems.forEach((item, idx) => {
-                if (idx === index) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-        }
-
-        function togglePlay() {
-            if (!currentTrackUrl) {
-                playlistItems[0].click();
-                return;
-            }
-            if (isPlaying) {
-                audio.pause();
-                isPlaying = false;
-                playBtn.innerText = "▶";
-            } else {
-                audio.play().then(() => {
-                    isPlaying = true;
-                    playBtn.innerText = "❚❚";
-                }).catch(e => {
-                    console.log("Playback error:", e);
-                });
-            }
-        }
-
-        audio.addEventListener('timeupdate', () => {
-            if (audio.duration) {
-                const percent = (audio.currentTime / audio.duration) * 100;
-                progressFill.style.width = percent + '%';
-                currentTimeEl.innerText = formatTime(audio.currentTime);
-                durationTimeEl.innerText = formatTime(audio.duration);
-            }
-        });
-
-        function seekAudio(event) {
-            if (!audio.duration) return;
-            const width = event.currentTarget.clientWidth;
-            const clickX = event.offsetX;
-            audio.currentTime = (clickX / width) * audio.duration;
-        }
-
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return mins + ":" + (secs < 10 ? "0" : "") + secs;
-        }
-
-        audio.addEventListener('ended', () => {
-            isPlaying = false;
-            playBtn.innerText = "▶";
-        });
-
-        // ระบบลากเลื่อนกล่องวิทยุ
+        // ระบบลากเลื่อนกล่องวิทยุ (Draggable) ใช้งานง่าย ไม่ติดขัด
         const box = document.getElementById('draggable-box');
         const handle = document.getElementById('drag-handle');
 
