@@ -3,464 +3,471 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MYRADIOhit - xatframe Player</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome Icons CDN -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
-
+  <title>MYRADIOhit - Player Frame</title>
   <style>
     * {
-      font-family: 'Kanit', sans-serif;
       box-sizing: border-box;
-    }
-    
-    .font-digital {
-      font-family: 'Orbitron', sans-serif;
-    }
-
-    /* พื้นหลังหลักโปร่งใสสำหรับซ้อนใน xatframe */
-    html, body {
-      background-color: transparent !important;
-      background: transparent !important;
       margin: 0;
       padding: 0;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       user-select: none;
     }
 
-    /* แผ่นเสียงหมุน */
-    .vinyl-spin {
-      animation: spin 8s linear infinite;
+    body {
+      background: transparent !important;
+      color: #fff;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 25px;
     }
 
-    .vinyl-paused {
-      animation-play-state: paused !important;
+    /* กล่องเครื่องเล่นวิทยุฝั่งซ้าย */
+    .player-container {
+      width: 250px;
+      background: rgba(10, 20, 38, 0.65);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 16px;
+      padding: 18px 15px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6),
+                  inset 0 0 15px rgba(56, 189, 248, 0.15);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .player-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #38bdf8;
+      align-self: flex-start;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .disc-outer {
+      width: 130px;
+      height: 130px;
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+      margin-bottom: 15px;
+      border: 2px solid rgba(56, 189, 248, 0.2);
+    }
+
+    .disc-inner {
+      width: 110px;
+      height: 110px;
+      background: radial-gradient(circle, #1e293b 0%, #0f172a 100%);
+      border: 4px solid #334155;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: spin 8s linear infinite;
+      animation-play-state: paused;
+    }
+
+    .disc-center {
+      width: 32px;
+      height: 32px;
+      background: #38bdf8;
+      border-radius: 50%;
+      border: 4px solid #0f172a;
+      box-shadow: 0 0 8px #38bdf8;
     }
 
     @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+      100% { transform: rotate(360deg); }
     }
 
-    /* Custom Scrollbar สำหรับ Playlist */
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 5px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: rgba(15, 23, 42, 0.4);
-      border-radius: 10px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(56, 189, 248, 0.5);
-      border-radius: 10px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: rgba(56, 189, 248, 0.8);
+    .track-info {
+      text-align: center;
+      width: 100%;
+      margin-bottom: 15px;
     }
 
-    /* Glassmorphism Effect */
-    .glass-card {
-      background: rgba(10, 18, 42, 0.72);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6),
-                  inset 0 0 15px rgba(56, 189, 248, 0.1);
+    .track-title {
+      font-size: 13px;
+      font-weight: bold;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 3px;
     }
 
-    .glass-item {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      transition: all 0.25s ease;
+    .track-category {
+      font-size: 11px;
+      color: #38bdf8;
     }
 
-    .glass-item:hover {
-      background: rgba(56, 189, 248, 0.18);
-      border-color: rgba(56, 189, 248, 0.4);
-      transform: translateX(3px);
-    }
-
-    .glass-item.active {
-      background: linear-gradient(90deg, rgba(56, 189, 248, 0.3) 0%, rgba(14, 165, 233, 0.1) 100%);
-      border-left: 4px solid #38bdf8;
-      border-color: rgba(56, 189, 248, 0.5);
-    }
-
-    /* Custom Range Slider */
-    input[type=range] {
-      -webkit-appearance: none;
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 5px;
-      height: 6px;
-    }
-
-    input[type=range]::-webkit-slider-thumb {
-      -webkit-appearance: none;
+    .status-text {
+      font-size: 10px;
+      color: #94a3b8;
+      margin-top: 4px;
       height: 14px;
-      width: 14px;
-      border-radius: 50%;
-      background: #38bdf8;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 15px;
+      width: 100%;
+    }
+
+    .btn {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
       cursor: pointer;
-      box-shadow: 0 0 10px #38bdf8;
+      font-size: 18px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* Audio Equalizer Bar Animation */
-    .eq-bar {
-      width: 3px;
-      background-color: #38bdf8;
-      animation: eq 1s ease-in-out infinite alternate;
+    .btn:hover {
+      color: #38bdf8;
+      transform: scale(1.15);
     }
 
-    .eq-bar:nth-child(1) { animation-delay: 0.1s; height: 12px; }
-    .eq-bar:nth-child(2) { animation-delay: 0.3s; height: 18px; }
-    .eq-bar:nth-child(3) { animation-delay: 0.2s; height: 8px; }
-    .eq-bar:nth-child(4) { animation-delay: 0.4s; height: 15px; }
-
-    .eq-paused .eq-bar {
-      animation-play-state: paused;
-      height: 4px !important;
+    .btn-play {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+      color: #0f172a;
+      border-radius: 50%;
+      font-size: 20px;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
     }
 
-    @keyframes eq {
-      0% { height: 4px; }
-      100% { height: 20px; }
+    .btn-play:hover {
+      background: linear-gradient(135deg, #7dd3fc 0%, #0369a1 100%);
+      color: #0f172a;
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.8);
+    }
+
+    .volume-container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 5px;
+    }
+
+    .volume-slider {
+      width: 100%;
+      height: 4px;
+      accent-color: #38bdf8;
+      cursor: pointer;
+    }
+
+    /* กล่องรายการเพลงฝั่งขวา */
+    .playlist-container {
+      width: 250px;
+      background: rgba(10, 20, 38, 0.65);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 16px;
+      padding: 15px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6),
+                  inset 0 0 15px rgba(56, 189, 248, 0.15);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .playlist-header {
+      font-size: 13px;
+      font-weight: bold;
+      color: #38bdf8;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .playlist-scroll {
+      overflow-y: auto;
+      flex: 1;
+      padding-right: 4px;
+    }
+
+    .playlist-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .playlist-scroll::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.4);
+      border-radius: 4px;
+    }
+
+    .playlist-item {
+      padding: 9px 10px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .playlist-item:hover {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+
+    .playlist-item.active {
+      background: rgba(56, 189, 248, 0.25);
+      border-color: #38bdf8;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+    }
+
+    .item-num {
+      font-size: 11px;
+      color: #38bdf8;
+      font-weight: bold;
+      min-width: 18px;
+    }
+
+    .item-info {
+      overflow: hidden;
+    }
+
+    .item-title {
+      color: #f8fafc;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .item-sub {
+      font-size: 9px;
+      color: #94a3b8;
     }
   </style>
 </head>
-<body class="flex justify-between items-center h-screen w-screen p-4 sm:p-6 select-none overflow-hidden">
+<body>
 
   <!-- ฝั่งซ้าย: เครื่องเล่นวิทยุ -->
-  <div class="glass-card w-[260px] sm:w-[280px] rounded-2xl p-5 flex flex-col items-center relative z-20 transition-all duration-300">
+  <div class="player-container">
+    <div class="player-title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+      MYRADIOhit
+    </div>
     
-    <!-- Header/Logo -->
-    <div class="w-full flex justify-between items-center mb-3">
-      <div class="flex items-center gap-2">
-        <i class="fa-solid fa-radio text-sky-400 text-sm animate-pulse"></i>
-        <span class="font-digital font-bold text-xs tracking-wider text-sky-300">MYRADIO<span class="text-white">hit</span></span>
-      </div>
-      <div id="eqContainer" class="flex items-end gap-[2px] h-[20px] eq-paused">
-        <div class="eq-bar rounded-full"></div>
-        <div class="eq-bar rounded-full"></div>
-        <div class="eq-bar rounded-full"></div>
-        <div class="eq-bar rounded-full"></div>
+    <div class="disc-outer">
+      <div class="disc-inner" id="disc">
+        <div class="disc-center"></div>
       </div>
     </div>
 
-    <!-- Vinyl Album Disk Visualizer -->
-    <div class="relative my-3 group cursor-pointer" onclick="togglePlay()">
-      <div id="vinylOuter" class="w-36 h-36 rounded-full bg-slate-950 border-4 border-slate-800 flex items-center justify-center shadow-2xl relative vinyl-spin vinyl-paused transition-transform duration-300 group-hover:scale-105">
-        <!-- Vinyl Grooves -->
-        <div class="w-32 h-32 rounded-full border border-slate-800/60 flex items-center justify-center">
-          <div class="w-24 h-24 rounded-full border border-slate-800/40 flex items-center justify-center">
-            <!-- Center Label -->
-            <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-sky-600 to-cyan-400 p-1 flex items-center justify-center shadow-inner">
-              <div class="w-4 h-4 rounded-full bg-slate-950 border-2 border-white/80"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Center Play Overlay on Hover -->
-      <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 rounded-full">
-        <i id="overlayPlayIcon" class="fa-solid fa-play text-2xl text-white drop-shadow-md"></i>
-      </div>
+    <div class="track-info">
+      <div class="track-title" id="trackTitle">#1 Tag Hits String 2026</div>
+      <div class="track-category" id="trackCategory">เพลงสตริงใหม่ล่าสุด</div>
+      <div class="status-text" id="statusText">พร้อมใช้งาน - กดปุ่ม Play เพื่อฟังเพลง</div>
     </div>
 
-    <!-- Track Information Display -->
-    <div class="w-full text-center my-2 px-1">
-      <h3 id="trackTitle" class="text-sm font-semibold text-white truncate drop-shadow">กรุณาเลือกเพลง</h3>
-      <p id="trackCategory" class="text-xs text-sky-400 font-light mt-0.5 truncate">MYRADIOhit Online 24 Hr.</p>
+    <div class="controls">
+      <button class="btn" onclick="prevTrack()" title="เพลงก่อนหน้า">⏮</button>
+      <button class="btn btn-play" id="playBtn" onclick="togglePlay()" title="เล่น/หยุด">▶</button>
+      <button class="btn" onclick="nextTrack()" title="เพลงถัดไป">⏭</button>
     </div>
 
-    <!-- Player Controls -->
-    <div class="flex items-center justify-center gap-4 my-3 w-full">
-      <button onclick="prevTrack()" class="text-slate-400 hover:text-sky-400 text-base transition-colors p-2 active:scale-90" title="เพลงก่อนหน้า">
-        <i class="fa-solid fa-backward-step"></i>
-      </button>
-
-      <button id="playBtn" onclick="togglePlay()" class="w-12 h-12 rounded-full bg-gradient-to-r from-sky-400 to-cyan-500 hover:from-sky-300 hover:to-cyan-400 text-slate-950 font-bold flex items-center justify-center text-lg shadow-lg shadow-sky-500/30 transition-all hover:scale-105 active:scale-95">
-        <i id="playIcon" class="fa-solid fa-play ml-0.5"></i>
-      </button>
-
-      <button onclick="nextTrack()" class="text-slate-400 hover:text-sky-400 text-base transition-colors p-2 active:scale-90" title="เพลงถัดไป">
-        <i class="fa-solid fa-forward-step"></i>
-      </button>
+    <div class="volume-container">
+      <span style="font-size:10px;">🔈</span>
+      <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.8" oninput="changeVolume(this.value)">
+      <span style="font-size:10px;">🔊</span>
     </div>
-
-    <!-- Volume Control Slider -->
-    <div class="w-full flex items-center gap-2 mt-1 px-2">
-      <button onclick="toggleMute()" class="text-slate-400 hover:text-sky-400 text-xs w-4">
-        <i id="volumeIcon" class="fa-solid fa-volume-high"></i>
-      </button>
-      <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.8" oninput="changeVolume(this.value)" class="w-full cursor-pointer">
-    </div>
-
-    <!-- Status Toast Notification -->
-    <div id="statusToast" class="text-[10px] text-sky-300/80 mt-3 text-center h-4 transition-all duration-300">
-      พร้อมใช้งาน - กดปุ่ม Play เพื่อฟังเพลง
-    </div>
-
   </div>
 
-  <!-- Hidden HTML5 Audio Element -->
-  <audio id="audioPlayer" preload="none" crossorigin="anonymous"></audio>
+  <!-- Audio Element พร้อมระบุ Attributes ที่จำเป็นสำหรับ Cross-Origin Frame -->
+  <audio id="audioPlayer" preload="metadata" crossorigin="anonymous"></audio>
 
-  <!-- ฝั่งขวา: รายการเพลง (Playlist) -->
-  <div class="glass-card w-[250px] sm:w-[270px] max-h-[85vh] rounded-2xl p-4 flex flex-col relative z-20 transition-all duration-300">
-    
-    <!-- Playlist Header -->
-    <div class="flex items-center justify-between pb-3 mb-2 border-b border-sky-500/20">
-      <div class="flex items-center gap-2">
-        <i class="fa-solid fa-list-ul text-sky-400 text-xs"></i>
-        <span class="text-xs font-bold text-slate-100 tracking-wide uppercase">รายการเพลง</span>
-      </div>
-      <span id="trackCount" class="text-[10px] bg-sky-500/20 text-sky-300 px-2 py-0.5 rounded-full border border-sky-500/30 font-digital">0/0</span>
+  <!-- ฝั่งขวา: รายการเพลง -->
+  <div class="playlist-container">
+    <div class="playlist-header">
+      <span>รายการเพลง</span>
+      <span style="font-size:10px; color:#94a3b8;" id="totalTracks">7 รายการ</span>
     </div>
-
-    <!-- Track List Scrollable Box -->
-    <div id="playlistContainer" class="flex-1 overflow-y-auto custom-scrollbar space-y-1.5 pr-1 max-h-[380px]">
-      <!-- รายการเพลงจะถูกโหลดใส่ตรงนี้ด้วย JS -->
-    </div>
-
-    <!-- Status Footer Info -->
-    <div class="mt-3 pt-2 border-t border-sky-500/10 text-center">
-      <span class="text-[10px] text-slate-400/70">เลือกคลิกเพลงที่ต้องการเพื่อรับฟังทันที</span>
-    </div>
+    <div class="playlist-scroll" id="playlistItems"></div>
   </div>
 
   <script>
-    // ข้อมูลเพลงทั้งหมดตาม URL ที่ระบุ
-    const playlist = [
+    // รายชื่อเพลงพร้อมลิงก์ที่ปรับให้รองรับ Direct Stream
+    const tracks = [
       {
-        id: 1,
         title: "#1 สตริงใหม่ล่าสุด 2026",
         category: "เพลงสตริงใหม่ล่าสุด",
-        url: "https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3"
+        url: "https://archive.org/download/sting-new/sting%20new.mp3"
       },
       {
-        id: 2,
         title: "#2 Thaistation Radio Mix",
-        category: "เพลตริง",
-        url: "https://ia902905.us.archive.org/5/items/thaistation/thaistation.mp3"
+        category: "เพลงสตริง",
+        url: "https://archive.org/download/thaistation/thaistation.mp3"
       },
       {
-        id: 3,
         title: "#3 String Pop Selection",
         category: "สตริง 1",
-        url: "https://ia601906.us.archive.org/3/items/radio_202607/1.radio.mp3"
+        url: "https://archive.org/download/radio_202607/1.radio.mp3"
       },
       {
-        id: 4,
         title: "#4 2-Hour Nonstop Hits",
-        category: "สตริง 2 ชม",
-        url: "https://ia601501.us.archive.org/2/items/thaistation-v.-1/thaistation%20v.1.mp3"
+        category: "สตริง 2 ชม.",
+        url: "https://archive.org/download/thaistation-v.-1/thaistation%20v.1.mp3"
       },
       {
-        id: 5,
         title: "#5 Thai Country Favorites",
         category: "เพลงลูกทุ่ง",
-        url: "https://ia600903.us.archive.org/29/items/luk-thung-music/Luk%20Thung%20music.mp3"
+        url: "https://archive.org/download/luk-thung-music/Luk%20Thung%20music.mp3"
       },
       {
-        id: 6,
-        title: "#6 Southern Hits New Collection",
+        title: "#6 Southern Hits New Coll...",
         category: "เพลงใต้ ชุดใหม่",
-        url: "https://ia601609.us.archive.org/27/items/plangtai2/plangtai2.mp3"
+        url: "https://archive.org/download/plangtai2/plangtai2.mp3"
       },
       {
-        id: 7,
         title: "#7 Southern Melodic Folk",
         category: "เพลงใต้ แนวเพราะ",
         url: "https://files.catbox.moe/k4dtxi.mp3"
       }
     ];
 
-    let currentIndex = 0;
-    let isPlaying = false;
-    let lastVolume = 0.8;
-
-    // DOM Elements
+    let currentTrackIndex = 0;
     const audio = document.getElementById('audioPlayer');
     const playBtn = document.getElementById('playBtn');
-    const playIcon = document.getElementById('playIcon');
-    const overlayPlayIcon = document.getElementById('overlayPlayIcon');
-    const vinylOuter = document.getElementById('vinylOuter');
+    const disc = document.getElementById('disc');
     const trackTitle = document.getElementById('trackTitle');
     const trackCategory = document.getElementById('trackCategory');
-    const volumeSlider = document.getElementById('volumeSlider');
-    const volumeIcon = document.getElementById('volumeIcon');
-    const playlistContainer = document.getElementById('playlistContainer');
-    const trackCount = document.getElementById('trackCount');
-    const eqContainer = document.getElementById('eqContainer');
-    const statusToast = document.getElementById('statusToast');
+    const statusText = document.getElementById('statusText');
 
-    // เริ่มต้นระบบเมื่อโหลดหน้าเว็บ
-    window.addEventListener('DOMContentLoaded', () => {
-      renderPlaylist();
-      loadTrack(0, false);
-      audio.volume = lastVolume;
-      volumeSlider.value = lastVolume;
-    });
-
-    // สร้าง DOM รายการเพลงฝั่งขวา
     function renderPlaylist() {
-      playlistContainer.innerHTML = '';
-      trackCount.textContent = `${playlist.length} เพลง`;
-
-      playlist.forEach((track, index) => {
+      const container = document.getElementById('playlistItems');
+      container.innerHTML = '';
+      tracks.forEach((track, index) => {
         const item = document.createElement('div');
-        item.className = `glass-item rounded-xl p-2.5 cursor-pointer flex items-center justify-between group ${index === currentIndex ? 'active' : ''}`;
-        item.onclick = () => selectTrack(index);
-
+        item.className = `playlist-item ${index === currentTrackIndex ? 'active' : ''}`;
+        item.onclick = () => loadAndPlay(index);
         item.innerHTML = `
-          <div class="flex items-center gap-2.5 overflow-hidden">
-            <div class="w-7 h-7 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 font-digital text-xs shrink-0 group-hover:bg-sky-500 group-hover:text-slate-950 transition-colors">
-              ${index === currentIndex && isPlaying ? '<i class="fa-solid fa-volume-high animate-pulse"></i>' : index + 1}
-            </div>
-            <div class="truncate">
-              <h4 class="text-xs font-medium text-slate-200 truncate group-hover:text-white">${track.title}</h4>
-              <p class="text-[10px] text-sky-400/80 truncate">${track.category}</p>
-            </div>
+          <div class="item-num">${index + 1}</div>
+          <div class="item-info">
+            <div class="item-title">${track.title}</div>
+            <div class="item-sub">${track.category}</div>
           </div>
-          <i class="fa-solid fa-circle-play text-sky-400/40 text-sm group-hover:text-sky-400 transition-colors shrink-0 ml-1"></i>
         `;
-        playlistContainer.appendChild(item);
+        container.appendChild(item);
       });
     }
 
-    // โหลดข้อมูลเพลงเข้า Audio Element
-    function loadTrack(index, shouldPlay = true) {
-      currentIndex = index;
-      const track = playlist[currentIndex];
-      
-      audio.src = track.url;
-      trackTitle.textContent = track.title;
-      trackCategory.textContent = track.category;
-      
+    function setTrackInfo(index) {
+      currentTrackIndex = index;
+      trackTitle.innerText = tracks[index].title;
+      trackCategory.innerText = tracks[index].category;
       renderPlaylist();
-
-      if (shouldPlay) {
-        playAudio();
-      } else {
-        updateUIState(false);
-      }
     }
 
-    // เลือกร้องเพลงจาก Playlist
-    function selectTrack(index) {
-      if (currentIndex === index && isPlaying) {
-        pauseAudio();
-      } else {
-        loadTrack(index, true);
-      }
+    function loadAndPlay(index) {
+      setTrackInfo(index);
+      audio.src = tracks[index].url;
+      audio.load();
+      playTrack();
     }
 
-    // ควบคุมการเล่น/หยุด
     function togglePlay() {
-      if (isPlaying) {
-        pauseAudio();
+      if (!audio.src || audio.src === window.location.href) {
+        loadAndPlay(0);
+        return;
+      }
+
+      if (audio.paused) {
+        playTrack();
       } else {
-        playAudio();
+        pauseTrack();
       }
     }
 
-    // สั่งเล่นเพลงพร้อมจัดการ Promise สำหรับ Autoplay Policy
-    function playAudio() {
-      showToast('กำลังโหลดเพลง...');
-      const playPromise = audio.play();
+    function playTrack() {
+      statusText.innerText = "กำลังโหลดสัญญาณเพลง...";
+      statusText.style.color = "#38bdf8";
 
+      const playPromise = audio.play();
       if (playPromise !== undefined) {
         playPromise.then(() => {
-          isPlaying = true;
-          updateUIState(true);
-          showToast('กำลังเล่น: ' + playlist[currentIndex].category);
+          playBtn.innerText = '⏸';
+          disc.style.animationPlayState = 'running';
+          statusText.innerText = "● กำลังเล่นออนไลน์";
+          statusText.style.color = "#4ade80";
         }).catch(error => {
           console.error("Playback failed:", error);
-          isPlaying = false;
-          updateUIState(false);
-          showToast('คลิกปุ่ม ▶ เพื่อเริ่มฟังเพลง');
+          playBtn.innerText = '▶';
+          disc.style.animationPlayState = 'paused';
+          statusText.innerText = "กดอีกครั้งเพื่อเปิดเล่น (User Action Required)";
+          statusText.style.color = "#f87171";
         });
       }
     }
 
-    // หยุดเล่นเพลง
-    function pauseAudio() {
+    function pauseTrack() {
       audio.pause();
-      isPlaying = false;
-      updateUIState(false);
-      showToast('หยุดเล่นชั่วคราว');
+      playBtn.innerText = '▶';
+      disc.style.animationPlayState = 'paused';
+      statusText.innerText = "หยุดเล่นชั่วคราว";
+      statusText.style.color = "#94a3b8";
     }
 
     function nextTrack() {
-      let nextIndex = (currentIndex + 1) % playlist.length;
-      loadTrack(nextIndex, true);
+      const nextIndex = (currentTrackIndex + 1) % tracks.length;
+      loadAndPlay(nextIndex);
     }
 
     function prevTrack() {
-      let prevIndex = (currentIndex - 1 + playlist.length) % playlist.length;
-      loadTrack(prevIndex, true);
+      const prevIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+      loadAndPlay(prevIndex);
     }
 
-    // อัปเดตสถานะ UI ทั้งหมด
-    function updateUIState(playing) {
-      if (playing) {
-        playIcon.className = 'fa-solid fa-pause';
-        overlayPlayIcon.className = 'fa-solid fa-pause text-2xl text-white drop-shadow-md';
-        vinylOuter.classList.remove('vinyl-paused');
-        eqContainer.classList.remove('eq-paused');
-      } else {
-        playIcon.className = 'fa-solid fa-play ml-0.5';
-        overlayPlayIcon.className = 'fa-solid fa-play text-2xl text-white drop-shadow-md';
-        vinylOuter.classList.add('vinyl-paused');
-        eqContainer.classList.add('eq-paused');
-      }
-      renderPlaylist();
-    }
-
-    // ปรับระดับเสียง
     function changeVolume(val) {
       audio.volume = val;
-      lastVolume = val;
-      if (val == 0) {
-        volumeIcon.className = 'fa-solid fa-volume-xmark';
-      } else if (val < 0.5) {
-        volumeIcon.className = 'fa-solid fa-volume-low';
-      } else {
-        volumeIcon.className = 'fa-solid fa-volume-high';
-      }
     }
 
-    function toggleMute() {
-      if (audio.volume > 0) {
-        lastVolume = audio.volume;
-        audio.volume = 0;
-        volumeSlider.value = 0;
-        volumeIcon.className = 'fa-solid fa-volume-xmark';
-      } else {
-        audio.volume = lastVolume || 0.8;
-        volumeSlider.value = audio.volume;
-        changeVolume(audio.volume);
-      }
-    }
-
-    function showToast(msg) {
-      statusToast.textContent = msg;
-    }
-
-    // เมื่อเพลงจบให้เล่นเพลงถัดไปอัตโนมัติ
+    // ฟัง Event เมื่อเพลงเล่นจบ ให้เล่นเพลงถัดไปอัตโนมัติ
     audio.addEventListener('ended', () => {
       nextTrack();
     });
 
-    // ตรวจจับข้อผิดพลาดการโหลดไฟล์เสียง
+    // ฟัง Event เมื่อเกิดข้อผิดพลาดในการโหลดสื่อ
     audio.addEventListener('error', () => {
-      showToast('ไม่สามารถโหลดไฟล์เสียงนี้ได้');
-      updateUIState(false);
+      statusText.innerText = "ไม่สามารถโหลดเพลงนี้ได้ กรุณาเลือกเพลงอื่น";
+      statusText.style.color = "#f87171";
+      playBtn.innerText = '▶';
+      disc.style.animationPlayState = 'paused';
     });
+
+    // เตรียมการเริ่มต้น
+    setTrackInfo(0);
+    audio.src = tracks[0].url;
   </script>
 </body>
 </html>
