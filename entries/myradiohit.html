@@ -3,16 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MYRADIOhit - Player Frame</title>
+  <title>MYRADIOhit & TikTok Player - Frame</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      box-sizing: border-box;
+      font-family: 'Kanit', sans-serif;
       user-select: none;
     }
 
+    /* ซ่อนแถบเลื่อน และทำให้คลิกทะลุพื้นหลังไปยังแชท xat ตรงกลางได้ */
     html, body {
       width: 100%;
       height: 100%;
@@ -22,167 +26,127 @@
     }
 
     body {
+      color: #fff;
       display: flex;
-      justify-content: space-between;
+      justify-content: space-between; /* ซ้าย-ขวา */
       align-items: center;
-      padding: 15px 25px;
+      padding: 15px 20px;
+      position: relative;
     }
 
+    /* อนุญาตให้คลิกเฉพาะกล่องวิทยุทางซ้ายและเครื่องเล่นทางขวา */
     .interactive-box {
       pointer-events: auto !important;
     }
 
-    /* เครื่องเล่นวิทยุซ้าย */
-    .player-container {
-      width: 260px;
-      background: rgba(10, 20, 38, 0.9);
-      border: 1px solid rgba(56, 189, 248, 0.5);
-      border-radius: 16px;
-      padding: 18px 15px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8),
-                  inset 0 0 15px rgba(56, 189, 248, 0.2);
-      backdrop-filter: blur(10px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .player-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #38bdf8;
-      align-self: flex-start;
-      margin-bottom: 12px;
-      text-transform: uppercase;
-    }
-
-    .disc-outer {
-      width: 110px;
-      height: 110px;
-      background: rgba(15, 23, 42, 0.9);
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
-      margin-bottom: 12px;
-      border: 2px solid rgba(56, 189, 248, 0.3);
-    }
-
-    .disc-inner {
-      width: 90px;
-      height: 90px;
-      background: radial-gradient(circle, #1e293b 0%, #0f172a 100%);
-      border: 4px solid #334155;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      animation: spin 8s linear infinite;
-      animation-play-state: paused;
-    }
-
-    .disc-center {
-      width: 26px;
-      height: 26px;
-      background: #38bdf8;
-      border-radius: 50%;
-      border: 3px solid #0f172a;
-    }
-
-    @keyframes spin {
-      100% { transform: rotate(360deg); }
-    }
-
-    .track-info {
-      text-align: center;
+    /* 🖼️ ภาพพื้นหลังเบลอ (แสดงเฉพาะในกล่องเพื่อไม่ให้บังแชท) */
+    .bg-blurred {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      margin-bottom: 12px;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      filter: blur(20px) brightness(0.4);
+      transform: scale(1.1);
+      transition: background-image 0.5s ease-in-out;
+      z-index: 1;
     }
 
-    .track-title {
-      font-size: 13px;
-      font-weight: bold;
-      color: #ffffff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .track-category {
-      font-size: 11px;
-      color: #38bdf8;
-      margin-top: 2px;
-    }
-
-    /* เครื่องเล่นเพลงมาตรฐานของเบราว์เซอร์ */
-    audio {
+    .bg-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      height: 36px;
-      border-radius: 8px;
-      outline: none;
-      margin-top: 5px;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255, 0, 80, 0.25), rgba(0, 242, 254, 0.2));
+      z-index: 2;
     }
 
-    /* กล่องเพลย์ลิสต์ขวา */
+    /* ========================================================= */
+    /* 📋 กล่องรายการเพลง (ฝั่งซ้าย)                              */
+    /* ========================================================= */
     .playlist-container {
       width: 260px;
-      background: rgba(10, 20, 38, 0.9);
-      border: 1px solid rgba(56, 189, 248, 0.5);
+      max-height: 85vh;
+      background: rgba(18, 18, 28, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 16px;
       padding: 15px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8),
-                  inset 0 0 15px rgba(56, 189, 248, 0.2);
-      backdrop-filter: blur(10px);
-      max-height: 85vh;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85),
+                  0 0 15px rgba(0, 242, 254, 0.2);
       display: flex;
       flex-direction: column;
+      z-index: 10;
     }
 
     .playlist-header {
-      font-size: 13px;
-      font-weight: bold;
-      color: #38bdf8;
-      margin-bottom: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #00f2fe;
+      margin-bottom: 12px;
       padding-bottom: 8px;
-      border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .playlist-scroll {
       overflow-y: auto;
       flex: 1;
+      padding-right: 4px;
+    }
+
+    .playlist-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .playlist-scroll::-webkit-scrollbar-thumb {
+      background: rgba(0, 242, 254, 0.4);
+      border-radius: 4px;
     }
 
     .playlist-item {
-      padding: 9px 10px;
+      padding: 8px 10px;
       border-radius: 8px;
       margin-bottom: 6px;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid transparent;
       cursor: pointer;
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
 
     .playlist-item:hover {
-      background: rgba(56, 189, 248, 0.2);
+      background: rgba(0, 242, 254, 0.15);
+      border-color: rgba(0, 242, 254, 0.3);
     }
 
     .playlist-item.active {
-      background: rgba(56, 189, 248, 0.3);
-      border-color: #38bdf8;
+      background: rgba(255, 0, 80, 0.25);
+      border-color: #ff0050;
+      box-shadow: 0 0 10px rgba(255, 0, 80, 0.3);
     }
 
     .item-num {
       font-size: 11px;
-      color: #38bdf8;
+      color: #00f2fe;
       font-weight: bold;
+      min-width: 16px;
+    }
+
+    .item-info {
+      overflow: hidden;
     }
 
     .item-title {
-      color: #f8fafc;
-      font-size: 11px;
+      color: #ffffff;
+      font-size: 12px;
       font-weight: 600;
       white-space: nowrap;
       overflow: hidden;
@@ -190,133 +154,461 @@
     }
 
     .item-sub {
+      font-size: 10px;
+      color: #aaa;
+    }
+
+
+    /* ========================================================= */
+    /* 📱 การ์ดกล่องเครื่องเล่น TIKTOK (ฝั่งขวามือ)                */
+    /* ========================================================= */
+    .player-card {
+      position: relative;
+      z-index: 10;
+      width: 280px;
+      height: 85vh;
+      max-height: 520px;
+      background: rgba(18, 18, 28, 0.85);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85),
+                  0 0 20px rgba(255, 0, 80, 0.25);
+      display: flex;
+      flex-direction: column;
+      padding: 12px;
+      overflow: hidden;
+    }
+
+    .tiktok-badge {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .tiktok-channel {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .tiktok-icon {
+      width: 22px;
+      height: 22px;
+      background: #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: -2px -2px 6px #ff0050, 2px 2px 6px #00f2fe;
+      font-size: 11px;
+    }
+
+    .live-tag {
+      background: linear-gradient(45deg, #ff0050, #00f2fe);
+      padding: 2px 8px;
+      border-radius: 10px;
       font-size: 9px;
-      color: #94a3b8;
+      font-weight: 700;
+    }
+
+    .song-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .song-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .song-title-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .song-info h2 {
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.2;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 190px;
+    }
+
+    .song-info p {
+      font-size: 10px;
+      color: #aaa;
+    }
+
+    .photo-display-area {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      min-height: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 4px 0 8px 0;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+      background: #000;
+    }
+
+    .photo-display-area img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.2s ease-in-out;
+    }
+
+    .photo-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 6px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      color: #fff;
+      font-size: 11px;
+      text-align: center;
+      font-weight: 500;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 8px 10px;
+      border-radius: 12px;
+    }
+
+    .progress-bar-container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 9px;
+      color: #aaa;
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+      accent-color: #ff0050;
+      cursor: pointer;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 4px;
+    }
+
+    .btn-control {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-control:hover {
+      color: #00f2fe;
+      transform: scale(1.1);
+    }
+
+    .btn-play {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(45deg, #ff0050, #00f2fe);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 13px;
+      box-shadow: 0 3px 10px rgba(255, 0, 80, 0.5);
     }
   </style>
 </head>
 <body>
 
-  <!-- เครื่องเล่นวิทยุฝั่งซ้าย -->
-  <div class="player-container interactive-box">
-    <div class="player-title">MYRADIOhit</div>
+  <!-- 📋 รายการเพลงฝั่งซ้ายมือ -->
+  <div class="playlist-container interactive-box">
+    <div class="playlist-header">
+      <span>รายการเพลง</span>
+      <span style="font-size:10px; color:#aaa;" id="total-tracks">7 เพลง</span>
+    </div>
+    <div class="playlist-scroll" id="playlist-items"></div>
+  </div>
+
+  <!-- 📱 เครื่องเล่น TikTok Photo Lyric ฝั่งขวามือ -->
+  <div class="player-card interactive-box">
+    <!-- ภาพพื้นหลังเรืองแสงภายในกล่อง -->
+    <div class="bg-blurred" id="bg-blurred"></div>
+    <div class="bg-overlay"></div>
     
-    <div class="disc-outer">
-      <div class="disc-inner" id="disc">
-        <div class="disc-center"></div>
+    <div style="position: relative; z-index: 5; height: 100%; display: flex; flex-direction: column;">
+      <!-- TikTok Header -->
+      <div class="tiktok-badge">
+        <div class="tiktok-channel">
+          <div class="tiktok-icon"><i class="fa-brands fa-tiktok"></i></div>
+          <span>Chill Music TH (@chillmusic.th)</span>
+        </div>
+        <div class="live-tag">LIVE</div>
+      </div>
+
+      <!-- ข้อมูลเพลงปัจจุบัน -->
+      <div class="song-header">
+        <img src="https://xatimg.com/image/V6YjIf8rzCsg.png" alt="Logo" class="song-logo" id="song-logo">
+        <div class="song-info">
+          <div class="song-title-wrapper">
+            <h2 id="song-title">#1 สตริงใหม่ล่าสุด 2026</h2>
+          </div>
+          <p id="artist-name">เพลงสตริงใหม่ล่าสุด</p>
+        </div>
+      </div>
+
+      <!-- 🖼️ กรอบแสดงภาพสไลด์ -->
+      <div class="photo-display-area">
+        <img src="" id="photo-viewer" alt="Music Photo Slide">
+        <div class="photo-caption" id="photo-caption">Chill Music Mood</div>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls">
+        <div class="progress-bar-container">
+          <span id="current-time">0:00</span>
+          <input type="range" id="progress" class="progress-bar" value="0" min="0" max="100">
+          <span id="duration">0:00</span>
+        </div>
+
+        <div class="buttons">
+          <button class="btn-control" id="prev-track" title="เพลงก่อนหน้า"><i class="fa-solid fa-backward-step"></i></button>
+          <button class="btn-control btn-play" id="play-btn"><i class="fa-solid fa-play" id="play-icon"></i></button>
+          <button class="btn-control" id="next-track" title="เพลงถัดไป"><i class="fa-solid fa-forward-step"></i></button>
+        </div>
       </div>
     </div>
 
-    <div class="track-info">
-      <div class="track-title" id="trackTitle">#1 สตริงใหม่ล่าสุด 2026</div>
-      <div class="track-category" id="trackCategory">เพลงสตริงใหม่ล่าสุด</div>
-    </div>
-
-    <!-- HTML5 Audio Controller ตรงมาตรฐานผ่านระบบความปลอดภัยเบราว์เซอร์ -->
-    <audio id="audioPlayer" controls controlsList="nodownload"></audio>
   </div>
 
-  <!-- รายการเพลงฝั่งขวา -->
-  <div class="playlist-container interactive-box">
-    <div class="playlist-header">รายการเพลง (7 เพลง)</div>
-    <div class="playlist-scroll" id="playlistItems"></div>
-  </div>
+  <audio id="audio-player" crossorigin="anonymous"></audio>
 
   <script>
-    // Proxy URL ป้องกัน CORS Block บน iFrame
-    const corsProxy = "https://api.allorigins.win/raw?url=";
+    // สไลด์รูปภาพสลับแสดงผลตามเวลา
+    const defaultSlides = [
+      { time: 0.0, image: "https://xatimg.com/image/P8z2aOMls66d.png", caption: "✨ รวมเพลงเพราะจาก TIKTOK" },
+      { time: 2.5, image: "https://xatimg.com/image/p5YKtEmIMo4X.png", caption: "🎧 ฟังเพลงชิลๆ ด้วยกัน" },
+      { time: 5.0, image: "https://xatimg.com/image/XVWLwqjqqstE.png", caption: "👫 มิตรภาพและความทรงจำ" },
+      { time: 7.5, image: "https://xatimg.com/image/A98tLWd84hNA.png", caption: "💫 ค่ำคืนนี้ยาวนาน" },
+      { time: 10.0, image: "https://xatimg.com/image/V4VgGwkfe6yV.png", caption: "🎵 เสียงเพลงบรรเลงต่อ..." },
+      { time: 12.5, image: "https://xatimg.com/image/0asGwujZ28p9.png", caption: "🌌 บรรยากาศยามค่ำคืน" }
+    ];
 
-    const tracks = [
+    // ข้อมูลรายการเพลงทั้งหมด
+    const tracksData = [
       {
         title: "#1 สตริงใหม่ล่าสุด 2026",
-        category: "เพลงสตริงใหม่ล่าสุด",
-        url: "https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3"
+        artist: "เพลงสตริงใหม่ล่าสุด",
+        audioSrc: "https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3",
+        slides: defaultSlides
       },
       {
         title: "#2 Thaistation Radio Mix",
-        category: "เพลงสตริง",
-        url: "https://ia902905.us.archive.org/5/items/thaistation/thaistation.mp3"
+        artist: "เพลงสตริง",
+        audioSrc: "https://ia902905.us.archive.org/5/items/thaistation/thaistation.mp3",
+        slides: defaultSlides
       },
       {
         title: "#3 String Pop Selection",
-        category: "สตริง 1",
-        url: "https://ia601906.us.archive.org/3/items/radio_202607/1.radio.mp3"
+        artist: "สตริง 1",
+        audioSrc: "https://ia601906.us.archive.org/3/items/radio_202607/1.radio.mp3",
+        slides: defaultSlides
       },
       {
         title: "#4 2-Hour Nonstop Hits",
-        category: "สตริง 2 ชม.",
-        url: "https://ia601501.us.archive.org/2/items/thaistation-v.-1/thaistation%20v.1.mp3"
+        artist: "สตริง 2 ชม.",
+        audioSrc: "https://ia601501.us.archive.org/2/items/thaistation-v.-1/thaistation%20v.1.mp3",
+        slides: defaultSlides
       },
       {
         title: "#5 Thai Country Favorites",
-        category: "เพลงลูกทุ่ง",
-        url: "https://ia600903.us.archive.org/29/items/luk-thung-music/Luk%20Thung%20music.mp3"
+        artist: "เพลงลูกทุ่ง",
+        audioSrc: "https://ia600903.us.archive.org/29/items/luk-thung-music/Luk%20Thung%20music.mp3",
+        slides: defaultSlides
       },
       {
         title: "#6 Southern Hits New Coll...",
-        category: "เพลงใต้ ชุดใหม่",
-        url: "https://ia601609.us.archive.org/27/items/plangtai2/plangtai2.mp3"
+        artist: "เพลงใต้ ชุดใหม่",
+        audioSrc: "https://ia601609.us.archive.org/27/items/plangtai2/plangtai2.mp3",
+        slides: defaultSlides
       },
       {
         title: "#7 Southern Melodic Folk",
-        category: "เพลงใต้ แนวเพราะ",
-        url: "https://files.catbox.moe/k4dtxi.mp3"
+        artist: "เพลงใต้ แนวเพราะ",
+        audioSrc: "https://files.catbox.moe/k4dtxi.mp3",
+        slides: defaultSlides
       }
     ];
 
     let currentTrackIndex = 0;
-    const audio = document.getElementById('audioPlayer');
-    const disc = document.getElementById('disc');
-    const trackTitle = document.getElementById('trackTitle');
-    const trackCategory = document.getElementById('trackCategory');
+    let currentSlideIndex = -1;
 
+    const audio = document.getElementById('audio-player');
+    const playBtn = document.getElementById('play-btn');
+    const playIcon = document.getElementById('play-icon');
+    const progress = document.getElementById('progress');
+    const currentTimeEl = document.getElementById('current-time');
+    const durationEl = document.getElementById('duration');
+    
+    const songTitle = document.getElementById('song-title');
+    const artistName = document.getElementById('artist-name');
+    const photoViewer = document.getElementById('photo-viewer');
+    const photoCaption = document.getElementById('photo-caption');
+    const bgBlurred = document.getElementById('bg-blurred');
+
+    // สร้างรายการเพลงทางซ้ายมือ
     function renderPlaylist() {
-      const container = document.getElementById('playlistItems');
+      const container = document.getElementById('playlist-items');
       container.innerHTML = '';
-      tracks.forEach((track, index) => {
+      tracksData.forEach((track, index) => {
         const item = document.createElement('div');
         item.className = `playlist-item ${index === currentTrackIndex ? 'active' : ''}`;
-        item.onclick = () => selectTrack(index);
+        item.onclick = () => {
+          loadTrack(index);
+          playAudio();
+        };
         item.innerHTML = `
           <div class="item-num">${index + 1}</div>
-          <div>
+          <div class="item-info">
             <div class="item-title">${track.title}</div>
-            <div class="item-sub">${track.category}</div>
+            <div class="item-sub">${track.artist}</div>
           </div>
         `;
         container.appendChild(item);
       });
     }
 
-    function selectTrack(index) {
+    function loadTrack(index) {
       currentTrackIndex = index;
-      trackTitle.innerText = tracks[index].title;
-      trackCategory.innerText = tracks[index].category;
-      renderPlaylist();
+      const track = tracksData[currentTrackIndex];
 
-      // โหลด URL ผ่าน Proxy ป้องกันการบล็อก
-      const rawUrl = tracks[index].url;
-      audio.src = rawUrl.includes('archive.org') ? corsProxy + encodeURIComponent(rawUrl) : rawUrl;
-      audio.play().catch(e => console.log("User action needed:", e));
+      songTitle.innerText = track.title;
+      artistName.innerText = track.artist;
+      audio.src = track.audioSrc;
+
+      currentSlideIndex = 0;
+      updatePhoto(track.slides[0].image, track.slides[0].caption);
+      renderPlaylist();
     }
 
-    audio.addEventListener('play', () => {
-      disc.style.animationPlayState = 'running';
+    function updatePhoto(imgUrl, captionText) {
+      photoViewer.style.opacity = '0';
+      setTimeout(() => {
+        photoViewer.src = imgUrl;
+        photoCaption.innerText = captionText;
+        bgBlurred.style.backgroundImage = `url('${imgUrl}')`;
+        photoViewer.style.opacity = '1';
+      }, 150);
+    }
+
+    function playAudio() {
+      const promise = audio.play();
+      if (promise !== undefined) {
+        promise.then(() => {
+          playIcon.className = 'fa-solid fa-pause';
+        }).catch(err => {
+          console.log("Playback error:", err);
+          playIcon.className = 'fa-solid fa-play';
+        });
+      }
+    }
+
+    audio.addEventListener('timeupdate', () => {
+      const currentTime = audio.currentTime;
+      progress.value = (currentTime / audio.duration) * 100 || 0;
+      currentTimeEl.innerText = formatTime(currentTime);
+
+      const slides = tracksData[currentTrackIndex].slides;
+      const cycleDuration = 15;
+      const relativeTime = currentTime % cycleDuration;
+
+      let activeIndex = 0;
+      for (let i = 0; i < slides.length; i++) {
+        if (relativeTime >= slides[i].time) {
+          activeIndex = i;
+        } else {
+          break;
+        }
+      }
+
+      if (activeIndex !== currentSlideIndex) {
+        currentSlideIndex = activeIndex;
+        updatePhoto(slides[currentSlideIndex].image, slides[currentSlideIndex].caption);
+      }
     });
 
-    audio.addEventListener('pause', () => {
-      disc.style.animationPlayState = 'paused';
+    playBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        playAudio();
+      } else {
+        audio.pause();
+        playIcon.className = 'fa-solid fa-play';
+      }
+    });
+
+    document.getElementById('next-track').addEventListener('click', () => {
+      currentTrackIndex = (currentTrackIndex + 1) % tracksData.length;
+      loadTrack(currentTrackIndex);
+      playAudio();
+    });
+
+    document.getElementById('prev-track').addEventListener('click', () => {
+      currentTrackIndex = (currentTrackIndex - 1 + tracksData.length) % tracksData.length;
+      loadTrack(currentTrackIndex);
+      playAudio();
+    });
+
+    progress.addEventListener('input', () => {
+      audio.currentTime = (progress.value / 100) * audio.duration;
+    });
+
+    function formatTime(seconds) {
+      if (isNaN(seconds)) return "0:00";
+      const min = Math.floor(seconds / 60);
+      const sec = Math.floor(seconds % 60);
+      return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+    }
+
+    audio.addEventListener('loadedmetadata', () => {
+      durationEl.innerText = formatTime(audio.duration);
     });
 
     audio.addEventListener('ended', () => {
-      const nextIndex = (currentTrackIndex + 1) % tracks.length;
-      selectTrack(nextIndex);
+      currentTrackIndex = (currentTrackIndex + 1) % tracksData.length;
+      loadTrack(currentTrackIndex);
+      playAudio();
     });
 
     // เริ่มต้นหน้าเว็บ
-    renderPlaylist();
-    const initUrl = tracks[0].url;
-    audio.src = initUrl.includes('archive.org') ? corsProxy + encodeURIComponent(initUrl) : initUrl;
+    loadTrack(0);
   </script>
 </body>
 </html>
