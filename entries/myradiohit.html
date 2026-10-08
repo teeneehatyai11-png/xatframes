@@ -13,7 +13,6 @@
       padding: 0;
       box-sizing: border-box;
       font-family: 'Kanit', Arial, sans-serif;
-      user-select: none;
     }
 
     html, body {
@@ -21,47 +20,39 @@
       height: 100%;
       background: transparent !important;
       overflow: hidden;
-      position: relative;
-      /* แก้ไข: เปิดให้รับคำสั่งคลิกและการโต้ตอบได้ 100% */
-      pointer-events: auto !important;
     }
 
-    /* 🖼️ การ์ดฝั่งซ้าย (วิดีโอ yc18zg.mp4)[cite: 1] */
+    /* 🖼️ ฝั่งซ้าย */
     .left-card {
       position: absolute;
-      top: 130px;
-      left: 15px;
-      width: 300px;
-      height: 480px;
+      top: 100px;
+      left: 10px;
+      width: 290px;
+      height: 460px;
       background: rgba(18, 18, 28, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
-      z-index: 999999 !important;
-      pointer-events: auto !important;
       overflow: hidden;
+      z-index: 100;
     }
 
-    /* 📱 การ์ดฝั่งขวา (วิดีโอ s9d6v6.mp4 + เครื่องเล่นวิทยุ)[cite: 1] */
+    /* 📱 ฝั่งขวา (วิทยุ) */
     .right-card {
       position: absolute;
-      top: 130px;
-      right: 15px;
-      width: 300px;
-      height: 480px;
+      top: 100px;
+      right: 10px;
+      width: 290px;
+      height: 460px;
       background: rgba(18, 18, 28, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
-      padding: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
+      overflow: hidden;
+      z-index: 100;
       display: flex;
       flex-direction: column;
-      z-index: 999999 !important;
-      pointer-events: auto !important;
-      overflow: hidden;
     }
 
-    /* วิดีโอวนลูปพื้นหลัง */
+    /* วิดีโอพื้นหลัง */
     .video-bg-box {
       position: absolute;
       top: 0;
@@ -70,17 +61,15 @@
       height: 100%;
       z-index: 1;
       overflow: hidden;
-      pointer-events: none;
     }
 
     .video-bg-box video {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      outline: none;
     }
 
-    /* ครอบเลเยอร์ส่วนควบคุมฝั่งขวา */
+    /* Overlay ครอบส่วนควบคุม */
     .card-content-overlay {
       position: relative;
       z-index: 10;
@@ -88,23 +77,18 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      background: linear-gradient(to top, rgba(10, 15, 30, 0.9) 0%, rgba(10, 15, 30, 0.2) 50%, rgba(10, 15, 30, 0.8) 100%);
-      margin: -12px;
+      background: linear-gradient(to top, rgba(10, 15, 30, 0.95) 0%, rgba(10, 15, 30, 0.3) 50%, rgba(10, 15, 30, 0.85) 100%);
       padding: 14px;
-      pointer-events: auto !important;
     }
 
-    /* ข้อความด้านบนเปลี่ยนเป็น LIVE */
     .radio-header {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
       color: #ff0050;
       padding-bottom: 6px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.2);
       text-align: center;
-      text-transform: uppercase;
       letter-spacing: 2px;
-      text-shadow: 0 0 10px rgba(255, 0, 80, 0.8);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -116,31 +100,24 @@
       height: 8px;
       background: #ff0050;
       border-radius: 50%;
-      box-shadow: 0 0 10px #ff0050;
+      box-shadow: 0 0 8px #ff0050;
       animation: blink 1.2s infinite;
     }
 
     @keyframes blink {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.3; transform: scale(0.85); }
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
     }
 
-    /* กล่องเครื่องเล่นวิทยุ */
+    /* เครื่องเล่น */
     .glass-player {
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(15, 23, 42, 0.9);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 14px;
+      border-radius: 12px;
       padding: 12px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
-      margin-top: auto;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      position: relative;
-      z-index: 20;
-      pointer-events: auto !important;
     }
 
     .song-info {
@@ -148,19 +125,16 @@
     }
 
     .now-playing {
-      font-size: 9px;
+      font-size: 10px;
       font-weight: 700;
       color: #00f2fe;
-      letter-spacing: 1.5px;
-      margin-bottom: 2px;
-      text-shadow: 0 0 5px rgba(0, 242, 254, 0.5);
+      letter-spacing: 1px;
     }
 
     .track-title {
       font-size: 12px;
       font-weight: 600;
       color: #ffffff;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.9);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -168,23 +142,17 @@
 
     .playlist-select {
       width: 100%;
-      background: rgba(0, 0, 0, 0.8);
+      background: #0d1117;
       color: #00f2fe;
-      border: 1px solid rgba(0, 242, 254, 0.5);
-      border-radius: 8px;
-      padding: 6px 10px;
+      border: 1px solid rgba(0, 242, 254, 0.4);
+      border-radius: 6px;
+      padding: 6px;
       font-size: 11px;
       outline: none;
       cursor: pointer;
-      pointer-events: auto !important;
     }
 
-    .playlist-select option {
-      background: #12121c;
-      color: #fff;
-    }
-
-    /* ปุ่มกดเล่นเพลง "กดเพื่อฟังวิทยุสด" */
+    /* ปุ่มกดเล่นเพลง */
     .play-btn-large {
       width: 100%;
       padding: 12px;
@@ -199,14 +167,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      box-shadow: 0 4px 15px rgba(217, 28, 92, 0.6);
-      transition: all 0.2s ease;
-      pointer-events: auto !important;
-    }
-
-    .play-btn-large:hover {
-      transform: scale(1.02);
-      box-shadow: 0 6px 20px rgba(0, 198, 255, 0.8);
+      box-shadow: 0 4px 12px rgba(217, 28, 92, 0.5);
     }
 
     .volume-box {
@@ -215,36 +176,33 @@
       gap: 8px;
       color: #a0aec0;
       font-size: 11px;
-      pointer-events: auto !important;
     }
 
     .volume-box input[type="range"] {
       flex: 1;
-      height: 4px;
       accent-color: #00f2fe;
       cursor: pointer;
-      pointer-events: auto !important;
     }
   </style>
 </head>
 <body>
 
-  <!-- แท็กเสียง Audio -->
-  <audio id="audio-player" preload="auto"></audio>
+  <!-- Audio Element -->
+  <audio id="audio-player" preload="none" crossorigin="anonymous"></audio>
 
-  <!-- 🖼️ ฝั่งซ้าย (วิดีโอ yc18zg.mp4)[cite: 1] -->
+  <!-- ฝั่งซ้าย (วิดีโอ yc18zg.mp4)[cite: 1] -->
   <div class="left-card">
     <div class="video-bg-box">
-      <video autoplay loop muted playsinline preload="auto">
+      <video autoplay loop muted playsinline>
         <source src="https://files.catbox.moe/yc18zg.mp4" type="video/mp4">
       </video>
     </div>
   </div>
 
-  <!-- 📱 ฝั่งขวา (วิดีโอ s9d6v6.mp4)[cite: 1] -->
+  <!-- ฝั่งขวา (วิดีโอ s9d6v6.mp4)[cite: 1] -->
   <div class="right-card">
     <div class="video-bg-box">
-      <video autoplay loop muted playsinline preload="auto">
+      <video autoplay loop muted playsinline>
         <source src="https://files.catbox.moe/s9d6v6.mp4" type="video/mp4">
       </video>
     </div>
@@ -269,7 +227,7 @@
         </select>
 
         <div class="volume-box">
-          <i class="fas fa-volume-up" id="vol-icon"></i>
+          <i class="fas fa-volume-up"></i>
           <input type="range" id="volume-range" min="0" max="1" step="0.05" value="1">
         </div>
 
@@ -300,55 +258,48 @@
     let currentIndex = 0;
     let isPlaying = false;
 
-    audio.src = playlist[0].url;
-    audio.volume = 1.0;
-
-    function playAudio() {
-      audio.play().then(() => {
-        isPlaying = true;
-        btnIcon.className = 'fas fa-pause';
-        btnText.textContent = 'หยุดฟังวิทยุ';
-      }).catch(err => {
-        console.log("Audio play error:", err);
-      });
-    }
-
-    function pauseAudio() {
-      audio.pause();
-      isPlaying = false;
-      btnIcon.className = 'fas fa-play';
-      btnText.textContent = 'กดเพื่อฟังวิทยุสด';
-    }
-
-    mainPlayBtn.onclick = function(e) {
-      e.preventDefault();
-      if (isPlaying) {
-        pauseAudio();
-      } else {
-        playAudio();
+    // ฟังก์ชันสั่งเล่นเสียงแบบรองรับ User Gesture
+    function togglePlay() {
+      if (!audio.src || audio.src === "") {
+        audio.src = playlist[currentIndex].url;
       }
-    };
 
-    stationSelect.onchange = function() {
+      if (isPlaying) {
+        audio.pause();
+        isPlaying = false;
+        btnIcon.className = 'fas fa-play';
+        btnText.textContent = 'กดเพื่อฟังวิทยุสด';
+      } else {
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            isPlaying = true;
+            btnIcon.className = 'fas fa-pause';
+            btnText.textContent = 'หยุดฟังวิทยุ';
+          }).catch(error => {
+            console.log("Autoplay blocked/failed: ", error);
+            alert("กรุณาคลิกบนหน้าจอหรือปุ่มเล่นอีกครั้ง เพื่อเปิดระบบเสียง");
+          });
+        }
+      }
+    }
+
+    // ผูก Event Direct
+    mainPlayBtn.addEventListener('click', togglePlay);
+
+    stationSelect.addEventListener('change', function() {
       currentIndex = parseInt(this.value);
       title.textContent = playlist[currentIndex].name;
       audio.src = playlist[currentIndex].url;
       audio.load();
-      playAudio();
-    };
+      if (isPlaying) {
+        audio.play();
+      }
+    });
 
-    volumeRange.oninput = function() {
+    volumeRange.addEventListener('input', function() {
       audio.volume = parseFloat(this.value);
-    };
-
-    audio.onended = function() {
-      currentIndex = (currentIndex + 1) % playlist.length;
-      stationSelect.value = currentIndex;
-      title.textContent = playlist[currentIndex].name;
-      audio.src = playlist[currentIndex].url;
-      audio.load();
-      playAudio();
-    };
+    });
   </script>
 
 </body>
