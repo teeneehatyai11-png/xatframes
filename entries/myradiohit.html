@@ -16,7 +16,7 @@
       user-select: none;
     }
 
-    /* คลิกทะลุพื้นหลังตรงกลางไปยังห้องแชท xat */
+    /* พื้นหลังโปร่งใส และปล่อยให้เมาส์กดทะลุไปห้องแชทตรงกลางได้ */
     html, body {
       width: 100%;
       height: 100%;
@@ -34,8 +34,11 @@
       position: relative;
     }
 
+    /* บังคับให้กล่องซ้าย-ขวา รับการคลิกได้แน่นอน 100% */
     .interactive-box {
       pointer-events: auto !important;
+      position: relative;
+      z-index: 999999 !important;
     }
 
     .bg-blurred {
@@ -59,7 +62,7 @@
     .playlist-container {
       width: 260px;
       max-height: 85vh;
-      background: rgba(18, 18, 28, 0.9);
+      background: rgba(18, 18, 28, 0.92);
       backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 16px;
@@ -67,7 +70,6 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
       display: flex;
       flex-direction: column;
-      z-index: 10;
     }
 
     .playlist-header {
@@ -95,10 +97,11 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      transition: 0.2s;
     }
 
     .playlist-item:hover {
-      background: rgba(0, 242, 254, 0.15);
+      background: rgba(0, 242, 254, 0.2);
     }
 
     .playlist-item.active {
@@ -112,12 +115,10 @@
 
     /* 📱 เครื่องเล่น TikTok ฝั่งขวา */
     .player-card {
-      position: relative;
-      z-index: 10;
       width: 280px;
       height: 85vh;
-      max-height: 520px;
-      background: rgba(18, 18, 28, 0.9);
+      max-height: 530px;
+      background: rgba(18, 18, 28, 0.92);
       backdrop-filter: blur(25px);
       border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 16px;
@@ -151,18 +152,47 @@
     .photo-display-area img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.2s ease; }
     .photo-caption { position: absolute; bottom: 0; left: 0; width: 100%; padding: 6px; background: linear-gradient(transparent, rgba(0,0,0,0.85)); color: #fff; font-size: 11px; text-align: center; }
 
-    /* แถบเล่นเพลง HTML5 บังคับให้เบราว์เซอร์ยอมรับการกด */
+    /* ปุ่มควบคุมเล่นเพลงแบบใหญ่ ชัดเจน */
+    .controls-box {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn-play-big {
+      width: 100%;
+      padding: 8px;
+      background: linear-gradient(45deg, #ff0050, #00f2fe);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(255, 0, 80, 0.4);
+    }
+
+    .btn-play-big:hover {
+      opacity: 0.9;
+    }
+
     audio {
       width: 100%;
-      height: 38px;
-      outline: none;
-      border-radius: 8px;
+      height: 32px;
+      margin-top: 4px;
     }
   </style>
 </head>
 <body>
 
-  <!-- รายการเพลงฝั่งซ้าย -->
+  <!-- 📋 รายการเพลงฝั่งซ้าย -->
   <div class="playlist-container interactive-box">
     <div class="playlist-header">
       <span>รายการเพลง</span>
@@ -171,7 +201,7 @@
     <div class="playlist-scroll" id="playlist-items"></div>
   </div>
 
-  <!-- เครื่องเล่น TikTok ฝั่งขวา -->
+  <!-- 📱 เครื่องเล่น TikTok ฝั่งขวา -->
   <div class="player-card interactive-box">
     <div class="bg-blurred" id="bg-blurred"></div>
     <div class="bg-overlay"></div>
@@ -198,15 +228,20 @@
         <div class="photo-caption" id="photo-caption">Chill Music Mood</div>
       </div>
 
-      <!-- แท็ก Audio ตัวจริงที่กดเล่นได้ 100% -->
-      <audio id="audio-player" controls controlsList="nodownload"></audio>
+      <!-- ส่วนควบคุมเล่นเพลง -->
+      <div class="controls-box">
+        <button class="btn-play-big" id="main-play-btn">
+          <i class="fa-solid fa-play" id="main-play-icon"></i>
+          <span id="play-btn-text">กดเพื่อเริ่มเล่นเพลง</span>
+        </button>
+        
+        <!-- แถบ Audio เล่นตรงของเบราว์เซอร์สำหรับกรณี xat ล็อก JS -->
+        <audio id="audio-player" controls controlsList="nodownload"></audio>
+      </div>
     </div>
   </div>
 
   <script>
-    // Proxy URL สำหรับดึงสัญญาณเพลงให้ทะลุระบบป้องกัน CORS ของบราวเซอร์
-    const corsProxy = "https://api.allorigins.win/raw?url=";
-
     const defaultSlides = [
       { time: 0.0, image: "https://xatimg.com/image/P8z2aOMls66d.png", caption: "✨ รวมเพลงเพราะจาก TIKTOK" },
       { time: 2.5, image: "https://xatimg.com/image/p5YKtEmIMo4X.png", caption: "🎧 ฟังเพลงชิลๆ ด้วยกัน" },
@@ -235,6 +270,9 @@
     const photoViewer = document.getElementById('photo-viewer');
     const photoCaption = document.getElementById('photo-caption');
     const bgBlurred = document.getElementById('bg-blurred');
+    const mainPlayBtn = document.getElementById('main-play-btn');
+    const mainPlayIcon = document.getElementById('main-play-icon');
+    const playBtnText = document.getElementById('play-btn-text');
 
     function renderPlaylist() {
       const container = document.getElementById('playlist-items');
@@ -242,7 +280,10 @@
       tracksData.forEach((track, index) => {
         const item = document.createElement('div');
         item.className = `playlist-item ${index === currentTrackIndex ? 'active' : ''}`;
-        item.onclick = () => selectTrack(index);
+        item.onclick = (e) => {
+          e.stopPropagation();
+          selectTrack(index);
+        };
         item.innerHTML = `
           <div class="item-num">${index + 1}</div>
           <div>
@@ -260,15 +301,13 @@
 
       songTitle.innerText = track.title;
       artistName.innerText = track.artist;
-      
-      const rawUrl = track.audioSrc;
-      audio.src = rawUrl.includes('archive.org') ? corsProxy + encodeURIComponent(rawUrl) : rawUrl;
+      audio.src = track.audioSrc;
       
       currentSlideIndex = 0;
       updatePhoto(track.slides[0].image, track.slides[0].caption);
       renderPlaylist();
 
-      audio.play().catch(e => console.log("Click play on controls bar"));
+      playAudio();
     }
 
     function updatePhoto(imgUrl, captionText) {
@@ -280,6 +319,41 @@
         photoViewer.style.opacity = '1';
       }, 150);
     }
+
+    function playAudio() {
+      const promise = audio.play();
+      if (promise !== undefined) {
+        promise.then(() => {
+          mainPlayIcon.className = 'fa-solid fa-pause';
+          playBtnText.innerText = 'หยุดเล่นชั่วคราว';
+        }).catch(err => {
+          console.log("Play blocked by browser, user click needed");
+          mainPlayIcon.className = 'fa-solid fa-play';
+          playBtnText.innerText = 'กดเพื่อเริ่มเล่นเพลง';
+        });
+      }
+    }
+
+    mainPlayBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (audio.paused) {
+        playAudio();
+      } else {
+        audio.pause();
+        mainPlayIcon.className = 'fa-solid fa-play';
+        playBtnText.innerText = 'กดเพื่อเล่นต่อ';
+      }
+    });
+
+    audio.addEventListener('play', () => {
+      mainPlayIcon.className = 'fa-solid fa-pause';
+      playBtnText.innerText = 'กำลังเล่นเพลง...';
+    });
+
+    audio.addEventListener('pause', () => {
+      mainPlayIcon.className = 'fa-solid fa-play';
+      playBtnText.innerText = 'กดเพื่อเล่นต่อ';
+    });
 
     audio.addEventListener('timeupdate', () => {
       const currentTime = audio.currentTime;
@@ -303,7 +377,7 @@
       selectTrack(nextIndex);
     });
 
-    // โหลดครั้งแรก
+    // เริ่มต้น
     selectTrack(0);
   </script>
 </body>
