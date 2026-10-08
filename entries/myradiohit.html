@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -17,6 +18,7 @@
             justify-content: space-between;
             align-items: flex-start;
             padding: 10px;
+            padding-top: 90px; /* ดันทุกอย่างลงมาจากด้านบน 90px โดยไม่ดันขอบกล่องหลุดจอ */
             height: 100vh;
             overflow: hidden;
         }
@@ -78,7 +80,7 @@
             border-radius: 8px;
             padding: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            max-height: 90vh;
+            max-height: 70vh;
             overflow-y: auto;
         }
         .playlist-title {
@@ -127,8 +129,8 @@
             <div>#1 Tag Hits String 2026</div>
             <div class="cat">Category: String</div>
         </div>
+    </div>
 
-        
     <script>
         function playTrack(title, url) {
             const player = document.getElementById('audio-player');
