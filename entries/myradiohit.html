@@ -25,14 +25,13 @@
       pointer-events: none;
     }
 
-    /* 🖼️ กล่องฝั่งซ้าย - ปรับขนาดกว้างxสูง ให้เท่ากับฝั่งขวาพอดีกับห้องแชต */
+    /* 🖼️ กล่องฝั่งซ้าย - ขยับลงมาให้พอดีกับระดับขอบบนของแชต */
     .left-card {
       position: absolute;
-      top: 20px;
+      top: 155px; /* เลื่อนลงมาให้ตรงกับขอบบนแชต */
       left: 15px;
       width: 300px;
-      height: calc(100vh - 40px);
-      max-height: 480px; /* จำกัดความสูงให้พอดีขอบแชต ไม่สูงเกินไป */
+      height: 485px; /* ปรับความสูงให้ขนานพอดีกับกล่องแชต */
       background: rgba(18, 18, 28, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
@@ -42,14 +41,13 @@
       overflow: hidden;
     }
 
-    /* 📱 กล่องฝั่งขวา - ขนาดมาตรฐานเท่ากัน */
+    /* 📱 กล่องฝั่งขวา - ขยับลงมาระดับเดียวกัน */
     .right-card {
       position: absolute;
-      top: 20px;
+      top: 155px; /* เลื่อนลงมาเท่ากับฝั่งซ้าย */
       right: 15px;
       width: 300px;
-      height: calc(100vh - 40px);
-      max-height: 480px; /* จำกัดความสูงให้เท่ากับฝั่งซ้าย */
+      height: 485px; /* ปรับความสูงให้เท่ากัน */
       background: rgba(18, 18, 28, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
@@ -62,7 +60,7 @@
       overflow: hidden;
     }
 
-    /* วิดีโอแสดงผลเต็มพื้นที่การ์ดพอดี */
+    /* วิดีโอวนลูปเต็มพื้นที่การ์ด */
     .video-bg-box {
       position: absolute;
       top: 0;
@@ -80,7 +78,7 @@
       outline: none;
     }
 
-    /* เลเยอร์ปุ่มควบคุมฝั่งขวา */
+    /* เลเยอร์องค์ประกอบฝั่งขวา */
     .card-content-overlay {
       position: relative;
       z-index: 2;
@@ -152,7 +150,7 @@
 </head>
 <body>
 
-  <!-- 🖼️ กล่องฝั่งซ้าย (วิดีโอ 03.mp4 วนลูปเต็มกรอบ ขนาดพอดีแชต) -->
+  <!-- 🖼️ กล่องฝั่งซ้าย (วิดีโอ 03.mp4) -->
   <div class="left-card">
     <div class="video-bg-box">
       <video autoplay loop muted playsinline preload="auto">
@@ -161,7 +159,7 @@
     </div>
   </div>
 
-  <!-- 📱 กล่องฝั่งขวา (วิดีโอ 02.mp4 วนลูปเต็มกรอบ + ปุ่มวิทยุสด) -->
+  <!-- 📱 กล่องฝั่งขวา (วิดีโอ 02.mp4 + ปุ่มฟังวิทยุสด) -->
   <div class="right-card">
     <div class="video-bg-box">
       <video autoplay loop muted playsinline preload="auto">
@@ -183,7 +181,7 @@
       </div>
 
       <audio id="radio-stream" preload="none">
-        <source src="https://radio9.plathong.net/7264/;stream.mp3?type=http" type="audio/mpeg">
+        <source src="https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3" type="audio/mpeg">
       </audio>
     </div>
   </div>
