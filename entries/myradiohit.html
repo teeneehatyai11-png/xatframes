@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MYRADIOhit - RADIO Online Frame</title>
+  <title>MYRADIOhit - Live Radio Online Frame</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -25,73 +25,32 @@
       pointer-events: none;
     }
 
-    /* 📋 รายการเพลงฝั่งซ้าย */
-    .playlist-container {
+    /* 🖼️ กล่องฝั่งซ้าย - ปรับขนาดกว้างxสูง ให้เท่ากับฝั่งขวาพอดีกับห้องแชต */
+    .left-card {
       position: absolute;
       top: 20px;
       left: 15px;
-      width: 250px;
+      width: 300px;
       height: calc(100vh - 40px);
-      max-height: 540px;
-      background: rgba(18, 18, 28, 0.95);
+      max-height: 480px; /* จำกัดความสูงให้พอดีขอบแชต ไม่สูงเกินไป */
+      background: rgba(18, 18, 28, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
-      padding: 12px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
-      display: flex;
-      flex-direction: column;
       z-index: 999999 !important;
       pointer-events: auto !important;
+      overflow: hidden;
     }
 
-    .playlist-header {
-      font-size: 13px;
-      font-weight: 700;
-      color: #00f2fe;
-      margin-bottom: 10px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .playlist-scroll {
-      overflow-y: auto;
-      flex: 1;
-    }
-
-    .playlist-item {
-      padding: 8px 10px;
-      border-radius: 8px;
-      margin-bottom: 6px;
-      background: rgba(255, 255, 255, 0.08);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .playlist-item:hover {
-      background: rgba(0, 242, 254, 0.25);
-    }
-
-    .playlist-item.active {
-      background: rgba(255, 0, 80, 0.35);
-      border: 1px solid #ff0050;
-    }
-
-    .item-num { font-size: 11px; color: #00f2fe; font-weight: bold; }
-    .item-title { color: #fff; font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    /* 📱 เครื่องเล่นวิทยุฝั่งขวา */
-    .player-card {
+    /* 📱 กล่องฝั่งขวา - ขนาดมาตรฐานเท่ากัน */
+    .right-card {
       position: absolute;
       top: 20px;
       right: 15px;
       width: 300px;
       height: calc(100vh - 40px);
-      max-height: 540px;
-      background: rgba(18, 18, 28, 0.95);
+      max-height: 480px; /* จำกัดความสูงให้เท่ากับฝั่งซ้าย */
+      background: rgba(18, 18, 28, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
       padding: 12px;
@@ -103,20 +62,50 @@
       overflow: hidden;
     }
 
+    /* วิดีโอแสดงผลเต็มพื้นที่การ์ดพอดี */
+    .video-bg-box {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .video-bg-box video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      outline: none;
+    }
+
+    /* เลเยอร์ปุ่มควบคุมฝั่งขวา */
+    .card-content-overlay {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: rgba(0, 0, 0, 0.25);
+      margin: -12px;
+      padding: 12px;
+    }
+
     .radio-header {
       font-size: 14px;
       font-weight: 700;
       color: #00f2fe;
       margin-bottom: 10px;
       padding-bottom: 6px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-      text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.25);
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
 
     .live-dot {
@@ -133,54 +122,18 @@
       50% { opacity: 0.3; }
     }
 
-    .media-container {
-      flex: 1;
-      width: 100%;
-      position: relative;
-      border-radius: 12px;
-      overflow: hidden;
-      background: #000;
-      display: flex;
-      flex-direction: column;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-    }
-
-    /* วิดีโอขยายเต็มพื้นที่การ์ด */
-    .video-full-box {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      flex: 1;
-      overflow: hidden;
-      background: #000;
-    }
-
-    .video-full-box video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      outline: none;
-    }
-
-    /* แถบปุ่มควบคุมวางซ้อนด้านล่างวิดีโอ */
     .controls-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
+      margin-top: auto;
       width: 100%;
-      padding: 10px;
-      background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-      display: flex;
-      justify-content: center;
-      z-index: 10;
+      padding-top: 10px;
     }
 
     .btn-play-radio {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       background: linear-gradient(45deg, #ff0050, #00f2fe);
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       color: #fff;
       font-weight: bold;
       font-size: 13px;
@@ -189,7 +142,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
     }
 
     .btn-play-radio:hover {
@@ -199,56 +152,43 @@
 </head>
 <body>
 
-  <!-- รายการเพลงซ้ายมือ -->
-  <div class="playlist-container">
-    <div class="playlist-header">
-      <span>รายการเพลง</span>
-      <span style="font-size:10px; color:#aaa;">7 รายการ</span>
+  <!-- 🖼️ กล่องฝั่งซ้าย (วิดีโอ 03.mp4 วนลูปเต็มกรอบ ขนาดพอดีแชต) -->
+  <div class="left-card">
+    <div class="video-bg-box">
+      <video autoplay loop muted playsinline preload="auto">
+        <source src="https://ia903200.us.archive.org/8/items/03_20261008_20261008_1411/03.mp4" type="video/mp4">
+      </video>
     </div>
-    <div class="playlist-scroll" id="playlist-items"></div>
   </div>
 
-  <!-- เครื่องเล่นขวามือ -->
-  <div class="player-card">
-    <div class="radio-header">
-      <div class="live-dot"></div>
-      <span>RADIO Online</span>
+  <!-- 📱 กล่องฝั่งขวา (วิดีโอ 02.mp4 วนลูปเต็มกรอบ + ปุ่มวิทยุสด) -->
+  <div class="right-card">
+    <div class="video-bg-box">
+      <video autoplay loop muted playsinline preload="auto">
+        <source src="https://ia903201.us.archive.org/13/items/02_20261008/02.mp4" type="video/mp4">
+      </video>
     </div>
 
-    <div class="media-container">
-      <!-- วิดีโอเต็มพื้นที่การ์ด -->
-      <div class="video-full-box">
-        <video autoplay loop muted playsinline preload="auto">
-          <source src="https://ia903201.us.archive.org/13/items/02_20261008/02.mp4" type="video/mp4">
-        </video>
-        
-        <!-- ปุ่มกดฟังวิทยุสดซ้อนบนวิดีโอ -->
-        <div class="controls-overlay">
-          <button class="btn-play-radio" id="play-btn">
-            <i class="fa-solid fa-play" id="play-icon"></i>
-            <span id="play-text">กดเพื่อฟังวิทยุสด</span>
-          </button>
-        </div>
+    <div class="card-content-overlay">
+      <div class="radio-header">
+        <div class="live-dot"></div>
+        <span>RADIO Online</span>
+      </div>
+
+      <div class="controls-overlay">
+        <button class="btn-play-radio" id="play-btn">
+          <i class="fa-solid fa-play" id="play-icon"></i>
+          <span id="play-text">กดเพื่อฟังวิทยุสด</span>
+        </button>
       </div>
 
       <audio id="radio-stream" preload="none">
         <source src="https://radio9.plathong.net/7264/;stream.mp3?type=http" type="audio/mpeg">
-        เบราว์เซอร์ไม่รองรับ
       </audio>
     </div>
   </div>
 
   <script>
-    const tracksData = [
-      { title: "#1 สตรีมวิทยุสด Plathong Net" },
-      { title: "#2 Thaistation Radio Mix" },
-      { title: "#3 String Pop Selection" },
-      { title: "#4 2-Hour Nonstop Hits" },
-      { title: "#5 Thai Country Favorites" },
-      { title: "#6 Southern Hits Collection" },
-      { title: "#7 Southern Melodic Folk" }
-    ];
-
     const radio = document.getElementById('radio-stream');
     const playBtn = document.getElementById('play-btn');
     const playIcon = document.getElementById('play-icon');
@@ -268,26 +208,6 @@
         playText.innerText = 'กดเพื่อฟังวิทยุสด';
       }
     });
-
-    function renderPlaylist() {
-      const container = document.getElementById('playlist-items');
-      container.innerHTML = '';
-      tracksData.forEach((track, index) => {
-        const item = document.createElement('div');
-        item.className = `playlist-item ${index === 0 ? 'active' : ''}`;
-        item.onclick = () => {
-          document.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
-          item.classList.add('active');
-        };
-        item.innerHTML = `
-          <div class="item-num">${index + 1}</div>
-          <div class="item-title">${track.title}</div>
-        `;
-        container.appendChild(item);
-      });
-    }
-
-    renderPlaylist();
   </script>
 </body>
 </html>
