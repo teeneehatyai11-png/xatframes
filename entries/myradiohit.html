@@ -14,65 +14,108 @@
         }
         .xatframe-wrapper {
             position: relative; width: 100vw; height: 100vh;
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; justify-content: flex-end; align-items: center;
             padding: 20px 30px;
         }
-        
-        /* ด้านซ้าย: ฝังเครื่องเล่นวิทยุ Plathong */
-        .player-card {
-            width: 250px; background: rgba(10, 16, 26, 0.92); backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 240, 255, 0.4); border-radius: 12px; padding: 12px;
-            display: flex; flex-direction: column; align-items: center; z-index: 999;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.6); pointer-events: auto;
+
+        /* กล่องเครื่องเล่นวิทยุด้านขวา */
+        .right-player-card {
+            width: 260px;
+            background: rgba(12, 18, 32, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 999;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.7), 0 0 15px rgba(0, 240, 255, 0.2);
+            pointer-events: auto;
+            text-align: center;
         }
 
-        .radio-iframe {
-            width: 100%;
-            height: 200px;
-            border: none;
-            border-radius: 8px;
-            overflow: hidden;
+        /* รูปแผ่นเสียงหมุนเรืองแสง */
+        .vinyl-box {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin: 15px 0;
+        }
+        .vinyl {
+            width: 100%; height: 100%; border-radius: 50%;
+            background: radial-gradient(circle, #333 15%, #111 18%, #111 38%, #222 40%, #111 42%, #111 68%, #000 70%);
+            border: 3px solid #222; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+            animation: spin 4s linear infinite;
+            animation-play-state: paused;
+        }
+        .vinyl.playing { animation-play-state: running; }
+        .vinyl-center {
+            width: 30px; height: 30px; background: #00f0ff;
+            border-radius: 50%; border: 3px solid #fff;
+            box-shadow: 0 0 10px #00f0ff;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* ตัวเล่นเสียง Native HTML5 */
+        audio {
+            width: 100%; height: 36px; margin-top: 10px;
+            border-radius: 20px; outline: none;
         }
 
-        /* ตรงกลาง: เว้นว่างให้กรอบแชต xat วางซ้อน */
-        .chat-space {
-            width: 650px;
-            height: 486px;
-            pointer-events: none;
+        /* ปุ่มลิงก์สำรองเผื่อเบราว์เซอร์บล็อก iframe */
+        .pop-btn {
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 11px;
+            color: #00f0ff;
+            text-decoration: none;
+            border: 1px dashed rgba(0, 240, 255, 0.5);
+            padding: 5px 12px;
+            border-radius: 15px;
+            transition: all 0.2s;
         }
-
-        /* ด้านขวา: เพลย์ลิสต์/ข้อมูลสถานี */
-        .playlist-card {
-            width: 230px; background: rgba(10, 16, 26, 0.92); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; padding: 15px; z-index: 999;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.6); pointer-events: auto;
-        }
-        .info-item {
-            padding: 8px; margin-top: 6px; background: rgba(255,255,255,0.05);
-            border-radius: 6px; font-size: 12px; color: #00f0ff; text-align: center;
-        }
+        .pop-btn:hover { background: rgba(0, 240, 255, 0.2); color: #fff; }
     </style>
 </head>
 <body>
 
     <div class="xatframe-wrapper">
-        <!-- ด้านซ้าย: เครื่องเล่นวิทยุ Plathong -->
-        <div class="player-card">
-            <div style="font-size:12px; color:#00f0ff; font-weight:bold; margin-bottom:8px;">📻 MYRADIOHIT STREAM</div>
-            <iframe src="https://radio.plathong.net/main/player/?server=radio14&port=7056" class="radio-iframe" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        </div>
+        <!-- เครื่องเล่นวิทยุสวยๆ ด้านขวาอย่างเดียว -->
+        <div class="right-player-card">
+            <div style="font-size: 13px; font-weight: bold; color: #00f0ff; letter-spacing: 1px;">📻 MYRADIOHIT LIVE</div>
+            <div style="font-size: 10px; color: #aaa; margin-top: 3px;">Plathong Stream Server</div>
 
-        <!-- ตรงกลาง: เว้นว่างไว้สำหรับแชต xat -->
-        <div class="chat-space"></div>
+            <div class="vinyl-box">
+                <div class="vinyl" id="vinylRecord">
+                    <div class="vinyl-center"></div>
+                </div>
+            </div>
 
-        <!-- ด้านขวา: ข้อมูลสถานี -->
-        <div class="playlist-card">
-            <div style="font-size:13px; font-weight:bold; color:#00f0ff; margin-bottom:8px;">📋 Station Info</div>
-            <div class="info-item">🟢 LIVE STREAMING</div>
-            <div class="info-item">Server: radio14</div>
-            <div class="info-item">Port: 7056</div>
+            <!-- เครื่องเล่นวิทยุสตรีมตรง -->
+            <audio id="radioPlayer" controls preload="none" onplay="onAudioPlay()" onpause="onAudioPause()">
+                <source src="https://radio14.plathong.net/7056/;stream.mp3?type=http" type="audio/mpeg">
+                เบราว์เซอร์ของคุณไม่รองรับการเล่นเสียง
+            </audio>
+
+            <a href="https://radio14.plathong.net/7056/;stream.mp3?type=http" target="_blank" class="pop-btn">
+                🔗 เปิดฟังหน้าต่างใหม่
+            </a>
         </div>
     </div>
+
+    <script>
+        const vinyl = document.getElementById('vinylRecord');
+
+        function onAudioPlay() {
+            vinyl.classList.add('playing');
+        }
+
+        function onAudioPause() {
+            vinyl.classList.remove('playing');
+        }
+    </script>
 
 </body>
 </html>
