@@ -25,7 +25,7 @@
       pointer-events: none;
     }
 
-    /* 🖼️ การ์ดฝั่งซ้าย (วิดีโอ 03.mp4 วนลูป) */
+    /* 🖼️ การ์ดฝั่งซ้าย (วิดีโอ yc18zg.mp4) */
     .left-card {
       position: absolute;
       top: 130px;
@@ -41,7 +41,7 @@
       overflow: hidden;
     }
 
-    /* 📱 การ์ดฝั่งขวา (วิดีโอ 02.mp4 วนลูป) */
+    /* 📱 การ์ดฝั่งขวา (วิดีโอ s9d6v6.mp4 + เครื่องเล่นวิทยุ) */
     .right-card {
       position: absolute;
       top: 130px;
@@ -78,7 +78,7 @@
       outline: none;
     }
 
-    /* ครอบเลเยอร์ส่วนควบคุมฝั่งขวา ให้กลมกลืนกับวิดีโอ */
+    /* ครอบเลเยอร์ส่วนควบคุมฝั่งขวา */
     .card-content-overlay {
       position: relative;
       z-index: 2;
@@ -135,7 +135,7 @@
 
     .song-info {
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .now-playing {
@@ -157,7 +157,26 @@
       text-overflow: ellipsis;
     }
 
-    /* ดีไซน์แท็ก <audio> ให้กลมกลืน สวยงาม */
+    /* กล่องเลือกช่องสถานีเพลง */
+    .playlist-select {
+      width: 100%;
+      margin-bottom: 8px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #00f2fe;
+      border: 1px solid rgba(0, 242, 254, 0.4);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 11px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .playlist-select option {
+      background: #12121c;
+      color: #fff;
+    }
+
+    /* ดีไซน์แท็ก <audio> */
     audio {
       width: 100%;
       height: 32px;
@@ -169,20 +188,20 @@
 </head>
 <body>
 
-  <!-- 🖼️ ฝั่งซ้าย (วิดีโอ 03.mp4 วนลูป) -->
+  <!-- 🖼️ ฝั่งซ้าย (วิดีโอ yc18zg.mp4) -->
   <div class="left-card">
     <div class="video-bg-box">
       <video autoplay loop muted playsinline preload="auto">
-        <source src="https://ia903200.us.archive.org/8/items/03_20261008_20261008_1411/03.mp4" type="video/mp4">
+        <source src="https://files.catbox.moe/yc18zg.mp4" type="video/mp4">
       </video>
     </div>
   </div>
 
-  <!-- 📱 ฝั่งขวา (วิดีโอ 02.mp4 วนลูป + วิทยุกระจกพ่นฝ้าสุดเรียบหรู) -->
+  <!-- 📱 ฝั่งขวา (วิดีโอ s9d6v6.mp4 + วิทยุกระจกพ่นฝ้า) -->
   <div class="right-card">
     <div class="video-bg-box">
       <video autoplay loop muted playsinline preload="auto">
-        <source src="https://ia903201.us.archive.org/13/items/02_20261008/02.mp4" type="video/mp4">
+        <source src="https://files.catbox.moe/s9d6v6.mp4" type="video/mp4">
       </video>
     </div>
 
@@ -192,20 +211,51 @@
         <span>MYRADIOhit</span>
       </div>
 
-      <!-- เครื่องเล่นแบบ Glassmorphism สวยๆ กลมกลืนไปกับวิดีโอ -->
+      <!-- เครื่องเล่นแบบ Glassmorphism -->
       <div class="glass-player">
         <div class="song-info">
           <div class="now-playing">NOW PLAYING</div>
-          <div class="track-title" id="current-title">#1 Tag Hits String 2026</div>
+          <div class="track-title" id="current-title">รวมเพลงเพราะฟังสบาย</div>
         </div>
 
-        <audio id="audio-player" controls preload="metadata">
+        <!-- รายการตัวเลือกเพลง -->
+        <select class="playlist-select" id="station-select" onchange="changeStation(this)">
+          <option value="https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3">1. รวมเพลงเพราะฟังสบาย</option>
+          <option value="https://ia902905.us.archive.org/5/items/thaistation/thaistation.mp3">2. รวมเพลงเพราะฟังสบายตอนทำงาน</option>
+          <option value="https://ia601906.us.archive.org/3/items/radio_202607/1.radio.mp3">3. รวมเพลงเพราะฟังสบาย (สถานีที่ 3)</option>
+          <option value="https://ia601501.us.archive.org/2/items/thaistation-v.-1/thaistation%20v.1.mp3">4. รวมเพลงเพราะวันพักผ่อน</option>
+        </select>
+
+        <audio id="audio-player" controls autoplay preload="auto">
           <source src="https://ia600607.us.archive.org/28/items/sting-new/sting%20new.mp3" type="audio/mpeg">
           เบราว์เซอร์ไม่รองรับ
         </audio>
       </div>
     </div>
   </div>
+
+  <script>
+    const audio = document.getElementById('audio-player');
+    const select = document.getElementById('station-select');
+    const title = document.getElementById('current-title');
+
+    // บังคับให้เล่นเพลงทันทีเมื่อเข้าเว็บ (หากเบราว์เซอร์บล็อก Autoplay สคริปต์จะรอรับการคลิกแรกของหน้าจอ)
+    window.addEventListener('DOMContentLoaded', () => {
+      audio.play().catch(() => {
+        document.body.addEventListener('click', () => {
+          audio.play();
+        }, { once: true });
+      });
+    });
+
+    // เปลี่ยนเพลงตามรายการที่เลือก
+    function changeStation(elem) {
+      const selectedOption = elem.options[elem.selectedIndex];
+      audio.src = elem.value;
+      title.textContent = selectedOption.text.replace(/^[0-9]+\.\s*/, '');
+      audio.play();
+    }
+  </script>
 
 </body>
 </html>
